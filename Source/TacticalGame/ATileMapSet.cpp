@@ -104,7 +104,10 @@ void AATileMapSet::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (Mode->GetGameState<ABattleGameState>()->GridEnabled)
+	ABattleGameState* gs = GetWorld()->GetGameState<ABattleGameState>();
+
+	UE_LOG(LogTemp, Warning, TEXT("%d"), gs == nullptr);
+	if (gs && gs->GridEnabled)
 	{
 		FHitResult Hit;
 		PlayerController->GetHitResultUnderCursor(ECC_GameTraceChannel1, false, Hit);

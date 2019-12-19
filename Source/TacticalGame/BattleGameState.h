@@ -26,7 +26,6 @@ public:
 	bool GridEnabled;
 	Turn CurrentTurn;
 	int CurrentCharacter;
-	TArray<ABaseEnemyAIController> Enemies;
 
 
 public:
@@ -36,6 +35,6 @@ public:
 		void ToggleBattleMode(bool mode);
 
 	void PlayTurn();
-	void InitBattleState(Turn FirstTurn, TArray<ABaseEnemyAIController> Enemies);
+	void InitBattleState(Turn FirstTurn);
 	
 };

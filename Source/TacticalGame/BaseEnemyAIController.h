@@ -13,5 +13,8 @@ UCLASS()
 class TACTICALGAME_API ABaseEnemyAIController : public AAIController
 {
 	GENERATED_BODY()
+
+public:
+	ABaseEnemyAIController();
 	
 };

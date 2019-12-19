@@ -3,3 +3,6 @@
 
 #include "BaseEnemyAIController.h"
 
+ABaseEnemyAIController::ABaseEnemyAIController()
+{
+}

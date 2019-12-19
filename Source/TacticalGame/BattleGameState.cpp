@@ -1,12 +1,11 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "BaseEnemyAIController.h"
 #include "BattleGameState.h"
 
 
 ABattleGameState::ABattleGameState()
 {
-	GridEnabled = false;
+	GridEnabled = true;
 }
 
 void ABattleGameState::ToggleBattleMode(bool mode)
@@ -19,9 +18,8 @@ void ABattleGameState::PlayTurn()
 	
 }
 
-void ABattleGameState::InitBattleState(Turn FirstTurn, TArray<ABaseEnemyAIController> EnemiesParam)
+void ABattleGameState::InitBattleState(Turn FirstTurn)
 {
 	CurrentTurn = FirstTurn;
-	Enemies = EnemiesParam;
 	CurrentCharacter = 0;
 }
