@@ -1,0 +1,92 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <None Include="..\..\TacticalGame.uproject" />
+    <Filter Include="Source">
+      <UniqueIdentifier>{41804168-B164-493E-BE98-E5717DD5CE6E}</UniqueIdentifier>
+    </Filter>
+    <None Include="..\..\Source\TacticalGame.Target.cs">
+      <Filter>Source</Filter>
+    </None>
+    <None Include="..\..\Source\TacticalGameEditor.Target.cs">
+      <Filter>Source</Filter>
+    </None>
+    <None Include="..\..\.gitignore" />
+    <None Include="..\..\README.md" />
+    <Filter Include="Config">
+      <UniqueIdentifier>{0F3F490E-5CFC-4419-A447-0BE7D0ED4E93}</UniqueIdentifier>
+    </Filter>
+    <None Include="..\..\Config\DefaultEditor.ini">
+      <Filter>Config</Filter>
+    </None>
+    <None Include="..\..\Config\DefaultEditorPerProjectUserSettings.ini">
+      <Filter>Config</Filter>
+    </None>
+    <None Include="..\..\Config\DefaultEngine.ini">
+      <Filter>Config</Filter>
+    </None>
+    <None Include="..\..\Config\DefaultGame.ini">
+      <Filter>Config</Filter>
+    </None>
+    <None Include="..\..\Config\DefaultGameplayTags.ini">
+      <Filter>Config</Filter>
+    </None>
+    <None Include="..\..\Config\DefaultInput.ini">
+      <Filter>Config</Filter>
+    </None>
+    <Filter Include="Source\TacticalGame">
+      <UniqueIdentifier>{C945C243-682A-40D3-9BDC-B2DF1CFA1314}</UniqueIdentifier>
+    </Filter>
+    <ClCompile Include="..\..\Source\TacticalGame\APickable.cpp">
+      <Filter>Source\TacticalGame</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\TacticalGame\APickable.h">
+      <Filter>Source\TacticalGame</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\TacticalGame\ATileMapSet.cpp">
+      <Filter>Source\TacticalGame</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\TacticalGame\ATileMapSet.h">
+      <Filter>Source\TacticalGame</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\TacticalGame\BaseEnemyAIController.cpp">
+      <Filter>Source\TacticalGame</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\TacticalGame\BaseEnemyAIController.h">
+      <Filter>Source\TacticalGame</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\TacticalGame\BattleGameState.cpp">
+      <Filter>Source\TacticalGame</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\TacticalGame\BattleGameState.h">
+      <Filter>Source\TacticalGame</Filter>
+    </ClInclude>
+    <None Include="..\..\Source\TacticalGame\TacticalGame.Build.cs">
+      <Filter>Source\TacticalGame</Filter>
+    </None>
+    <ClCompile Include="..\..\Source\TacticalGame\TacticalGame.cpp">
+      <Filter>Source\TacticalGame</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\TacticalGame\TacticalGame.h">
+      <Filter>Source\TacticalGame</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\TacticalGame\TacticalGameCharacter.cpp">
+      <Filter>Source\TacticalGame</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\TacticalGame\TacticalGameCharacter.h">
+      <Filter>Source\TacticalGame</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\TacticalGame\TacticalGameGameMode.cpp">
+      <Filter>Source\TacticalGame</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\TacticalGame\TacticalGameGameMode.h">
+      <Filter>Source\TacticalGame</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\TacticalGame\TacticalGamePlayerController.cpp">
+      <Filter>Source\TacticalGame</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\TacticalGame\TacticalGamePlayerController.h">
+      <Filter>Source\TacticalGame</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
