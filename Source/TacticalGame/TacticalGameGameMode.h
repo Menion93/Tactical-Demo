@@ -25,6 +25,7 @@ public:
 	GameModeE CurrentMode;
 
 	virtual void Tick(float DeltaTime) override;
+	void SwapGameState(AGameStateBase* GameStateVariable);
 
 
 };

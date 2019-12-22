@@ -16,6 +16,7 @@ ATacticalGameGameMode::ATacticalGameGameMode()
 	if (PlayerPawnBPClass.Class != NULL)
 	{
 		DefaultPawnClass = PlayerPawnBPClass.Class;
+		GameStateClass = ABattleGameState::StaticClass();
 	}
 
 }
@@ -28,4 +29,9 @@ void ATacticalGameGameMode::Tick(float DeltaSeconds)
 
 		BState->PlayTurn();
 	}
+}
+
+void ATacticalGameGameMode::SwapGameState(AGameStateBase* GameStateVariable)
+{
+	GameStateClass = GameStateVariable->StaticClass();
 }
