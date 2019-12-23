@@ -43,10 +43,17 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TileSettings")
 		float VerticalHeight;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "EditorSetting")
+		bool DrawLinesInEditor;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "EditorSetting")
+		float LineLength;
+
 	ATacticalGameGameMode* Mode;
 	APlayerCameraManager* CameraManager;
 	APlayerController* PlayerController;
 	UDecalComponent* GridCursor;
+	UMaterialInterface* DecalMaterial;
 
 	UPROPERTY()
 	FTile CurrentTile;
@@ -61,10 +68,14 @@ public:
 	UPROPERTY(EditAnywhere, Category = "TileSettings")
 		TMap<FVector2D, FTile> TilesMap;
 
+	TArray<UDecalComponent*> DebugDecals;
+
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	virtual void OnConstruction(const FTransform & Transform);
+	virtual void BeginDestroy();
 
 public:	
 	// Called every frame

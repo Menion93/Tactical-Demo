@@ -9,6 +9,7 @@
 #include "GameFramework/PlayerController.h"
 #include "Materials/Material.h"
 #include "BattleGameState.h"
+#include "Kismet/GameplayStatics.h"
 #include "DrawDebugHelpers.h"
 
 // Sets default values
@@ -27,7 +28,10 @@ AATileMapSet::AATileMapSet()
 	GridCursor = CreateDefaultSubobject<UDecalComponent>("CursorToWorld");
 	GridCursor->SetupAttachment(RootComponent);
 
-	static ConstructorHelpers::FObjectFinder<UMaterial> DecalMaterialAsset(TEXT("Material'/Game/TopDownCPP/Blueprints/M_Cursor_Decal.M_Cursor_Decal'"));
+	static ConstructorHelpers::FObjectFinder<UMaterial> DecalMaterialAsset(TEXT("Material'/Game/TopDownCPP/Blueprints/Grid_Decal_Debug.Grid_Decal_Debug'"));
+	static ConstructorHelpers::FObjectFinder<UMaterial> DecalMaterialDebug(TEXT("Material'/Game/TopDownCPP/Blueprints/M_Cursor_Decal.M_Cursor_Decal'"));
+
+	DecalMaterial = DecalMaterialDebug.Object;
 
 	if (DecalMaterialAsset.Succeeded())
 	{
@@ -47,11 +51,26 @@ void AATileMapSet::BeginPlay()
 	Mode = Cast<ATacticalGameGameMode>(GetWorld()->GetAuthGameMode());
 	CameraManager = GetWorld()->GetFirstPlayerController()->PlayerCameraManager;
 	PlayerController = GetWorld()->GetFirstPlayerController();
+
+	BuildGrid();
+}
+
+void AATileMapSet::OnConstruction(const FTransform & Transform)
+{
+	for (auto Decal : DebugDecals)
+	{
+		Decal->DestroyComponent();
+	}
+
+	DebugDecals = TArray<UDecalComponent*>();
+
 	BuildGrid();
 }
 
 // Build the WorldGrid in 3D dimension
 void AATileMapSet::BuildGrid() {
+
+	TilesMap = TMap<FVector2D, FTile>();
 	Height = Rows * CellSize;
 	Width = Columns * CellSize;
 
@@ -73,12 +92,14 @@ void AATileMapSet::BuildGrid() {
 			FTile MyTile;
 			MyTile.TileCenter = WTileCenter;
 
-			DrawDebugLine(GetWorld(), WTileCenter, WTileCenter - GetActorUpVector() * 100, FColor(252, 169, 3), true);
-
 			FHitResult OutHit;
 			FCollisionQueryParams CollisionParams;
 
-			bool hit = GetWorld()->LineTraceSingleByChannel(OutHit,
+			TArray<FHitResult> OutHits;
+
+
+			bool hit = GetWorld()->LineTraceMultiByChannel(
+				OutHits,
 				WTileCenter,
 				WTileCenter - GetActorUpVector() * 1000,
 				ECollisionChannel::ECC_GameTraceChannel1,
@@ -86,13 +107,38 @@ void AATileMapSet::BuildGrid() {
 
 			if (hit)
 			{
-				if (OutHit.bBlockingHit)
+				for (auto OutHit : OutHits) 
 				{
-					MyTile.TileCenter = OutHit.ImpactPoint;
-					MyTile.SurfaceNormal = OutHit.ImpactNormal;
-					FVector2D TileCenterKey(OutHit.ImpactPoint.X, OutHit.ImpactPoint.Y);
-					TilesMap.Add(TileCenterKey, MyTile);
+					if (OutHit.bBlockingHit)
+					{
+						MyTile.TileCenter = OutHit.ImpactPoint;
+						MyTile.SurfaceNormal = OutHit.ImpactNormal;
+						FVector2D TileCenterKey(OutHit.ImpactPoint.X, OutHit.ImpactPoint.Y);
+						TilesMap.Add(TileCenterKey, MyTile);
+
+						#if WITH_EDITOR
+						if (DrawLinesInEditor)
+						{
+							 UDecalComponent* Decal = UGameplayStatics::SpawnDecalAttached(
+								 DecalMaterial,
+								 FVector(16.0f, 32.0f, 32.0f), 
+								 OutHit.GetComponent(), 
+								 OutHit.BoneName,
+								 OutHit.ImpactPoint, 
+								 OutHit.ImpactNormal.Rotation(), 
+								 EAttachLocation::KeepWorldPosition,
+								999);
+
+							 DebugDecals.Add(Decal);
+						}
+						#endif
+					}
+					else
+					{
+						break;
+					}
 				}
+
 			}
 
 		}
@@ -106,9 +152,12 @@ void AATileMapSet::Tick(float DeltaTime)
 
 	ABattleGameState* gs = GetWorld()->GetGameState<ABattleGameState>();
 
-	UE_LOG(LogTemp, Warning, TEXT("%d"), gs == nullptr);
+	//UE_LOG(LogTemp, Warning, TEXT("%d"), gs == nullptr);
 	if (gs && gs->GridEnabled)
 	{
+
+		GridCursor->SetVisibility(true);
+
 		FHitResult Hit;
 		PlayerController->GetHitResultUnderCursor(ECC_GameTraceChannel1, false, Hit);
 
@@ -120,7 +169,10 @@ void AATileMapSet::Tick(float DeltaTime)
 				CurrentTile.TileCenter,
 				CurrentTile.SurfaceNormal.ToOrientationRotator().Quaternion());
 		}
-
+	}
+	else
+	{
+		GridCursor->SetVisibility(false);
 	}
 }
 
@@ -145,5 +197,15 @@ FTile AATileMapSet::GetTileFromNearestPosition(FVector &NearestPos)
 	}
 
 	return NearestTile;
+}
+
+void AATileMapSet::BeginDestroy() 
+{
+	Super::BeginDestroy();
+
+	for (auto Decal : DebugDecals)
+	{
+		Decal->DestroyComponent();
+	}
 }
 
