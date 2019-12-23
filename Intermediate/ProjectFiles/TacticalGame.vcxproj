@@ -265,12 +265,26 @@
     <NMakeOutput>..\..\Binaries\Win64\TacticalGame-Win64-Shipping.exe</NMakeOutput>
   </PropertyGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Source\TacticalGame\AICharacter.cpp" />
+    <ClCompile Include="..\..\Source\TacticalGame\Armor.cpp" />
     <ClCompile Include="..\..\Source\TacticalGame\Bag.cpp" />
+    <ClCompile Include="..\..\Source\TacticalGame\CombatPlayerController.cpp" />
+    <ClCompile Include="..\..\Source\TacticalGame\ControllableCharacter.cpp" />
+    <ClCompile Include="..\..\Source\TacticalGame\FreePlayerController.cpp" />
+    <ClCompile Include="..\..\Source\TacticalGame\GCharacter.cpp" />
     <ClCompile Include="..\..\Source\TacticalGame\Inventory.cpp" />
+    <ClCompile Include="..\..\Source\TacticalGame\Loadout.cpp" />
     <ClCompile Include="..\..\Source\TacticalGame\Shield.cpp" />
     <ClCompile Include="..\..\Source\TacticalGame\Weapon.cpp" />
+    <ClInclude Include="..\..\Source\TacticalGame\AICharacter.h" />
+    <ClInclude Include="..\..\Source\TacticalGame\Armor.h" />
     <ClInclude Include="..\..\Source\TacticalGame\Bag.h" />
+    <ClInclude Include="..\..\Source\TacticalGame\CombatPlayerController.h" />
+    <ClInclude Include="..\..\Source\TacticalGame\ControllableCharacter.h" />
+    <ClInclude Include="..\..\Source\TacticalGame\FreePlayerController.h" />
+    <ClInclude Include="..\..\Source\TacticalGame\GCharacter.h" />
     <ClInclude Include="..\..\Source\TacticalGame\Inventory.h" />
+    <ClInclude Include="..\..\Source\TacticalGame\Loadout.h" />
     <ClInclude Include="..\..\Source\TacticalGame\Shield.h" />
     <ClInclude Include="..\..\Source\TacticalGame\Weapon.h" />
     <None Include="..\..\TacticalGame.uproject" />
