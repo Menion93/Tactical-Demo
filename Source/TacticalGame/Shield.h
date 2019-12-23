@@ -6,14 +6,14 @@
 #include "GameFramework/Actor.h"
 #include "Shield.generated.h"
 
-UCLASS()
-class TACTICALGAME_API AShield : public AActor
+UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
+class TACTICALGAME_API UShield : public UActorComponent
 {
 	GENERATED_BODY()
 	
 public:	
 	// Sets default values for this actor's properties
-	AShield();
+	UShield();
 
 protected:
 	// Called when the game starts or when spawned
@@ -21,6 +21,6 @@ protected:
 
 public:	
 	// Called every frame
-	virtual void Tick(float DeltaTime) override;
+	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 };
