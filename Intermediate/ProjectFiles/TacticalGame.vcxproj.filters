@@ -123,7 +123,7 @@
       <Filter>Source\TacticalGame\Equipment</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\TacticalGame\AICharacter.cpp">
-      <Filter>Source\TacticalGame</Filter>
+      <Filter>Source\TacticalGame\AI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -179,7 +179,7 @@
       <Filter>Source\TacticalGame\Equipment</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\TacticalGame\AICharacter.h">
-      <Filter>Source\TacticalGame</Filter>
+      <Filter>Source\TacticalGame\AI</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
