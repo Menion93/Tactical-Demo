@@ -125,6 +125,15 @@
     <ClCompile Include="..\..\Source\TacticalGame\AICharacter.cpp">
       <Filter>Source\TacticalGame\AI</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\TacticalGame\Spawner.cpp">
+      <Filter>Source\TacticalGame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\TacticalGame\GameDirector.cpp">
+      <Filter>Source\TacticalGame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\TacticalGame\TopViewCamera.cpp">
+      <Filter>Source\TacticalGame</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Source\TacticalGame\BaseEnemyAIController.h">
@@ -180,6 +189,18 @@
     </ClInclude>
     <ClInclude Include="..\..\Source\TacticalGame\AICharacter.h">
       <Filter>Source\TacticalGame\AI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\TacticalGame\FTile.h">
+      <Filter>Source\TacticalGame\Grid</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\TacticalGame\Spawner.h">
+      <Filter>Source\TacticalGame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\TacticalGame\GameDirector.h">
+      <Filter>Source\TacticalGame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\TacticalGame\TopViewCamera.h">
+      <Filter>Source\TacticalGame</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
