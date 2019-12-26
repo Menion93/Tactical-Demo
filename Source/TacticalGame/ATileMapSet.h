@@ -5,19 +5,10 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Components/BoxComponent.h"
-#include "TacticalGameGameMode.h"
+#include "FTile.h"
 #include "ATileMapSet.generated.h"
 
 
-USTRUCT()
-struct FTile
-{
-	GENERATED_BODY()
-		bool IsObstacle = false;
-		FVector TileCenter = FVector(0, 0, 0);
-		FVector SurfaceNormal = FVector(0, 0, 0);
-		bool IsCover = false;
-};
 
 UCLASS()
 class TACTICALGAME_API AATileMapSet : public AActor
@@ -49,15 +40,13 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "EditorSetting")
 		float LineLength;
 
-	ATacticalGameGameMode* Mode;
 	APlayerCameraManager* CameraManager;
 	APlayerController* PlayerController;
 	UDecalComponent* GridCursor;
 	UMaterialInterface* DecalMaterial;
 
 	UPROPERTY()
-	FTile CurrentTile;
-
+	FTile SelectedTile;
 
 	float Height;
 	float Width;
@@ -82,9 +71,10 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	UFUNCTION()
-		FTile GetTileFromNearestPosition(FVector& NearestPos);
+		FTile GetTileFromNearestPosition(FVector NearestPos);
 	
 	void BuildGrid();
+	FTile SnapToGrid(AActor* actor);
 
 	
 };

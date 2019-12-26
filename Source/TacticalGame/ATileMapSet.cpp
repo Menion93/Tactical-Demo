@@ -48,7 +48,6 @@ void AATileMapSet::BeginPlay()
 {
 	Super::BeginPlay();
 
-	Mode = Cast<ATacticalGameGameMode>(GetWorld()->GetAuthGameMode());
 	CameraManager = GetWorld()->GetFirstPlayerController()->PlayerCameraManager;
 	PlayerController = GetWorld()->GetFirstPlayerController();
 
@@ -163,11 +162,11 @@ void AATileMapSet::Tick(float DeltaTime)
 
 		if (Hit.bBlockingHit)
 		{
-			CurrentTile = GetTileFromNearestPosition(Hit.ImpactPoint);
+			SelectedTile = GetTileFromNearestPosition(Hit.ImpactPoint);
 
 			GridCursor->SetWorldLocationAndRotation(
-				CurrentTile.TileCenter,
-				CurrentTile.SurfaceNormal.ToOrientationRotator().Quaternion());
+				SelectedTile.TileCenter,
+				SelectedTile.SurfaceNormal.ToOrientationRotator().Quaternion());
 		}
 	}
 	else
@@ -179,7 +178,7 @@ void AATileMapSet::Tick(float DeltaTime)
 
 
 // Get the nearest tile from 
-FTile AATileMapSet::GetTileFromNearestPosition(FVector &NearestPos)
+FTile AATileMapSet::GetTileFromNearestPosition(FVector NearestPos)
 {
 	float CurrDistance = 99999999;
 	FTile NearestTile;
@@ -197,6 +196,13 @@ FTile AATileMapSet::GetTileFromNearestPosition(FVector &NearestPos)
 	}
 
 	return NearestTile;
+}
+
+FTile AATileMapSet::SnapToGrid(AActor* Actor)
+{
+	FTile Tile = GetTileFromNearestPosition(Actor->GetActorLocation());
+	Actor->SetActorLocation(Tile.TileCenter);
+	return Tile;
 }
 
 void AATileMapSet::BeginDestroy() 
