@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
+#include "ControllableCharacter.h"
+#include "GameDirector.h"
 #include "TacticalGameGameMode.generated.h"
 
 
@@ -23,12 +25,15 @@ class ATacticalGameGameMode : public AGameModeBase
 public:
 	ATacticalGameGameMode();
 	GameModeE CurrentMode;
+	UGameDirector* GameDirector;
+	
 
+public:
 	virtual void Tick(float DeltaTime) override;
+	virtual void StartPlay() override;
 	void SwapGameState(AGameStateBase* GameStateVariable);
 
 
+
 };
-
-
 

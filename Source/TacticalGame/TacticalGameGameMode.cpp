@@ -4,32 +4,42 @@
 #include "TacticalGamePlayerController.h"
 #include "TacticalGameCharacter.h"
 #include "BattleGameState.h"
+#include "Engine/World.h"
+#include "ControllableCharacter.h"
+#include "Spawner.h"
+#include "Kismet/GameplayStatics.h"
 #include "UObject/ConstructorHelpers.h"
+
 
 ATacticalGameGameMode::ATacticalGameGameMode()
 {
-	// use our custom PlayerController class
-	PlayerControllerClass = ATacticalGamePlayerController::StaticClass();
+	PrimaryActorTick.bCanEverTick = true;
+	GameStateClass = ABattleGameState::StaticClass();
 
-	// set default pawn class to our Blueprinted character
-	static ConstructorHelpers::FClassFinder<APawn> PlayerPawnBPClass(TEXT("/Game/TopDownCPP/Blueprints/TopDownCharacter"));
-	if (PlayerPawnBPClass.Class != NULL)
-	{
-		DefaultPawnClass = PlayerPawnBPClass.Class;
-		GameStateClass = ABattleGameState::StaticClass();
-	}
+	GameDirector = NewObject<UGameDirector>(this, TEXT("GameDirector"));
+}
 
+
+void ATacticalGameGameMode::StartPlay()
+{
+	Super::StartPlay();
+	GameDirector->Init();
 }
 
 void ATacticalGameGameMode::Tick(float DeltaSeconds)
 {
+
+	Super::Tick(DeltaSeconds);
+
 	if (CurrentMode == GameModeE::GSE_Battle)
 	{
 		ABattleGameState* BState = GetGameState<ABattleGameState>();
 
 		BState->PlayTurn();
 	}
+
 }
+
 
 void ATacticalGameGameMode::SwapGameState(AGameStateBase* GameStateVariable)
 {
