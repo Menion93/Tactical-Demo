@@ -2,7 +2,6 @@
 
 #include "TacticalGameGameMode.h"
 #include "TacticalGamePlayerController.h"
-#include "TacticalGameCharacter.h"
 #include "BattleGameState.h"
 #include "Engine/World.h"
 #include "ControllableCharacter.h"

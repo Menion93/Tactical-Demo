@@ -6,6 +6,8 @@
 #include "GameFramework/GameModeBase.h"
 #include "ControllableCharacter.h"
 #include "GameDirector.h"
+#include "Inventory.h"
+#include "CharacterState.h"
 #include "TacticalGameGameMode.generated.h"
 
 
@@ -26,6 +28,8 @@ public:
 	ATacticalGameGameMode();
 	GameModeE CurrentMode;
 	UGameDirector* GameDirector;
+	UInventory* Inventory;
+	TArray<UCharacterState*> players;
 	
 
 public:
