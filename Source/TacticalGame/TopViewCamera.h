@@ -19,8 +19,16 @@ public:
 	ATopViewCamera();
 	FTile CurrentTile;
 
+	UPROPERTY(EditAnywhere)
+	bool SetViewOnStart;
+
+	float CameraHeight;
+	float CameraVerticalPan;
+	float CameraAngle;
+
 private:
 	bool ControlCamera;
+	AActor* FollowedActor;
 
 protected:
 	virtual void BeginPlay() override;
@@ -28,7 +36,10 @@ protected:
 public:
 	virtual void Tick(float DeltaTime) override;
 
-	void LerpToActor(AActor* Actor);
+	void LerpToActor(AActor* Actor, float seconds);
 	void SetLocationToActor(AActor* Actor);
 	void SetCameraControl(bool Control);
+	void AttachToActor(AActor* Actor);
+	void DeattachFromActor();
+	void SetViewTarget();
 };
