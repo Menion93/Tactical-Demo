@@ -13,5 +13,8 @@ UCLASS()
 class TACTICALGAME_API UInventory : public UObject
 {
 	GENERATED_BODY()
+
+public:
+	UInventory();
 	
 };
