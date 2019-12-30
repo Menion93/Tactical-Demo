@@ -4,7 +4,6 @@
 #include "Blueprint/AIBlueprintHelperLibrary.h"
 #include "Runtime/Engine/Classes/Components/DecalComponent.h"
 #include "HeadMountedDisplayFunctionLibrary.h"
-#include "TacticalGameCharacter.h"
 #include "Engine/World.h"
 
 ATacticalGamePlayerController::ATacticalGamePlayerController()
