@@ -40,7 +40,7 @@ void ASpawner::Tick(float DeltaTime)
 
 }
 
-void ASpawner::SpawnCharacters()
+void ASpawner::SpawnCharacters(bool SnapToGrid)
 {
 	for (int pos = 0; pos < party.Num(); pos++)
 	{
@@ -50,7 +50,11 @@ void ASpawner::SpawnCharacters()
 		{
 			AControllableCharacter* character = World->SpawnActor<AControllableCharacter>(party[pos], Spawns[pos]->GetActorLocation(), FRotator::ZeroRotator);
 			ATacticalGameGameMode* GM = Cast<ATacticalGameGameMode>(GetWorld()->GetAuthGameMode());
-			GM->GameDirector->TileMap->SnapToGrid(character);
+
+			if (SnapToGrid)
+			{
+				GM->GameDirector->TileMap->SnapToGrid(character);
+			}
 		}
 	}
 }
