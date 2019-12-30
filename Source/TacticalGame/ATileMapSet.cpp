@@ -77,8 +77,8 @@ void AATileMapSet::BuildGrid() {
 	FVector ActorLocation = GetActorLocation();
 
 	FVector OffsetVector = FVector(
-		(Height * 0.5) * (1 - (1 / (float)Rows)),
-		-(Width * 0.5) * (1 - 1 / ((float)Columns)),
+		(Height * 0.5) * (1 - 1.0 / Rows),
+		-(Width * 0.5) * (1 - 1.0 / Columns),
 		0);
 
 	for (int CurrRow = 0; CurrRow < Rows; CurrRow++)
@@ -112,7 +112,8 @@ void AATileMapSet::BuildGrid() {
 					{
 						MyTile.TileCenter = OutHit.ImpactPoint;
 						MyTile.SurfaceNormal = OutHit.ImpactNormal;
-						FVector2D TileCenterKey(OutHit.ImpactPoint.X, OutHit.ImpactPoint.Y);
+
+						FVector2D TileCenterKey(CurrRow, CurrCol);
 						TilesMap.Add(TileCenterKey, MyTile);
 
 						#if WITH_EDITOR
@@ -137,11 +138,40 @@ void AATileMapSet::BuildGrid() {
 						break;
 					}
 				}
-
 			}
 
 		}
 	}
+
+	// Now link cells
+
+	FVector2D OffSetU(1, 0);
+	FVector2D OffSetL(0, 1);
+	FVector2D OffSetIQuad(1, 1);
+	FVector2D OffSet2Quad(-1, 1);
+
+	TArray<FVector2D> Neighbour;
+	Neighbour.Add(OffSetU);
+	Neighbour.Add(OffSetL);
+	Neighbour.Add(OffSetIQuad);
+	Neighbour.Add(OffSet2Quad);
+
+	for (auto& tile : TilesMap)
+	{
+		for (int j = 0; j < 2; j++)
+		{
+			for (auto OffSetVec : Neighbour)
+			{
+				FVector2D NeighbourKey = tile.Key + (-j) * OffSetVec + (1 - j) * OffSetVec;
+
+				if (TilesMap.Contains(NeighbourKey))
+				{
+					tile.Value.Neighbours.Emplace(&TilesMap[NeighbourKey]);
+				}
+			}
+		}
+	}
+
 }
 
 // Called every frame
@@ -151,7 +181,6 @@ void AATileMapSet::Tick(float DeltaTime)
 
 	ABattleGameState* gs = GetWorld()->GetGameState<ABattleGameState>();
 
-	//UE_LOG(LogTemp, Warning, TEXT("%d"), gs == nullptr);
 	if (gs && gs->GridEnabled)
 	{
 
@@ -185,8 +214,7 @@ FTile AATileMapSet::GetTileFromNearestPosition(FVector NearestPos)
 
 	for (auto tile : TilesMap)
 	{
-		FVector2D NearestPos2D(NearestPos.X, NearestPos.Y);
-		float Distance = FVector2D::Distance(tile.Key, NearestPos2D);
+		float Distance = FVector::Distance(tile.Value.TileCenter, NearestPos);
 
 		if (Distance < CurrDistance)
 		{
