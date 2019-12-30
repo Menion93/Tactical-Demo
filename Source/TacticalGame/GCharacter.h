@@ -19,11 +19,6 @@ public:
 	FTile TilePosition;
 
 
-
-private:
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
-		class USpringArmComponent* CameraBoom;
-
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -36,7 +31,12 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
-
+	//void Init(UPlayerInfo* PlayerInfo);
+	bool IsInMeleeRange(AGCharacter* Enemy);
+	bool IsInLineOfSight(AGCharacter* Enemy);
+	void Shoot(AGCharacter* Enemy);
+	void Melee(AGCharacter* Enemy);
+	void GetDamage(float Damage);
+	void MoveTo(FTile Tile);
 
 };

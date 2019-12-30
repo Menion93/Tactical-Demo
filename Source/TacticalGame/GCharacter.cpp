@@ -23,14 +23,6 @@ AGCharacter::AGCharacter()
 	GetCharacterMovement()->bConstrainToPlane = true;
 	GetCharacterMovement()->bSnapToPlaneAtStart = true;
 
-	// Create a camera boom...
-	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
-	CameraBoom->SetupAttachment(RootComponent);
-	CameraBoom->bAbsoluteRotation = true; // Don't want arm to rotate when character does
-	CameraBoom->TargetArmLength = 800.f;
-	CameraBoom->RelativeRotation = FRotator(-60.f, 0.f, 0.f);
-	CameraBoom->bDoCollisionTest = false; // Don't want to pull camera in when it collides with level
-
 }
 
 // Called when the game starts or when spawned
@@ -52,6 +44,36 @@ void AGCharacter::Tick(float DeltaTime)
 void AGCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
+
+}
+
+bool AGCharacter::IsInMeleeRange(AGCharacter* Enemy)
+{
+	return false;
+}
+
+bool AGCharacter::IsInLineOfSight(AGCharacter* Enemy)
+{
+	return false;
+}
+
+void AGCharacter::Shoot(AGCharacter* Enemy)
+{
+
+}
+
+void AGCharacter::Melee(AGCharacter* Enemy)
+{
+
+}
+
+void AGCharacter::GetDamage(float Damage)
+{
+
+}
+
+void AGCharacter::MoveTo(FTile Tile)
+{
 
 }
 
