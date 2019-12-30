@@ -15,10 +15,11 @@ void UGameDirector::Init()
 {
 	SetTileMap();
 	SetSpawner();
+	SetCamera();
 
 	if (SpawnAtStart)
 	{
-		SpawnCharacters();
+		SpawnCharacters(false);
 	}
 }
 
@@ -44,10 +45,20 @@ void UGameDirector::SetSpawner()
 
 }
 
-void UGameDirector::SpawnCharacters()
+void UGameDirector::SpawnCharacters(bool SnapToGrid)
 {
-	Spawner->SpawnCharacters();
+	Spawner->SpawnCharacters(SnapToGrid);
 }
 
+void UGameDirector::SetCamera()
+{
+	AActor* CameraTmp = UGameplayStatics::GetActorOfClass(GetWorld(), ATopViewCamera::StaticClass());
+
+	if (CameraTmp)
+	{
+		Camera = Cast<ATopViewCamera>(CameraTmp);
+	}
+
+}
 
 

@@ -3,3 +3,7 @@
 
 #include "ControllableCharacter.h"
 
+AControllableCharacter::AControllableCharacter()
+{
+
+}

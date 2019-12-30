@@ -19,7 +19,7 @@ public:
 	UGameDirector();
 
 	ASpawner* Spawner;
-	ATopViewCamera* camera;
+	ATopViewCamera* Camera;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	AATileMapSet* TileMap;
@@ -32,11 +32,12 @@ public:
 	void Init();
 
 public:
-	void SpawnCharacters();
+	void SpawnCharacters(bool SnapToGrid);
 
 private:
 	void SetTileMap();
 	void SetSpawner();
+	void SetCamera();
 
 
 };

@@ -13,5 +13,8 @@ UCLASS()
 class TACTICALGAME_API AControllableCharacter : public AGCharacter
 {
 	GENERATED_BODY()
-	
+
+public:
+
+	AControllableCharacter();
 };
