@@ -11,6 +11,7 @@
 #include "BattleGameState.h"
 #include "Kismet/GameplayStatics.h"
 #include "DrawDebugHelpers.h"
+#include "Math/UnrealMathUtility.h"
 
 // Sets default values
 AATileMapSet::AATileMapSet()
@@ -110,10 +111,12 @@ void AATileMapSet::BuildGrid() {
 				{
 					if (OutHit.bBlockingHit)
 					{
+						FVector2D TileCenterKey(CurrRow, CurrCol);
+
+						MyTile.Index = TileCenterKey;
 						MyTile.TileCenter = OutHit.ImpactPoint;
 						MyTile.SurfaceNormal = OutHit.ImpactNormal;
 
-						FVector2D TileCenterKey(CurrRow, CurrCol);
 						TilesMap.Add(TileCenterKey, MyTile);
 
 						#if WITH_EDITOR
@@ -162,11 +165,15 @@ void AATileMapSet::BuildGrid() {
 		{
 			for (auto OffSetVec : Neighbour)
 			{
-				FVector2D NeighbourKey = tile.Key + (-j) * OffSetVec + (1 - j) * OffSetVec;
+				FVector2D Direction = (-j) * OffSetVec + (1 - j) * OffSetVec;
+				FVector2D NeighbourKey = tile.Key + Direction;
 
 				if (TilesMap.Contains(NeighbourKey))
 				{
-					tile.Value.Neighbours.Emplace(&TilesMap[NeighbourKey]);
+					float Weight = FMath::Abs(Direction.X) == FMath::Abs(Direction.Y) ? 1.05: 1;
+
+					TPair<FTile*, float> Pair(&TilesMap[NeighbourKey], Weight);
+					tile.Value.Direction2Neighbours.Add(Direction, Pair);
 				}
 			}
 		}

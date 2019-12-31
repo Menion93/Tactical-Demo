@@ -5,6 +5,8 @@
 #include "CoreMinimal.h"
 #include "GameFramework/GameStateBase.h"
 #include "BaseEnemyAIController.h"
+#include "CharacterState.h"
+#include "GridUtils.h"
 #include "BattleGameState.generated.h"
 
 UENUM(BlueprintType)		//"BlueprintType" is essential to include
@@ -26,6 +28,9 @@ public:
 	bool GridEnabled;
 	Turn CurrentTurn;
 	int CurrentCharacter;
+
+
+	TMap<UCharacterState*, DijkstraOutput> player2paths;
 
 
 public:

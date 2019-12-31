@@ -3,6 +3,7 @@
 #include "CoreMinimal.h"
 #include "FTile.generated.h"
 
+
 USTRUCT()
 struct FTile
 {
@@ -10,6 +11,9 @@ struct FTile
 
 	UPROPERTY(EditAnywhere)
 		bool IsObstacle = false;
+
+	UPROPERTY(EditAnywhere)
+		FVector2D Index;
 		
 	UPROPERTY(EditAnywhere)
 		FVector TileCenter = FVector(0, 0, 0);
@@ -17,8 +21,9 @@ struct FTile
 	UPROPERTY(EditAnywhere)
 		FVector SurfaceNormal = FVector(0, 0, 0);
 	
-		TArray<FTile*> Neighbours;
-	
+	TMap<FVector2D, TPair<FTile*, float>> Direction2Neighbours;
+
 	UPROPERTY(EditAnywhere)
 		bool IsCover = false;
 };
+

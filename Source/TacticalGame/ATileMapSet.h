@@ -74,6 +74,4 @@ public:
 	
 	void BuildGrid();
 	FTile SnapToGrid(AActor* actor);
-
-	
 };
