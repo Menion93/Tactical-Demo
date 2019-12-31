@@ -69,11 +69,11 @@
     <Filter Include="Source\TacticalGame\GameData">
       <UniqueIdentifier>{e092e6d2-2b0f-4671-9550-062db66e8284}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source\TacticalGame\Items\Equipment">
-      <UniqueIdentifier>{b25dfdd9-3f6a-4abf-8dbb-871d8d491104}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source\TacticalGame\Items\Descriptors">
       <UniqueIdentifier>{5b9c1d0e-3287-4bca-8ea4-c47830d51f14}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\TacticalGame\Characters\Equipment">
+      <UniqueIdentifier>{b25dfdd9-3f6a-4abf-8dbb-871d8d491104}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -93,13 +93,13 @@
       <Filter>Source\TacticalGame\Characters</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\TacticalGame\Weapon.cpp">
-      <Filter>Source\TacticalGame\Items\Equipment</Filter>
+      <Filter>Source\TacticalGame\Characters\Equipment</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\TacticalGame\Shield.cpp">
-      <Filter>Source\TacticalGame\Items\Equipment</Filter>
+      <Filter>Source\TacticalGame\Characters\Equipment</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\TacticalGame\Bag.cpp">
-      <Filter>Source\TacticalGame\Items\Equipment</Filter>
+      <Filter>Source\TacticalGame\Characters\Equipment</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\TacticalGame\APickable.cpp">
       <Filter>Source\TacticalGame\Items</Filter>
@@ -120,7 +120,7 @@
       <Filter>Source\TacticalGame\Characters</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\TacticalGame\Armor.cpp">
-      <Filter>Source\TacticalGame\Items\Equipment</Filter>
+      <Filter>Source\TacticalGame\Characters\Equipment</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\TacticalGame\AICharacter.cpp">
       <Filter>Source\TacticalGame\AI</Filter>
@@ -153,7 +153,10 @@
       <Filter>Source\TacticalGame\Items\Descriptors</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\TacticalGame\ShieldDescriptor.cpp">
-      <Filter>Source\TacticalGame</Filter>
+      <Filter>Source\TacticalGame\Items\Descriptors</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\TacticalGame\GridUtils.cpp">
+      <Filter>Source\TacticalGame\Grid</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -173,13 +176,13 @@
       <Filter>Source\TacticalGame\Characters</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\TacticalGame\Weapon.h">
-      <Filter>Source\TacticalGame\Items\Equipment</Filter>
+      <Filter>Source\TacticalGame\Characters\Equipment</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\TacticalGame\Shield.h">
-      <Filter>Source\TacticalGame\Items\Equipment</Filter>
+      <Filter>Source\TacticalGame\Characters\Equipment</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\TacticalGame\Bag.h">
-      <Filter>Source\TacticalGame\Items\Equipment</Filter>
+      <Filter>Source\TacticalGame\Characters\Equipment</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\TacticalGame\APickable.h">
       <Filter>Source\TacticalGame\Items</Filter>
@@ -200,7 +203,7 @@
       <Filter>Source\TacticalGame\Characters</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\TacticalGame\Armor.h">
-      <Filter>Source\TacticalGame\Items\Equipment</Filter>
+      <Filter>Source\TacticalGame\Characters\Equipment</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\TacticalGame\AICharacter.h">
       <Filter>Source\TacticalGame\AI</Filter>
@@ -236,7 +239,10 @@
       <Filter>Source\TacticalGame\Items\Descriptors</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\TacticalGame\ShieldDescriptor.h">
-      <Filter>Source\TacticalGame</Filter>
+      <Filter>Source\TacticalGame\Items\Descriptors</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\TacticalGame\GridUtils.h">
+      <Filter>Source\TacticalGame\Grid</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

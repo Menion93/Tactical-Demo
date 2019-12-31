@@ -307,7 +307,9 @@
     <ClInclude Include="..\..\Source\TacticalGame\GameRepository.h" />
     <ClCompile Include="..\..\Source\TacticalGame\GCharacter.cpp" />
     <ClInclude Include="..\..\Source\TacticalGame\GCharacter.h" />
+    <ClCompile Include="..\..\Source\TacticalGame\GridUtils.cpp" />
     <ClCompile Include="..\..\Source\TacticalGame\Inventory.cpp" />
+    <ClInclude Include="..\..\Source\TacticalGame\GridUtils.h" />
     <ClInclude Include="..\..\Source\TacticalGame\Inventory.h" />
     <ClCompile Include="..\..\Source\TacticalGame\ModDescriptor.cpp" />
     <ClInclude Include="..\..\Source\TacticalGame\ModDescriptor.h" />
