@@ -19,12 +19,10 @@ class TACTICALGAME_API UCharacterState : public UObject
 public:
 	UCharacterState();
 
-	float health;
+	float CurrentHealth;
+	float Health;
 	
 	UBag* Bag;
 	//UArmorDescriptor* armors;
-
-public:
-	void SetParentActor(AControllableCharacter* Character);
 	
 };

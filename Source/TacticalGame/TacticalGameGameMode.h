@@ -35,7 +35,6 @@ public:
 public:
 	virtual void Tick(float DeltaTime) override;
 	virtual void StartPlay() override;
-	void SwapGameState(AGameStateBase* GameStateVariable);
 
 
 

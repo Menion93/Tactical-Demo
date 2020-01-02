@@ -38,6 +38,4 @@ private:
 	void SetTileMap();
 	void SetSpawner();
 	void SetCamera();
-
-
 };
