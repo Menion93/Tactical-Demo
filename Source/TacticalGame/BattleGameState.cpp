@@ -6,6 +6,7 @@
 ABattleGameState::ABattleGameState()
 {
 	GridEnabled = true;
+	StateMachine = NewObject<UBattleStateMachine>(this, TEXT("GameDirector"));
 }
 
 void ABattleGameState::ToggleBattleMode(bool mode)
@@ -15,45 +16,63 @@ void ABattleGameState::ToggleBattleMode(bool mode)
 
 void ABattleGameState::PlayTurn()
 {
-	if (PlayerTurn)
+	// if we already chose an action
+	if (CurrentAction)
 	{
+		// Play and see if action has ended
+		if (CurrentAction->PlayAction())
+		{
+			if (IsBattleEnded())
+			{
+				EndBattle();
+			}
 
+			if (IsTurnEnded())
+			{
+				EndTurn();
+			}
+
+			CurrentAction = nullptr;
+		}
 	}
+	// Let the player choose an action
+	else if (PlayerTurn)
+	{
+		StateMachine->PlayState();
+	}
+	// Let the AI choose an action
 	else
 	{
 		// Handle AI Turn
 	}
-	
 }
 
-void ABattleGameState::InitBattleState(bool PlayerTurn)
+void ABattleGameState::InitBattleState(bool IsPlayerTurn)
 {
-	PlayerTurn = PlayerTurn;
-
-	CurrentState = PlayerTurn ? CombatStateE::CSE_CHAR_DESELECTED : CombatStateE::CSE_ENEMY_TURN;
+	PlayerTurn = IsPlayerTurn;
+	GridEnabled = true;
+	StateMachine->Reset();
 }
 	
 
 void ABattleGameState::EndTurn()
 {
-	for (auto& output : player2turn)
+	for (auto& output : Player2Turn)
 	{
 		output.Value = false;
 	}
-
 }
 
 bool ABattleGameState::IsTurnEnded()
 {
 	bool NoTurnAvailable = true;
 
-	for (auto p2t : player2turn)
+	for (auto p2t : Player2Turn)
 	{
 		NoTurnAvailable &= p2t.Value;
 	}
 
 	return NoTurnAvailable;
-
 }
 
 bool ABattleGameState::IsBattleEnded()
@@ -66,11 +85,16 @@ bool ABattleGameState::IsBattleEnded()
 	}
 	else
 	{
-		for (auto player : player2turn)
+		for (auto player : Player2Turn)
 		{
 			BattleEnded &= player.Key->CurrentHealth <= 0;
 		}
 	}
 
 	return BattleEnded;
+}
+
+void ABattleGameState::EndBattle()
+{
+	GridEnabled = false;
 }

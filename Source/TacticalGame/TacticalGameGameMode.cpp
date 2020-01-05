@@ -26,7 +26,8 @@ void ATacticalGameGameMode::StartPlay()
 {
 	Super::StartPlay();
 	GameDirector->Init();
-	CurrentMode = GameModeE::GSE_Battle;
+	BState = GetGameState<ABattleGameState>();
+	SwitchToBattleMode(true);
 }
 
 void ATacticalGameGameMode::Tick(float DeltaSeconds)
@@ -36,8 +37,12 @@ void ATacticalGameGameMode::Tick(float DeltaSeconds)
 
 	if (CurrentMode == GameModeE::GSE_Battle)
 	{
-		ABattleGameState* BState = GetGameState<ABattleGameState>();
 		BState->PlayTurn();
 	}
+}
 
+void ATacticalGameGameMode::SwitchToBattleMode(bool IsPlayerTurn)
+{
+	CurrentMode = GameModeE::GSE_Battle;
+	BState->InitBattleState(IsPlayerTurn);
 }

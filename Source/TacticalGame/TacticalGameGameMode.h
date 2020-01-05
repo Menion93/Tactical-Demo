@@ -7,6 +7,7 @@
 #include "ControllableCharacter.h"
 #include "GameDirector.h"
 #include "Inventory.h"
+#include "BattleGameState.h"
 #include "CharacterState.h"
 #include "TacticalGameGameMode.generated.h"
 
@@ -30,13 +31,16 @@ public:
 	UGameDirector* GameDirector;
 	UInventory* Inventory;
 	TArray<UCharacterState*> players;
+
+	ABattleGameState* BState;
 	
 
 public:
 	virtual void Tick(float DeltaTime) override;
 	virtual void StartPlay() override;
 
+	void SwitchToBattleMode(bool IsPlayerTurn);
+
 
 
 };
-

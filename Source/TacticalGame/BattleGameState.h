@@ -7,17 +7,10 @@
 #include "BaseEnemyAIController.h"
 #include "CharacterState.h"
 #include "GridUtils.h"
+#include "Action.h"
+#include "BattleStateMachine.h"
 #include "BattleGameState.generated.h"
 
-UENUM(BlueprintType)
-enum class CombatStateE : uint8
-{
-	CSE_CHAR_DESELECTED UMETA(DisplayName = "PlayerDeselected"),
-	CSE_CHAR_SELECTED UMETA(DisplayName = "PlayerSelected"),
-	CSE_BAG UMETA(DisplayName = "Bag"),
-	CSE_ENEMY_TURN UMETA(DisplayName = "EnemyTurn"),
-	
-};
 
 
 /**
@@ -34,9 +27,12 @@ public:
 	int CurrentCharacter;
 	CombatStateE CurrentState;
 
-	TMap<UCharacterState*, DijkstraOutput> player2paths;
-	TMap<UCharacterState*, bool> player2turn;
+	TMap<UCharacterState*, DijkstraOutput> Player2Paths;
+	TMap<UCharacterState*, bool> Player2Turn;
 
+	UAction* CurrentAction;
+
+	UBattleStateMachine* StateMachine;
 
 public:
 	ABattleGameState();
@@ -46,8 +42,9 @@ public:
 
 	void PlayTurn();
 	void InitBattleState(bool PlayerTurn);
-	void EndTurn();
 	bool IsTurnEnded();
 	bool IsBattleEnded();
-	
+	void EndTurn();
+	void EndBattle();
+
 };
