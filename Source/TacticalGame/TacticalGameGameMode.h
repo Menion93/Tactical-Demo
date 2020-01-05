@@ -41,6 +41,4 @@ public:
 
 	void SwitchToBattleMode(bool IsPlayerTurn);
 
-
-
 };

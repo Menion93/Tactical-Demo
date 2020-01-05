@@ -14,7 +14,7 @@ ATacticalGameGameMode::ATacticalGameGameMode()
 {
 	PrimaryActorTick.bCanEverTick = true;
 	GameStateClass = ABattleGameState::StaticClass();
-	// Failsafe
+
 	PlayerControllerClass = AGPlayerController::StaticClass();
 	DefaultPawnClass = nullptr;
 
@@ -27,6 +27,7 @@ void ATacticalGameGameMode::StartPlay()
 	Super::StartPlay();
 	GameDirector->Init();
 	BState = GetGameState<ABattleGameState>();
+	BState->Init();
 	SwitchToBattleMode(true);
 }
 

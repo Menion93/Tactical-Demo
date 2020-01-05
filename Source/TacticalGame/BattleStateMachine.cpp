@@ -2,6 +2,7 @@
 
 
 #include "BattleStateMachine.h"
+#include "TacticalGameGameMode.h"
 
 UBattleStateMachine::UBattleStateMachine()
 {
@@ -9,33 +10,75 @@ UBattleStateMachine::UBattleStateMachine()
 	State2Method.Emplace(CombatStateE::CHARACTER_SELECTED, &UBattleStateMachine::CharacterSelected);
 	State2Method.Emplace(CombatStateE::ENEMY_LOCKED, &UBattleStateMachine::EnemyLocked);
 	State2Method.Emplace(CombatStateE::TILE_SELECTED, &UBattleStateMachine::TileSelected);
+
+
+}
+
+void UBattleStateMachine::Init()
+{
+	ATacticalGameGameMode* GameMode = Cast<ATacticalGameGameMode>(GetWorld()->GetAuthGameMode());
+
+	if (GameMode)
+	{
+		TileMap = GameMode->GameDirector->TileMap;
+	}
 }
 
 UAction* UBattleStateMachine::DeselectedState()
 {
 	UAction* action = NewObject<UAction>(this, TEXT("Action"));
-	UE_LOG(LogTemp, Warning, TEXT("DeselectedState state"));
-	return action;
+
+	// Try to select current tile
+	if (Input->A)
+	{
+
+	}
+
+	// Move Cursor to Different Character
+	if (Input->PAD_UP)
+	{
+
+	}
+
+	// Move Cursor to Different Character 
+	if (Input->PAD_BOTTOM)
+	{
+
+	}
+
+	// Move Cursor to Selected Character
+	if (Input->X)
+	{
+
+	}
+
+	// Move the cursor
+	if (Input->HardAxisIsNotZero())
+	{
+
+	}
+	
+	return nullptr;
 }
 
 UAction* UBattleStateMachine::CharacterSelected()
 {
 	UAction* action = NewObject<UAction>(this, TEXT("Action"));
-	UE_LOG(LogTemp, Warning, TEXT("CharacterSelected state"));
+
 	return action;
 }
 
 UAction* UBattleStateMachine::EnemyLocked()
 {
 	UAction* action = NewObject<UAction>(this, TEXT("Action"));
-	UE_LOG(LogTemp, Warning, TEXT("EnemyLocked state"));
+
 	return action;
 }
 
 UAction* UBattleStateMachine::TileSelected()
 {
 	UAction* action = NewObject<UAction>(this, TEXT("Action"));
-	UE_LOG(LogTemp, Warning, TEXT("TileSelected state"));
+
 	return action;
 }
 

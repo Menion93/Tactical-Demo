@@ -31,7 +31,7 @@ public:
 	TMap<UCharacterState*, bool> Player2Turn;
 
 	UAction* CurrentAction;
-
+	
 	UBattleStateMachine* StateMachine;
 
 public:
@@ -41,6 +41,7 @@ public:
 		void ToggleBattleMode(bool mode);
 
 	void PlayTurn();
+	void Init();
 	void InitBattleState(bool PlayerTurn);
 	bool IsTurnEnded();
 	bool IsBattleEnded();

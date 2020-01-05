@@ -6,8 +6,14 @@
 ABattleGameState::ABattleGameState()
 {
 	GridEnabled = true;
-	StateMachine = NewObject<UBattleStateMachine>(this, TEXT("GameDirector"));
 }
+
+void ABattleGameState::Init()
+{
+	StateMachine = NewObject<UBattleStateMachine>(this, TEXT("GameDirector"));
+	StateMachine->Init();
+}
+
 
 void ABattleGameState::ToggleBattleMode(bool mode)
 {

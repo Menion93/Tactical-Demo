@@ -5,6 +5,8 @@
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
 #include "Action.h"
+#include "GPlayerController.h"
+#include "ATileMapSet.h"
 #include "BattleStateMachine.generated.h"
 
 typedef UAction* (UBattleStateMachine::*StateMachineFunc)(void);
@@ -32,10 +34,14 @@ public:
 
 	TMap<CombatStateE, StateMachineFunc> State2Method;
 
+	AGPlayerController* Input;
+	AATileMapSet* TileMap;
+
 
 public:
 	UAction* PlayState();
 	void Reset();
+	void Init();
 
 
 private:
