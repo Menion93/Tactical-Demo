@@ -22,6 +22,8 @@ void UBattleStateMachine::Init()
 	{
 		TileMap = GameMode->GameDirector->TileMap;
 	}
+
+	Input = Cast<AGPlayerController>(GetWorld()->GetFirstPlayerController());
 }
 
 UAction* UBattleStateMachine::DeselectedState()
