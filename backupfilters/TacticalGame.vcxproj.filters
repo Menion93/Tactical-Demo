@@ -155,10 +155,10 @@
     <ClCompile Include="..\..\Source\TacticalGame\WorldInputController.cpp">
       <Filter>Source\TacticalGame\Characters\Controllers</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\TacticalGame\CombatInput.cpp">
+    <ClCompile Include="..\..\Source\TacticalGame\InputController.cpp">
       <Filter>Source\TacticalGame\Characters\Controllers</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\TacticalGame\InputController.cpp">
+    <ClCompile Include="..\..\Source\TacticalGame\CombatInputController.cpp">
       <Filter>Source\TacticalGame\Characters\Controllers</Filter>
     </ClCompile>
   </ItemGroup>
@@ -244,10 +244,10 @@
     <ClInclude Include="..\..\Source\TacticalGame\WorldInputController.h">
       <Filter>Source\TacticalGame\Characters\Controllers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\TacticalGame\CombatInput.h">
+    <ClInclude Include="..\..\Source\TacticalGame\InputController.h">
       <Filter>Source\TacticalGame\Characters\Controllers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\TacticalGame\InputController.h">
+    <ClInclude Include="..\..\Source\TacticalGame\CombatInputController.h">
       <Filter>Source\TacticalGame\Characters\Controllers</Filter>
     </ClInclude>
   </ItemGroup>

@@ -54,9 +54,6 @@
     <Filter Include="Source\TacticalGame\Grid">
       <UniqueIdentifier>{7db796f1-1c2e-4a3e-ac8e-03256ba9b847}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source\TacticalGame\GameModes">
-      <UniqueIdentifier>{61c1cd65-bad3-4c56-b839-b15eccca16e0}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source\TacticalGame\Characters">
       <UniqueIdentifier>{55d490ca-d54a-4c59-97c4-6033618e10e7}</UniqueIdentifier>
     </Filter>
@@ -75,6 +72,12 @@
     <Filter Include="Source\TacticalGame\Characters\Equipment">
       <UniqueIdentifier>{b25dfdd9-3f6a-4abf-8dbb-871d8d491104}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source\TacticalGame\BattleSystem">
+      <UniqueIdentifier>{6151dfe0-4782-45f1-969b-d5b417c4499a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\TacticalGame\Globals">
+      <UniqueIdentifier>{61c1cd65-bad3-4c56-b839-b15eccca16e0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Source\TacticalGame\BaseEnemyAIController.cpp">
@@ -83,11 +86,8 @@
     <ClCompile Include="..\..\Source\TacticalGame\ATileMapSet.cpp">
       <Filter>Source\TacticalGame\Grid</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\TacticalGame\BattleGameState.cpp">
-      <Filter>Source\TacticalGame\GameModes</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Source\TacticalGame\TacticalGameGameMode.cpp">
-      <Filter>Source\TacticalGame\GameModes</Filter>
+      <Filter>Source\TacticalGame\Globals</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\TacticalGame\Weapon.cpp">
       <Filter>Source\TacticalGame\Characters\Equipment</Filter>
@@ -117,9 +117,6 @@
       <Filter>Source\TacticalGame\AI</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\TacticalGame\Spawner.cpp">
-      <Filter>Source\TacticalGame</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\TacticalGame\GameDirector.cpp">
       <Filter>Source\TacticalGame</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\TacticalGame\TopViewCamera.cpp">
@@ -152,14 +149,17 @@
     <ClCompile Include="..\..\Source\TacticalGame\GPlayerController.cpp">
       <Filter>Source\TacticalGame\Characters\Controllers</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\TacticalGame\WorldInputController.cpp">
-      <Filter>Source\TacticalGame\Characters\Controllers</Filter>
+    <ClCompile Include="..\..\Source\TacticalGame\GameDirector.cpp">
+      <Filter>Source\TacticalGame\Globals</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\TacticalGame\InputController.cpp">
-      <Filter>Source\TacticalGame\Characters\Controllers</Filter>
+    <ClCompile Include="..\..\Source\TacticalGame\BattleGameState.cpp">
+      <Filter>Source\TacticalGame\BattleSystem</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\TacticalGame\CombatInputController.cpp">
-      <Filter>Source\TacticalGame\Characters\Controllers</Filter>
+    <ClCompile Include="..\..\Source\TacticalGame\Action.cpp">
+      <Filter>Source\TacticalGame\BattleSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\TacticalGame\BattleStateMachine.cpp">
+      <Filter>Source\TacticalGame\BattleSystem</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -169,11 +169,8 @@
     <ClInclude Include="..\..\Source\TacticalGame\ATileMapSet.h">
       <Filter>Source\TacticalGame\Grid</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\TacticalGame\BattleGameState.h">
-      <Filter>Source\TacticalGame\GameModes</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Source\TacticalGame\TacticalGameGameMode.h">
-      <Filter>Source\TacticalGame\GameModes</Filter>
+      <Filter>Source\TacticalGame\Globals</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\TacticalGame\Weapon.h">
       <Filter>Source\TacticalGame\Characters\Equipment</Filter>
@@ -208,9 +205,6 @@
     <ClInclude Include="..\..\Source\TacticalGame\Spawner.h">
       <Filter>Source\TacticalGame</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\TacticalGame\GameDirector.h">
-      <Filter>Source\TacticalGame</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Source\TacticalGame\TopViewCamera.h">
       <Filter>Source\TacticalGame</Filter>
     </ClInclude>
@@ -241,14 +235,17 @@
     <ClInclude Include="..\..\Source\TacticalGame\GPlayerController.h">
       <Filter>Source\TacticalGame\Characters\Controllers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\TacticalGame\WorldInputController.h">
-      <Filter>Source\TacticalGame\Characters\Controllers</Filter>
+    <ClInclude Include="..\..\Source\TacticalGame\GameDirector.h">
+      <Filter>Source\TacticalGame\Globals</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\TacticalGame\InputController.h">
-      <Filter>Source\TacticalGame\Characters\Controllers</Filter>
+    <ClInclude Include="..\..\Source\TacticalGame\BattleGameState.h">
+      <Filter>Source\TacticalGame\BattleSystem</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\TacticalGame\CombatInputController.h">
-      <Filter>Source\TacticalGame\Characters\Controllers</Filter>
+    <ClInclude Include="..\..\Source\TacticalGame\BattleStateMachine.h">
+      <Filter>Source\TacticalGame\BattleSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\TacticalGame\Action.h">
+      <Filter>Source\TacticalGame\BattleSystem</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
