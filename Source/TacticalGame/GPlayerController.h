@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
-#include "InputController.h"
 #include "GPlayerController.generated.h"
 
 /**
@@ -15,19 +14,54 @@ class TACTICALGAME_API AGPlayerController : public APlayerController
 {
 	GENERATED_BODY()
 
-public: 
+public:
 	AGPlayerController();
 
-	UInputController* CurrentInputController;
+	FVector2D HardAxis;
+	FVector2D Axis;
 
-	TMap<FName, UInputController*> tag2input;
+	bool PAD_UP;
+	bool PAD_RIGHT;
+	bool PAD_LEFT;
+	bool PAD_BOTTOM;
 
+	bool X;
+	bool Y;
+	bool A;
+	bool B;
+	
+	bool Start;
+	bool Pause;
+
+private:
+	float StickUp;
+	float StickRight;
 
 public:
 	virtual void PlayerTick(float DeltaTime) override;
 	virtual void SetupInputComponent() override;
 
-	void BindControllerInput(FName MODE);
-	void AddInputController(FName key, UInputController* IC);
-	
+private:
+	void AxisX(float Value);
+	void AxisY(float Value);
+
+	void PadX(float Value);
+	void PadY(float Value);
+
+	void InputXPressed();
+	void InputYPressed();
+	void InputAPressed();
+	void InputBPressed();
+
+	void InputXReleased();
+	void InputYReleased();
+	void InputAReleased();
+	void InputBReleased();
+
+	void StartPressed();
+	void PausePressed();
+
+	void StartReleased();
+	void PauseReleased();
+
 };
