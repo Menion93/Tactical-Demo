@@ -41,6 +41,9 @@ public:
 	virtual void PlayerTick(float DeltaTime) override;
 	virtual void SetupInputComponent() override;
 
+	bool AxisIsNotZero();
+	bool HardAxisIsNotZero();
+
 private:
 	void AxisX(float Value);
 	void AxisY(float Value);

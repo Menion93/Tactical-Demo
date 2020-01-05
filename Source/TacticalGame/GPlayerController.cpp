@@ -123,5 +123,13 @@ void AGPlayerController::PauseReleased()
 	Pause = false;
 }
 
+bool AGPlayerController::HardAxisIsNotZero()
+{
+	return HardAxis.X + HardAxis.Y > 0;
+}
 
+bool AGPlayerController::AxisIsNotZero()
+{
+	return Axis.X + Axis.Y > 0;
+}
 
