@@ -17,4 +17,8 @@ class TACTICALGAME_API AControllableCharacter : public AGCharacter
 public:
 
 	AControllableCharacter();
+
+public:
+	virtual void Tick(float DeltaTime) override;
+
 };

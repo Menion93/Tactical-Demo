@@ -7,3 +7,11 @@ AControllableCharacter::AControllableCharacter()
 {
 
 }
+
+
+// Called every frame
+void AControllableCharacter::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+}
