@@ -40,13 +40,17 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "EditorSetting")
 		float LineLength;
 
+	UPROPERTY()
 	APlayerCameraManager* CameraManager;
-	APlayerController* PlayerController;
-	UDecalComponent* GridCursor;
-	UMaterialInterface* DecalMaterial;
 
 	UPROPERTY()
-	FTile SelectedTile;
+	APlayerController* PlayerController;
+
+	UPROPERTY()
+	UDecalComponent* GridCursor;
+
+	UPROPERTY()
+	UMaterialInterface* DecalMaterial;
 
 	float Height;
 	float Width;
@@ -68,10 +72,11 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-
-	UFUNCTION()
-		FTile GetTileFromNearestPosition(FVector NearestPos);
 	
+	FTile* GetTileFromNearestPosition(FVector NearestPos);
+	FTile* SnapToGrid(AActor* actor);
+
 	void BuildGrid();
-	FTile SnapToGrid(AActor* actor);
+	void SetCursorToTile(FTile* Tile);
+	void ShowCursor(bool show);
 };

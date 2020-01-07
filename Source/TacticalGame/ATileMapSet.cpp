@@ -186,57 +186,55 @@ void AATileMapSet::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	ABattleGameState* gs = GetWorld()->GetGameState<ABattleGameState>();
+	//ABattleGameState* gs = GetWorld()->GetGameState<ABattleGameState>();
 
-	if (gs && gs->GridEnabled)
-	{
+	//if (gs && gs->GridEnabled)
+	//{
 
-		GridCursor->SetVisibility(true);
+	//	GridCursor->SetVisibility(true);
 
-		FHitResult Hit;
-		PlayerController->GetHitResultUnderCursor(ECC_GameTraceChannel1, false, Hit);
+	//	FHitResult Hit;
+	//	PlayerController->GetHitResultUnderCursor(ECC_GameTraceChannel1, false, Hit);
 
-		if (Hit.bBlockingHit)
-		{
-			SelectedTile = GetTileFromNearestPosition(Hit.ImpactPoint);
+	//	if (Hit.bBlockingHit)
+	//	{
+	//		SelectedTile = GetTileFromNearestPosition(Hit.ImpactPoint);
 
-			GridCursor->SetWorldLocationAndRotation(
-				SelectedTile.TileCenter,
-				SelectedTile.SurfaceNormal.ToOrientationRotator().Quaternion());
-		}
-	}
-	else
-	{
-		GridCursor->SetVisibility(false);
-	}
+	//		SetCursorToTile(&SelectedTile);
+	//	}
+	//}
+	//else
+	//{
+	//	GridCursor->SetVisibility(false);
+	//}
 }
 
 
 
 // Get the nearest tile from 
-FTile AATileMapSet::GetTileFromNearestPosition(FVector NearestPos)
+FTile* AATileMapSet::GetTileFromNearestPosition(FVector NearestPos)
 {
 	float CurrDistance = 99999999;
-	FTile NearestTile;
+	FTile* NearestTile = nullptr;
 
-	for (auto tile : TilesMap)
+	for (auto& tile : TilesMap)
 	{
 		float Distance = FVector::Distance(tile.Value.TileCenter, NearestPos);
 
 		if (Distance < CurrDistance)
 		{
 			CurrDistance = Distance;
-			NearestTile = tile.Value;
+			NearestTile = &tile.Value;
 		}
 	}
 
 	return NearestTile;
 }
 
-FTile AATileMapSet::SnapToGrid(AActor* Actor)
+FTile* AATileMapSet::SnapToGrid(AActor* Actor)
 {
-	FTile Tile = GetTileFromNearestPosition(Actor->GetActorLocation());
-	Actor->SetActorLocation(Tile.TileCenter);
+	FTile* Tile = GetTileFromNearestPosition(Actor->GetActorLocation());
+	Actor->SetActorLocation(Tile->TileCenter);
 	return Tile;
 }
 
@@ -250,3 +248,14 @@ void AATileMapSet::BeginDestroy()
 	}
 }
 
+void AATileMapSet::SetCursorToTile(FTile* Tile)
+{
+	GridCursor->SetWorldLocationAndRotation(
+		Tile->TileCenter,
+		Tile->SurfaceNormal.ToOrientationRotator().Quaternion());
+}
+
+void AATileMapSet::ShowCursor(bool show)
+{
+	GridCursor->SetVisibility(show);
+}
