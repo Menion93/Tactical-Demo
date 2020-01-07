@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "BattleGameState.h"
+#include "TacticalGameGameMode.h"
 
 
 ABattleGameState::ABattleGameState()
@@ -31,9 +32,8 @@ void ABattleGameState::PlayTurn()
 			if (IsBattleEnded())
 			{
 				EndBattle();
-			}
-
-			if (IsTurnEnded())
+			} 
+			else if (IsTurnEnded())
 			{
 				EndTurn();
 			}
@@ -44,7 +44,7 @@ void ABattleGameState::PlayTurn()
 	// Let the player choose an action
 	else if (PlayerTurn)
 	{
-		StateMachine->PlayState();
+		CurrentAction = StateMachine->PlayState();
 	}
 	// Let the AI choose an action
 	else
@@ -57,7 +57,14 @@ void ABattleGameState::InitBattleState(bool IsPlayerTurn)
 {
 	PlayerTurn = IsPlayerTurn;
 	GridEnabled = true;
-	StateMachine->Reset();
+
+	// Update current Tile
+	if (PlayerTurn)
+	{
+		ATacticalGameGameMode* GameMode = Cast<ATacticalGameGameMode>(GetWorld()->GetAuthGameMode());
+		StateMachine->Reset(GameMode->Players[0]->ActorCharacter->CurrentTile);
+		GameMode->GameDirector->Camera->MoveToTile(StateMachine->SelectedTile);
+	}
 }
 	
 

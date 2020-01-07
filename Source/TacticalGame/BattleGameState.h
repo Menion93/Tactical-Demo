@@ -30,8 +30,10 @@ public:
 	TMap<UCharacterState*, DijkstraOutput> Player2Paths;
 	TMap<UCharacterState*, bool> Player2Turn;
 
-	UAction* CurrentAction;
+	UPROPERTY()
+	UAction* CurrentAction = nullptr;
 	
+	UPROPERTY()
 	UBattleStateMachine* StateMachine;
 
 public:
@@ -47,5 +49,4 @@ public:
 	bool IsBattleEnded();
 	void EndTurn();
 	void EndBattle();
-
 };
