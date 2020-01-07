@@ -19,10 +19,19 @@ class TACTICALGAME_API UCharacterState : public UObject
 public:
 	UCharacterState();
 
+	UPROPERTY()
+	AControllableCharacter* ActorCharacter;
+
 	float CurrentHealth;
 	float Health;
-	
+
+	UPROPERTY()
 	UBag* Bag;
+
+	TSubclassOf<class AControllableCharacter> ActorCharacterClass;
+
 	//UArmorDescriptor* armors;
 	
+public:
+	void Init(FString BPClassName);
 };
