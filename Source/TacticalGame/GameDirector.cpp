@@ -13,14 +13,9 @@ UGameDirector::UGameDirector()
 
 void UGameDirector::Init()
 {
+	SetCamera();
 	SetTileMap();
 	SetSpawner();
-	SetCamera();
-
-	if (SpawnAtStart)
-	{
-		SpawnCharacters(false);
-	}
 }
 
 void UGameDirector::SetTileMap()

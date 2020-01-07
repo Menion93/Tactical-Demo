@@ -16,12 +16,8 @@ public:
 	// Sets default values for this actor's properties
 	ASpawner();
 
-	TArray<TSubclassOf<class AControllableCharacter>> party;
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		TArray<AActor*> Spawns;
-
-
 
 protected:
 	// Called when the game starts or when spawned
