@@ -10,7 +10,7 @@
 
 ATopViewCamera::ATopViewCamera()
 {
-
+	
 }
 
 void ATopViewCamera::BeginPlay()
@@ -21,18 +21,24 @@ void ATopViewCamera::BeginPlay()
 	}
 
 	SetActorRelativeRotation(FRotator(CameraAngle, 0, 0));
+
+	OffsetVector = FVector::UpVector * CameraHeight - FVector::LeftVector * CameraVerticalPan;
+
 }
 
 void ATopViewCamera::Tick(float DeltaTime)
 {
-	if (ControlCamera)
+	if (FollowedActor)
 	{
-
+		SetActorLocation(FollowedActor->GetActorLocation() + OffsetVector);
 	}
-	else if(FollowedActor)
+	else if (IsLerping)
 	{
-		FVector Destination = FollowedActor->GetActorLocation() + FVector::UpVector * CameraHeight - FVector::LeftVector * CameraVerticalPan;
-		SetActorLocation(FMath::Lerp(GetActorLocation(), Destination, DeltaTime));
+		if (GetActorLocation() == LerpDestination)
+		{
+			IsLerping = false;
+		}
+		SetActorLocation(FMath::Lerp(GetActorLocation(), LerpDestination, DeltaTime));
 	}
 
 }
@@ -51,21 +57,18 @@ void ATopViewCamera::SetViewTarget()
 	}
 }
 
-void ATopViewCamera::LerpToActor(AActor* Actor, float seconds)
+void ATopViewCamera::LerpToTile(FTile* Tile, float seconds)
 {
 	// Lerp to Actor, then update grid position
+	LerpDestination = Tile->TileCenter + OffsetVector;
+	IsLerping = true;
 
 }
 
-void ATopViewCamera::SetLocationToActor(AActor* Actor)
+void ATopViewCamera::MoveToTile(FTile* Tile)
 {
-	// Move Instantly to Actor, then update grid position
-
-}
-
-void ATopViewCamera::SetCameraControl(bool Control)
-{
-	ControlCamera = Control;
+	// Move Instantly to a Tile
+	SetActorLocation(Tile->TileCenter + OffsetVector);
 }
 
 void ATopViewCamera::AttachToActor(AActor* Actor)
@@ -73,7 +76,7 @@ void ATopViewCamera::AttachToActor(AActor* Actor)
 	FollowedActor = Actor;
 }
 
-void ATopViewCamera::DeattachFromActor()
+void ATopViewCamera::DetachFromActor()
 {
 	FollowedActor = nullptr;
 }
