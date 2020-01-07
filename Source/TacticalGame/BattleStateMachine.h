@@ -7,6 +7,7 @@
 #include "Action.h"
 #include "GPlayerController.h"
 #include "ATileMapSet.h"
+#include "FTile.h"
 #include "BattleStateMachine.generated.h"
 
 typedef UAction* (UBattleStateMachine::*StateMachineFunc)(void);
@@ -34,13 +35,16 @@ public:
 
 	TMap<CombatStateE, StateMachineFunc> State2Method;
 
+	UPROPERTY()
 	AGPlayerController* Input;
+
 	AATileMapSet* TileMap;
 
+	FTile* SelectedTile;
 
 public:
 	UAction* PlayState();
-	void Reset();
+	void Reset(FTile* CurrentTile);
 	void Init();
 
 
