@@ -27,11 +27,19 @@ class ATacticalGameGameMode : public AGameModeBase
 
 public:
 	ATacticalGameGameMode();
-	GameModeE CurrentMode;
-	UGameDirector* GameDirector;
-	UInventory* Inventory;
-	TArray<UCharacterState*> players;
 
+	UPROPERTY()
+	GameModeE CurrentMode;
+
+	UPROPERTY()
+	UGameDirector* GameDirector;
+
+	UPROPERTY()
+	UInventory* Inventory;
+
+	TArray<UCharacterState*> Players;
+
+	UPROPERTY()
 	ABattleGameState* BState;
 	
 

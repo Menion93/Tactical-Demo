@@ -16,8 +16,7 @@ public:
 	// Sets default values for this character's properties
 	AGCharacter();
 
-	FTile TilePosition;
-
+	FTile* CurrentTile;
 
 protected:
 	// Called when the game starts or when spawned

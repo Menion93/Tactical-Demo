@@ -17,17 +17,25 @@ class TACTICALGAME_API ATopViewCamera : public ACameraActor
 	
 public:
 	ATopViewCamera();
-	FTile CurrentTile;
 
 	UPROPERTY(EditAnywhere)
 	bool SetViewOnStart;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "CameraPosition")
 	float CameraHeight;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "CameraPosition")
 	float CameraVerticalPan;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "CameraPosition")
 	float CameraAngle;
 
 private:
-	bool ControlCamera;
+	bool IsLerping;
+	FVector LerpDestination;
+	FVector OffsetVector;
+
+	UPROPERTY()
 	AActor* FollowedActor;
 
 protected:
@@ -36,10 +44,9 @@ protected:
 public:
 	virtual void Tick(float DeltaTime) override;
 
-	void LerpToActor(AActor* Actor, float seconds);
-	void SetLocationToActor(AActor* Actor);
-	void SetCameraControl(bool Control);
+	void LerpToTile(FTile* Tile, float seconds);
+	void MoveToTile(FTile* Tile);
 	void AttachToActor(AActor* Actor);
-	void DeattachFromActor();
+	void DetachFromActor();
 	void SetViewTarget();
 };

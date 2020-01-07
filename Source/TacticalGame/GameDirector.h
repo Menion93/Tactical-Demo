@@ -18,14 +18,14 @@ public:
 	// Sets default values for this actor's properties
 	UGameDirector();
 
+	UPROPERTY()
 	ASpawner* Spawner;
+
+	UPROPERTY()
 	ATopViewCamera* Camera;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	AATileMapSet* TileMap;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		bool SpawnAtStart = true;
 
 public:
 	// Called when the game starts or when spawned
