@@ -22,7 +22,7 @@ void ATopViewCamera::BeginPlay()
 
 	SetActorRelativeRotation(FRotator(CameraAngle, 0, 0));
 
-	OffsetVector = FVector::UpVector * CameraHeight - FVector::LeftVector * CameraVerticalPan;
+	OffsetVector = FVector::UpVector * CameraHeight - FVector::ForwardVector * CameraVerticalPan;
 
 }
 
@@ -69,6 +69,7 @@ void ATopViewCamera::MoveToTile(FTile* Tile)
 {
 	// Move Instantly to a Tile
 	SetActorLocation(Tile->TileCenter + OffsetVector);
+	SetActorRotation((Tile->TileCenter - GetActorLocation()).ToOrientationRotator());
 }
 
 void ATopViewCamera::AttachToActor(AActor* Actor)
