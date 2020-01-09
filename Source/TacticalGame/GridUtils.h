@@ -28,7 +28,7 @@ struct FDijkstraNode
 
 };
 
-typedef TMap<FVector2D, FDijkstraNode*> DijkstraOutput;
+typedef TMap<FTileIndex, FDijkstraNode*> DijkstraOutput;
 
 /**
  * 

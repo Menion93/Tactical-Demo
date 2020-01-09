@@ -70,7 +70,7 @@ void AATileMapSet::OnConstruction(const FTransform & Transform)
 // Build the WorldGrid in 3D dimension
 void AATileMapSet::BuildGrid() {
 
-	TilesMap = TMap<FVector2D, FTile>();
+	TilesMap = TMap<FTileIndex, FTile>();
 	Height = Rows * CellSize;
 	Width = Columns * CellSize;
 
@@ -78,7 +78,7 @@ void AATileMapSet::BuildGrid() {
 	FVector ActorLocation = GetActorLocation();
 
 	FVector OffsetVector = FVector(
-		(Height * 0.5) * (1 - 1.0 / Rows),
+		-(Height * 0.5) * (1 - 1.0 / Rows),
 		-(Width * 0.5) * (1 - 1.0 / Columns),
 		0);
 
@@ -86,7 +86,7 @@ void AATileMapSet::BuildGrid() {
 	{
 		for (int CurrCol = 0; CurrCol < Columns; CurrCol++)
 		{
-			FVector LocalTileCenter = FVector(-CurrRow * CellSize, CurrCol * CellSize, 0) + OffsetVector;
+			FVector LocalTileCenter = FVector(CurrRow * CellSize, CurrCol * CellSize, 0) + OffsetVector;
 			FVector WTileCenter = GetActorRotation().RotateVector(LocalTileCenter) + ActorLocation;
 
 			FTile MyTile;
@@ -111,13 +111,13 @@ void AATileMapSet::BuildGrid() {
 				{
 					if (OutHit.bBlockingHit)
 					{
-						FVector2D TileCenterKey(CurrRow, CurrCol);
+						FTileIndex Index(CurrRow, CurrCol);
 
-						MyTile.Index = TileCenterKey;
+						MyTile.Index = Index;
 						MyTile.TileCenter = OutHit.ImpactPoint;
 						MyTile.SurfaceNormal = OutHit.ImpactNormal;
 
-						TilesMap.Add(TileCenterKey, MyTile);
+						TilesMap.Add(Index, MyTile);
 
 						#if WITH_EDITOR
 						if (DrawLinesInEditor)
@@ -147,13 +147,12 @@ void AATileMapSet::BuildGrid() {
 	}
 
 	// Now link cells
+	FTileIndex OffSetU(1, 0);
+	FTileIndex OffSetL(0, 1);
+	FTileIndex OffSetIQuad(1, 1);
+	FTileIndex OffSet2Quad(-1, 1);
 
-	FVector2D OffSetU(1, 0);
-	FVector2D OffSetL(0, 1);
-	FVector2D OffSetIQuad(1, 1);
-	FVector2D OffSet2Quad(-1, 1);
-
-	TArray<FVector2D> Neighbour;
+	TArray<FTileIndex> Neighbour;
 	Neighbour.Add(OffSetU);
 	Neighbour.Add(OffSetL);
 	Neighbour.Add(OffSetIQuad);
@@ -165,8 +164,9 @@ void AATileMapSet::BuildGrid() {
 		{
 			for (auto OffSetVec : Neighbour)
 			{
-				FVector2D Direction = (-j) * OffSetVec + (1 - j) * OffSetVec;
-				FVector2D NeighbourKey = tile.Key + Direction;
+				FTileIndex Direction = (OffSetVec * (-j)) + (OffSetVec * (1 - j));
+				FTileIndex NeighbourKey = tile.Key + Direction;
+				TPair<int, int> Index(Direction.X + tile.Key.X, Direction.Y);
 
 				if (TilesMap.Contains(NeighbourKey))
 				{

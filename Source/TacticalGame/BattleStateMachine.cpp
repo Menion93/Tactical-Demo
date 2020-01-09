@@ -54,21 +54,17 @@ UAction* UBattleStateMachine::DeselectedState()
 	}
 
 	// Move the cursor
-	if (Input->HardAxisIsNotZero())
+	if (!Input->HardAxis.IsZero())
 	{
-
-		UE_LOG(LogTemp, Warning, TEXT("%s"), *SelectedTile->TileCenter.ToString())
-
-		if (SelectedTile && SelectedTile->Direction2Neighbours.Contains(Input->HardAxis))
+		
+		FTileIndex Index(Input->HardAxis);
+		if (SelectedTile && SelectedTile->Direction2Neighbours.Contains(Index))
 		{
 			ATacticalGameGameMode* GameMode = Cast<ATacticalGameGameMode>(GetWorld()->GetAuthGameMode());
 
-			UE_LOG(LogTemp, Warning, TEXT("%s"), *SelectedTile->TileCenter.ToString())
-
-			SelectedTile = SelectedTile->Direction2Neighbours[Input->HardAxis].Key;
+			SelectedTile = SelectedTile->Direction2Neighbours[Index].Key;
 			TileMap->SetCursorToTile(SelectedTile);
 			GameMode->GameDirector->Camera->MoveToTile(SelectedTile);
-
 		}
 	}
 	

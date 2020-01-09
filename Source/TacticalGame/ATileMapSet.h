@@ -59,7 +59,7 @@ public:
 		class UBoxComponent* BoxComponent;
 
 	UPROPERTY(EditAnywhere, Category = "TileSettings")
-		TMap<FVector2D, FTile> TilesMap;
+		TMap<FTileIndex, FTile> TilesMap;
 
 	TArray<UDecalComponent*> DebugDecals;
 
