@@ -78,6 +78,9 @@
     <Filter Include="Source\TacticalGame\Globals">
       <UniqueIdentifier>{61c1cd65-bad3-4c56-b839-b15eccca16e0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source\TacticalGame\BattleSystem\BattleStateMachineStates">
+      <UniqueIdentifier>{7264b709-d18b-4a2e-95ca-688715d5e79f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Source\TacticalGame\BaseEnemyAIController.cpp">
