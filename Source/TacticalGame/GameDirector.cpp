@@ -26,7 +26,6 @@ void UGameDirector::SetTileMap()
 	{
 		TileMap = Cast<AATileMapSet>(TileTmp);
 	}
-
 }
 
 void UGameDirector::SetSpawner()
@@ -53,7 +52,6 @@ void UGameDirector::SetCamera()
 	{
 		Camera = Cast<ATopViewCamera>(CameraTmp);
 	}
-
 }
 
 

@@ -8,6 +8,7 @@
 #include "GPlayerController.h"
 #include "ATileMapSet.h"
 #include "FTile.h"
+#include "Engine/World.h"
 #include "BattleStateMachine.generated.h"
 
 typedef UAction* (UBattleStateMachine::*StateMachineFunc)(void);
@@ -42,13 +43,21 @@ public:
 
 	FTile* SelectedTile;
 
+private:
+	bool CooldownMovementGrid;
+	FTimerHandle timerHandle;
+	bool AxisReleased;
+	float time;
+
+
 public:
 	UAction* PlayState();
 	void Reset(FTile* CurrentTile);
 	void Init();
 
-
 private:
+	void ResetCooldownMovementGrid();
+
 	CombatStateE CurrentState;
 
 	UAction* DeselectedState();

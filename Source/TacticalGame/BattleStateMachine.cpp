@@ -56,16 +56,43 @@ UAction* UBattleStateMachine::DeselectedState()
 	// Move the cursor
 	if (!Input->HardAxis.IsZero())
 	{
-		
-		FTileIndex Index(Input->HardAxis);
-		if (SelectedTile && SelectedTile->Direction2Neighbours.Contains(Index))
+		if (!CooldownMovementGrid || Input->Axis_DOWN)
 		{
-			ATacticalGameGameMode* GameMode = Cast<ATacticalGameGameMode>(GetWorld()->GetAuthGameMode());
+			UWorld* World = GetWorld();
 
-			SelectedTile = SelectedTile->Direction2Neighbours[Index].Key;
-			TileMap->SetCursorToTile(SelectedTile);
-			GameMode->GameDirector->Camera->MoveToTile(SelectedTile);
+			if (World)
+			{
+				World->GetTimerManager().ClearTimer(timerHandle);
+			}
+
+			if (AxisReleased)
+			{
+				time = 0.5;
+			}
+
+			AxisReleased = false;
+
+			FTileIndex Index(Input->HardAxis);
+			if (SelectedTile && SelectedTile->Direction2Neighbours.Contains(Index))
+			{
+				ATacticalGameGameMode* GameMode = Cast<ATacticalGameGameMode>(GetWorld()->GetAuthGameMode());
+
+				SelectedTile = SelectedTile->Direction2Neighbours[Index].Key;
+				TileMap->SetCursorToTile(SelectedTile);
+				GameMode->GameDirector->Camera->MoveToTile(SelectedTile);
+
+				if (World)
+				{
+					World->GetTimerManager().SetTimer(timerHandle, this, &UBattleStateMachine::ResetCooldownMovementGrid, time);
+				}
+
+				CooldownMovementGrid = true;
+			}
 		}
+	}
+	else
+	{
+		AxisReleased = true;
 	}
 	
 	return nullptr;
@@ -101,4 +128,10 @@ void UBattleStateMachine::Reset(FTile* CurrentTile)
 {
 	CurrentState = CombatStateE::DESELECTED_STATE;
 	SelectedTile = CurrentTile;
+}
+
+void UBattleStateMachine::ResetCooldownMovementGrid()
+{
+	CooldownMovementGrid = false;
+	time = 0.1;
 }
