@@ -2,6 +2,8 @@
 
 
 #include "GPlayerController.h"
+#include "Engine/World.h"
+#include "TimerManager.h"
 
 AGPlayerController::AGPlayerController()
 {
@@ -18,16 +20,62 @@ void AGPlayerController::SetupInputComponent()
 	// set up gameplay key bindings
 	Super::SetupInputComponent();
 
-	InputComponent->BindAxis("MoveForward", this, &AGPlayerController::AxisY);
-	InputComponent->BindAxis("MoveRight", this, &AGPlayerController::AxisX);
-
 	InputComponent->BindAxis("StickAxisX", this, &AGPlayerController::AxisX);
 	InputComponent->BindAxis("StickAxisY", this, &AGPlayerController::AxisY);
 
+	InputComponent->BindAction("A", EInputEvent::IE_Pressed, this, &AGPlayerController::InputAPressed);
+	InputComponent->BindAction("A", EInputEvent::IE_Released, this, &AGPlayerController::InputAReleased);
+
+	InputComponent->BindAction("B", EInputEvent::IE_Pressed, this, &AGPlayerController::InputBPressed);
+	InputComponent->BindAction("B", EInputEvent::IE_Released, this, &AGPlayerController::InputBReleased);
+
+	InputComponent->BindAction("X", EInputEvent::IE_Pressed, this, &AGPlayerController::InputXPressed);
+	InputComponent->BindAction("X", EInputEvent::IE_Released, this, &AGPlayerController::InputXReleased);
+
+	InputComponent->BindAction("Y", EInputEvent::IE_Pressed, this, &AGPlayerController::InputYPressed);
+	InputComponent->BindAction("Y", EInputEvent::IE_Released, this, &AGPlayerController::InputYReleased);
+
+	InputComponent->BindAction("Start", EInputEvent::IE_Pressed, this, &AGPlayerController::StartPressed);
+	InputComponent->BindAction("Start", EInputEvent::IE_Released, this, &AGPlayerController::StartReleased);
+
+	InputComponent->BindAction("Pause", EInputEvent::IE_Pressed, this, &AGPlayerController::PausePressed);
+	InputComponent->BindAction("Pause", EInputEvent::IE_Released, this, &AGPlayerController::PauseReleased);
+
+}
+
+void AGPlayerController::HandleActionInputPressed(bool& down, bool& button)
+{
+	if (!down)
+	{
+		button = true;
+	}
+	else
+	{
+		button = false;
+	}
+
+	down = true;
+}
+
+void AGPlayerController::HandleActionInputReleased(bool& down, bool& button)
+{
+	button = false;
+	down = false;
 }
 
 void AGPlayerController::AxisX(float Value)
 {
+	if (second)
+	{
+		Axis_DOWN = !FMath::RoundToInt(StickUp) && FMath::RoundToInt(Value) || Axis_DOWN;
+		second = false;
+	}
+	else
+	{
+		Axis_DOWN = !FMath::RoundToInt(StickUp) && FMath::RoundToInt(Value);
+		second = true;
+	}
+
 	StickUp = Value;
 	HardAxis = FVector2D(FMath::RoundToInt(StickUp), FMath::RoundToInt(StickRight));
 	Axis = FVector2D(StickUp, StickRight);
@@ -35,6 +83,17 @@ void AGPlayerController::AxisX(float Value)
 
 void AGPlayerController::AxisY(float Value)
 {
+	if (second)
+	{
+		Axis_DOWN = !FMath::RoundToInt(StickRight) && FMath::RoundToInt(Value) || Axis_DOWN;
+		second = false;
+	}
+	else
+	{
+		Axis_DOWN = !FMath::RoundToInt(StickRight) && FMath::RoundToInt(Value);
+		second = true;
+	}
+
 	StickRight = Value;
 	HardAxis = FVector2D(FMath::RoundToInt(StickUp), FMath::RoundToInt(StickRight));
 	Axis = FVector2D(StickUp, StickRight);
@@ -64,61 +123,61 @@ void AGPlayerController::PadY(float Value)
 
 void AGPlayerController::InputXPressed()
 {
-	X = true;
+	HandleActionInputPressed(X, X_DOWN);
 }
 
 void AGPlayerController::InputYPressed()
 {
-	Y = true;
+	HandleActionInputPressed(Y, Y_DOWN);
 }
 
 void AGPlayerController::InputAPressed()
 {
-	A = true;
+	HandleActionInputPressed(A, A_DOWN);
 }
 
 void AGPlayerController::InputBPressed()
 {
-	B = true;
+	HandleActionInputPressed(B, B_DOWN);
 }
 
 void AGPlayerController::InputXReleased()
 {
-	X = false;
+	HandleActionInputReleased(X_DOWN, X);
 }
 
 void AGPlayerController::InputYReleased()
 {
-	Y = false;
+
+	HandleActionInputReleased(Y_DOWN, Y);
 }
 
 void AGPlayerController::InputAReleased()
 {
-	A = false;
+	HandleActionInputReleased(A_DOWN, A);
 }
 
 void AGPlayerController::InputBReleased()
 {
-	B = false;
+	HandleActionInputReleased(B_DOWN, B);
 }
 
 void AGPlayerController::StartPressed()
 {
-	Start = true;
+	HandleActionInputPressed(Start_DOWN, Start);
 }
 
 void AGPlayerController::PausePressed()
 {
-	Pause = true;
+	HandleActionInputPressed(Pause_DOWN, Pause);
 }
 
 void AGPlayerController::StartReleased()
 {
-	Start = false;
+	HandleActionInputReleased(Start_DOWN, Start);
 }
 
 void AGPlayerController::PauseReleased()
 {
-	Pause = false;
+	HandleActionInputReleased(Pause_DOWN, Pause);
 }
-
