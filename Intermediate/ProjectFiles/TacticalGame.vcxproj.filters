@@ -155,13 +155,25 @@
     <ClCompile Include="..\..\Source\TacticalGame\GameDirector.cpp">
       <Filter>Source\TacticalGame\Globals</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\TacticalGame\BattleGameState.cpp">
-      <Filter>Source\TacticalGame\BattleSystem</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Source\TacticalGame\Action.cpp">
       <Filter>Source\TacticalGame\BattleSystem</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\TacticalGame\BattleStateMachine.cpp">
+    <ClCompile Include="..\..\Source\TacticalGame\BSMDeselectedState.cpp">
+      <Filter>Source\TacticalGame\BattleSystem\BattleStateMachineStates</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\TacticalGame\BSMTileSelectedState.cpp">
+      <Filter>Source\TacticalGame\BattleSystem\BattleStateMachineStates</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\TacticalGame\BSMState.cpp">
+      <Filter>Source\TacticalGame\BattleSystem\BattleStateMachineStates</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\TacticalGame\BSMEnemyLockedState.cpp">
+      <Filter>Source\TacticalGame\BattleSystem\BattleStateMachineStates</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\TacticalGame\BSMCharacterSelectedState.cpp">
+      <Filter>Source\TacticalGame\BattleSystem\BattleStateMachineStates</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\TacticalGame\BattleManager.cpp">
       <Filter>Source\TacticalGame\BattleSystem</Filter>
     </ClCompile>
   </ItemGroup>
@@ -241,13 +253,25 @@
     <ClInclude Include="..\..\Source\TacticalGame\GameDirector.h">
       <Filter>Source\TacticalGame\Globals</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\TacticalGame\BattleGameState.h">
-      <Filter>Source\TacticalGame\BattleSystem</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\TacticalGame\BattleStateMachine.h">
-      <Filter>Source\TacticalGame\BattleSystem</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Source\TacticalGame\Action.h">
+      <Filter>Source\TacticalGame\BattleSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\TacticalGame\BSMDeselectedState.h">
+      <Filter>Source\TacticalGame\BattleSystem\BattleStateMachineStates</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\TacticalGame\BSMTileSelectedState.h">
+      <Filter>Source\TacticalGame\BattleSystem\BattleStateMachineStates</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\TacticalGame\BSMState.h">
+      <Filter>Source\TacticalGame\BattleSystem\BattleStateMachineStates</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\TacticalGame\BSMEnemyLockedState.h">
+      <Filter>Source\TacticalGame\BattleSystem\BattleStateMachineStates</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\TacticalGame\BSMCharacterSelectedState.h">
+      <Filter>Source\TacticalGame\BattleSystem\BattleStateMachineStates</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\TacticalGame\BattleManager.h">
       <Filter>Source\TacticalGame\BattleSystem</Filter>
     </ClInclude>
   </ItemGroup>
