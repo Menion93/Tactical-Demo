@@ -8,7 +8,6 @@
 #include "UObject/ConstructorHelpers.h"
 #include "GameFramework/PlayerController.h"
 #include "Materials/Material.h"
-#include "BattleGameState.h"
 #include "Kismet/GameplayStatics.h"
 #include "DrawDebugHelpers.h"
 #include "Math/UnrealMathUtility.h"

@@ -13,7 +13,6 @@
 ATacticalGameGameMode::ATacticalGameGameMode()
 {
 	PrimaryActorTick.bCanEverTick = true;
-	GameStateClass = ABattleGameState::StaticClass();
 
 	PlayerControllerClass = AGPlayerController::StaticClass();
 	DefaultPawnClass = nullptr;
@@ -37,8 +36,8 @@ void ATacticalGameGameMode::StartPlay()
 	GameDirector->Init();
 	GameDirector->SpawnCharacters(true);
 
-	BState = GetGameState<ABattleGameState>();
-	BState->Init();
+	BattleManager = NewObject<UBattleManager>(this, TEXT("BattleManager"));
+	BattleManager->Init();
 	SwitchToBattleMode(true);
 }
 
@@ -49,12 +48,12 @@ void ATacticalGameGameMode::Tick(float DeltaSeconds)
 
 	if (CurrentMode == GameModeE::GSE_Battle)
 	{
-		BState->PlayTurn();
+		BattleManager->PlayTurn();
 	}
 }
 
 void ATacticalGameGameMode::SwitchToBattleMode(bool IsPlayerTurn)
 {
 	CurrentMode = GameModeE::GSE_Battle;
-	BState->InitBattleState(IsPlayerTurn);
+	BattleManager->InitBattleState(IsPlayerTurn);
 }
