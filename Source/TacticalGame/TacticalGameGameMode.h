@@ -7,7 +7,7 @@
 #include "ControllableCharacter.h"
 #include "GameDirector.h"
 #include "Inventory.h"
-#include "BattleGameState.h"
+#include "BattleManager.h"
 #include "CharacterState.h"
 #include "TacticalGameGameMode.generated.h"
 
@@ -40,7 +40,7 @@ public:
 	TArray<UCharacterState*> Players;
 
 	UPROPERTY()
-	ABattleGameState* BState;
+	UBattleManager* BattleManager;
 	
 
 public:
