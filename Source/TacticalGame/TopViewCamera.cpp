@@ -22,8 +22,7 @@ void ATopViewCamera::BeginPlay()
 
 	SetActorRelativeRotation(FRotator(CameraAngle, 0, 0));
 
-	OffsetVector = FVector::UpVector * CameraHeight - FVector::ForwardVector * CameraVerticalPan;
-
+	OffsetVector = - FVector::ForwardVector * CameraVerticalPan;
 }
 
 void ATopViewCamera::Tick(float DeltaTime)
@@ -40,7 +39,6 @@ void ATopViewCamera::Tick(float DeltaTime)
 		}
 		SetActorLocation(FMath::Lerp(GetActorLocation(), LerpDestination, DeltaTime));
 	}
-
 }
 
 void ATopViewCamera::SetViewTarget()
@@ -62,14 +60,16 @@ void ATopViewCamera::LerpToTile(FTile* Tile, float seconds)
 	// Lerp to Actor, then update grid position
 	LerpDestination = Tile->TileCenter + OffsetVector;
 	IsLerping = true;
-
 }
 
 void ATopViewCamera::MoveToTile(FTile* Tile)
 {
 	// Move Instantly to a Tile
-	SetActorLocation(Tile->TileCenter + OffsetVector);
-	SetActorRotation((Tile->TileCenter - GetActorLocation()).ToOrientationRotator());
+	FVector TileToLookInPlane(Tile->TileCenter.X, Tile->TileCenter.Y, GetActorLocation().Z);
+	FVector TileSnappedToPlane(Tile->TileCenter.X, Tile->TileCenter.Y, PlaneZ);
+
+	SetActorLocation(TileToLookInPlane + OffsetVector);
+	SetActorRotation((TileSnappedToPlane - GetActorLocation()).ToOrientationRotator());
 }
 
 void ATopViewCamera::AttachToActor(AActor* Actor)

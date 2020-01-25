@@ -22,7 +22,7 @@ public:
 	bool SetViewOnStart;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "CameraPosition")
-	float CameraHeight;
+	float PlaneZ;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "CameraPosition")
 	float CameraVerticalPan;
