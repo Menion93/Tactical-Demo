@@ -165,7 +165,6 @@ void AATileMapSet::BuildGrid() {
 			{
 				FTileIndex Direction = (OffSetVec * (-j)) + (OffSetVec * (1 - j));
 				FTileIndex NeighbourKey = tile.Key + Direction;
-				TPair<int, int> Index(Direction.X + tile.Key.X, Direction.Y);
 
 				if (TilesMap.Contains(NeighbourKey))
 				{

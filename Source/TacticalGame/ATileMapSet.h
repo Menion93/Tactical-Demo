@@ -8,13 +8,11 @@
 #include "FTile.h"
 #include "ATileMapSet.generated.h"
 
-
-
 UCLASS()
 class TACTICALGAME_API AATileMapSet : public AActor
 {
 	GENERATED_BODY()
-	
+
 public:	
 	// Sets default values for this actor's properties
 	AATileMapSet();
