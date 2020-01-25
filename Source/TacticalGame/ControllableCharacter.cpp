@@ -15,3 +15,8 @@ void AControllableCharacter::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 }
+
+void AControllableCharacter::Selected()
+{
+
+}

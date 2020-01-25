@@ -6,6 +6,8 @@
 #include "GCharacter.h"
 #include "ControllableCharacter.generated.h"
 
+
+class UCharacterState;
 /**
  * 
  */
@@ -18,7 +20,11 @@ public:
 
 	AControllableCharacter();
 
+	UPROPERTY(EditAnywhere)
+	UCharacterState* State;
+
 public:
 	virtual void Tick(float DeltaTime) override;
 
+	void Selected();
 };

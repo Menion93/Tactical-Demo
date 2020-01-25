@@ -19,6 +19,9 @@ class TACTICALGAME_API UCharacterState : public UObject
 public:
 	UCharacterState();
 
+	UPROPERTY(EditAnywhere)
+	FName Name;
+
 	UPROPERTY()
 	AControllableCharacter* ActorCharacter;
 
@@ -33,5 +36,5 @@ public:
 	//UArmorDescriptor* armors;
 	
 public:
-	void Init(FString BPClassName);
+	void Init(FString BPClassName, FName name);
 };
