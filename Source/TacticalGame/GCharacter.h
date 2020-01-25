@@ -4,8 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
-#include "FTile.h"
 #include "GCharacter.generated.h"
+
+struct FTile;
 
 UCLASS()
 class TACTICALGAME_API AGCharacter : public ACharacter
@@ -22,7 +23,6 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -37,5 +37,4 @@ public:
 	void Melee(AGCharacter* Enemy);
 	void GetDamage(float Damage);
 	void MoveTo(FTile Tile);
-
 };

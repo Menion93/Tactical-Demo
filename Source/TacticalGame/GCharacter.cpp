@@ -3,6 +3,7 @@
 
 #include "GCharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "FTile.h"
 #include "GameFramework/SpringArmComponent.h"
 
 
