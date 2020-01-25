@@ -1,14 +1,19 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GCharacter.h"
+#include "APickable.h"
 #include "FTile.generated.h"
+
+class AGCharacter;
+class AAPickable;
 
 USTRUCT()
 struct FTileIndex
 {
 	GENERATED_BODY()
 
-		UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere)
 		int X;
 
 	UPROPERTY(EditAnywhere)
@@ -44,6 +49,11 @@ struct FTileIndex
 	{
 		return FString::Printf(TEXT("(%d, %d)"), X, Y);
 	}
+
+	FVector ToVector()
+	{
+		return FVector(X, Y, 0);
+	}
 };
 
 USTRUCT()
@@ -62,11 +72,12 @@ struct FTile
 	
 	UPROPERTY(EditAnywhere)
 		FVector SurfaceNormal = FVector(0, 0, 0);
+
+	AGCharacter* Character = nullptr;
+	AAPickable* Pickable = nullptr;
 	
 	TMap<FTileIndex, TPair<FTile*, float>> Direction2Neighbours;
 
 	UPROPERTY(EditAnywhere)
 		bool IsCover = false;
 };
-
-
