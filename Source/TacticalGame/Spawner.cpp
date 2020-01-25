@@ -31,24 +31,25 @@ void ASpawner::SpawnCharacters(bool SnapToGrid)
 {
 
 	ATacticalGameGameMode* GameMode = Cast<ATacticalGameGameMode>(GetWorld()->GetAuthGameMode());
-
-	for (int pos = 0; pos < GameMode->Players.Num(); pos++)
+	TArray<UCharacterState*> Team = GameMode->Party->GetSelectedTeam();
+	for (int pos = 0; pos < Team.Num(); pos++)
 	{
 		UWorld* World = GetWorld();
 
 		if (World && Spawns.Num() > pos)
 		{
 			AControllableCharacter* Character = World->SpawnActor<AControllableCharacter>(
-				GameMode->Players[pos]->ActorCharacterClass, 
+				Team[pos]->ActorCharacterClass, 
 				Spawns[pos]->GetActorLocation(), 
 				FRotator::ZeroRotator);
 
-			GameMode->Players[pos]->ActorCharacter = Character;
+			Team[pos]->ActorCharacter = Character;
 
 			if (SnapToGrid)
 			{
 				FTile* Tile = GameMode->GameDirector->TileMap->SnapToGrid(Character);
 				Character->CurrentTile = Tile;
+				Tile->Character = Character;
 			}
 		}
 	}

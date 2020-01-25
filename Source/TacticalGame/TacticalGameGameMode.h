@@ -9,6 +9,7 @@
 #include "Inventory.h"
 #include "BattleManager.h"
 #include "CharacterState.h"
+#include "Party.h"
 #include "TacticalGameGameMode.generated.h"
 
 
@@ -35,9 +36,10 @@ public:
 	UGameDirector* GameDirector;
 
 	UPROPERTY()
-	UInventory* Inventory;
+	UParty* Party;
 
-	TArray<UCharacterState*> Players;
+	UPROPERTY()
+	UInventory* Inventory;
 
 	UPROPERTY()
 	UBattleManager* BattleManager;
