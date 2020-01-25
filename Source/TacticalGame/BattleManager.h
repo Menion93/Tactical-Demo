@@ -6,10 +6,17 @@
 #include "GameFramework/GameStateBase.h"
 #include "BaseEnemyAIController.h"
 #include "CharacterState.h"
+#include "ControllableCharacter.h"
 #include "GridUtils.h"
 #include "Action.h"
 #include "BSMState.h"
+#include "BSMEnemyLockedState.h"
+#include "BSMCharacterSelectedState.h"
+#include "BSMDeselectedState.h"
+#include "BSMTileSelectedState.h"
 #include "BattleManager.generated.h"
+
+class ATacticalGameGameMode;
 
 UENUM(BlueprintType)
 enum class CombatStateE : uint8
@@ -18,7 +25,6 @@ enum class CombatStateE : uint8
 	CHARACTER_SELECTED UMETA(DisplayName = "Character Selected"),
 	ENEMY_LOCKED UMETA(DisplayName = "Enemy Locked"),
 	TILE_SELECTED UMETA(DisplayName = "Tile Selected"),
-
 };
 /**
  * 
@@ -33,29 +39,41 @@ public:
 
 	bool GridEnabled;
 	bool PlayerTurn;
-	int CurrentCharacter;
+
+	ATacticalGameGameMode* GameMode;
+	AControllableCharacter* CurrentCharacter;
 
 	CombatStateE CurrentState;
 
-	TMap<UCharacterState*, DijkstraOutput> Player2Paths;
-	TMap<UCharacterState*, bool> Player2Turn;
+	TMap<FName, DijkstraOutput> Player2Paths;
+	TMap<FName, bool> Player2Turn;
 
 	UPROPERTY()
-	TMap<CombatStateE, UBSMState*> State2Method;
+	TMap<CombatStateE, UBSMState*> StateMachine;
 
-	UPROPERTY()
 	AGPlayerController* Input;
 
 	AATileMapSet* TileMap;
-
 	FTile* SelectedTile;
 
 	UPROPERTY()
 	UAction* CurrentAction = nullptr;
+
+	UPROPERTY()
+	UBSMDeselectedState* DeselectedState;
+
+	UPROPERTY()
+	UBSMCharacterSelectedState* CharacterSelectedState;
+
+	UPROPERTY()
+	UBSMEnemyLockedState* EnemyLockedState;
+
+	UPROPERTY()
+	UBSMTileSelectedState* TileSelectedState;
 	
 public:
 	UFUNCTION()
-		void ToggleBattleMode(bool mode);
+	void ToggleBattleMode(bool mode);
 
 	void PlayTurn();
 	void Init();
@@ -64,6 +82,5 @@ public:
 	bool IsBattleEnded();
 	void EndTurn();
 	void EndBattle();
-	void ResetStateMachine(FTile* CurrentTile);
-
+	void ResetStateMachine();
 };

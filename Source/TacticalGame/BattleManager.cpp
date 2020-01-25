@@ -1,11 +1,9 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "BattleManager.h"
+#include "GridUtils.h"
 #include "TacticalGameGameMode.h"
-#include "BSMEnemyLockedState.h"
-#include "BSMCharacterSelectedState.h"
-#include "BSMDeselectedState.h"
-#include "BSMTileSelectedState.h"
+
 
 UBattleManager::UBattleManager()
 {
@@ -15,22 +13,23 @@ UBattleManager::UBattleManager()
 
 void UBattleManager::Init()
 {
-	UBSMDeselectedState* DeselectedState = NewObject<UBSMDeselectedState>(this, TEXT("DeselectedState"));
-	UBSMCharacterSelectedState* CharacterSelectedState = NewObject<UBSMCharacterSelectedState>(this, TEXT("CharacterSelectedState"));
-	UBSMEnemyLockedState* EnemyLockedState = NewObject<UBSMEnemyLockedState>(this, TEXT("EnemyLockedState"));
-	UBSMTileSelectedState* TileSelectedState = NewObject<UBSMTileSelectedState>(this, TEXT("TileSelectedState"));
+	DeselectedState = NewObject<UBSMDeselectedState>(this, TEXT("DeselectedState"));
+	CharacterSelectedState = NewObject<UBSMCharacterSelectedState>(this, TEXT("CharacterSelectedState"));
+	EnemyLockedState = NewObject<UBSMEnemyLockedState>(this, TEXT("EnemyLockedState"));
+	TileSelectedState = NewObject<UBSMTileSelectedState>(this, TEXT("TileSelectedState"));
 
 	DeselectedState->Init();
 	CharacterSelectedState->Init();
 	EnemyLockedState->Init();
 	TileSelectedState->Init();
 
-	State2Method.Emplace(CombatStateE::DESELECTED_STATE, DeselectedState);
-	State2Method.Emplace(CombatStateE::ENEMY_LOCKED, EnemyLockedState);
-	State2Method.Emplace(CombatStateE::TILE_SELECTED, TileSelectedState);
-	State2Method.Emplace(CombatStateE::CHARACTER_SELECTED, CharacterSelectedState);
-}
+	StateMachine.Emplace(CombatStateE::DESELECTED_STATE, DeselectedState);
+	StateMachine.Emplace(CombatStateE::ENEMY_LOCKED, EnemyLockedState );
+	StateMachine.Emplace(CombatStateE::TILE_SELECTED, TileSelectedState);
+	StateMachine.Emplace(CombatStateE::CHARACTER_SELECTED, CharacterSelectedState);
 
+	GameMode = Cast<ATacticalGameGameMode>(GetWorld()->GetAuthGameMode());
+}
 
 void UBattleManager::ToggleBattleMode(bool mode)
 {
@@ -60,7 +59,7 @@ void UBattleManager::PlayTurn()
 	// Let the player choose an action
 	else if (PlayerTurn)
 	{
-		CurrentAction = State2Method[CurrentState]->PlayState();
+		CurrentAction = StateMachine[CurrentState]->PlayState();
 	}
 	// Let the AI choose an action
 	else
@@ -77,19 +76,23 @@ void UBattleManager::InitBattleState(bool IsPlayerTurn)
 	// Update current Tile
 	if (PlayerTurn)
 	{
-		ATacticalGameGameMode* GameMode = Cast<ATacticalGameGameMode>(GetWorld()->GetAuthGameMode());
-		ResetStateMachine(GameMode->Players[0]->ActorCharacter->CurrentTile);
-		GameMode->GameDirector->Camera->MoveToTile(SelectedTile);
+		ResetStateMachine();
 	}
+
+	// Snap Players to grid
+
+	// Init player health and equip
 }
 	
 
 void UBattleManager::EndTurn()
 {
-	for (auto& output : Player2Turn)
+	if (!PlayerTurn)
 	{
-		output.Value = false;
+		ResetStateMachine();
 	}
+
+	PlayerTurn = !PlayerTurn;
 }
 
 bool UBattleManager::IsTurnEnded()
@@ -114,9 +117,9 @@ bool UBattleManager::IsBattleEnded()
 	}
 	else
 	{
-		for (auto player : Player2Turn)
+		for (auto player : GameMode->Party->GetSelectedTeam())
 		{
-			BattleEnded &= player.Key->CurrentHealth <= 0;
+			BattleEnded &= player->CurrentHealth <= 0;
 		}
 	}
 
@@ -128,8 +131,23 @@ void UBattleManager::EndBattle()
 	GridEnabled = false;
 }
 
-void UBattleManager::ResetStateMachine(FTile* CurrentTile)
+void UBattleManager::ResetStateMachine()
 {
+	SelectedTile = GameMode->Party->GetSelectedTeam()[0]->ActorCharacter->CurrentTile;
+	GameMode->GameDirector->Camera->MoveToTile(SelectedTile);
 	CurrentState = CombatStateE::DESELECTED_STATE;
-	SelectedTile = CurrentTile;
+
+	Player2Paths = TMap<FName, DijkstraOutput>();
+	Player2Turn = TMap<FName, bool>();
+
+	for (auto Char : GameMode->Party->GetSelectedTeam())
+	{
+		if (Char->CurrentHealth > 0)
+		{
+			Player2Paths.Emplace(Char->Name, UGridUtils::GetShortestPaths(Char->ActorCharacter->CurrentTile, 99));
+			Player2Turn.Emplace(Char->Name, false);
+		}
+	}
+
+	UE_LOG(LogTemp, Warning, TEXT("%d"), Player2Paths[GameMode->Party->GetSelectedTeam()[0]->Name].Num())
 }

@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "UObject/NoExportTypes.h"
 #include "BSMState.h"
 #include "BSMCharacterSelectedState.generated.h"
 
@@ -17,8 +18,16 @@ class TACTICALGAME_API UBSMCharacterSelectedState : public UBSMState
 public:
 	UBSMCharacterSelectedState();
 
+	bool CooldownMovementGrid;
+	FTimerHandle timerHandle;
+	bool AxisReleased;
+	float time;
+
 public:
 	virtual UAction* PlayState() override;
+
+private:
+	void ResetCooldownMovementGrid();
 
 	
 };

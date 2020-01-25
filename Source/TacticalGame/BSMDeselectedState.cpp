@@ -14,12 +14,18 @@ UBSMDeselectedState::UBSMDeselectedState()
 
 UAction* UBSMDeselectedState::PlayState()
 {
-	UAction* action = NewObject<UAction>(this, TEXT("Action"));
-
+	
 	// Try to select current tile
 	if (Input->A)
 	{
-
+		if (BattleManager->SelectedTile->Character)
+		{
+			// this will show an aura or spawn a decal under the character
+			AControllableCharacter* Character = Cast<AControllableCharacter>(BattleManager->SelectedTile->Character);
+			Character->Selected();
+			BattleManager->CurrentCharacter = Character;
+			BattleManager->CurrentState = CombatStateE::CHARACTER_SELECTED;
+		}
 	}
 
 	// Move Cursor to Different Character
@@ -90,24 +96,3 @@ void UBSMDeselectedState::ResetCooldownMovementGrid()
 	CooldownMovementGrid = false;
 	time = 0.1;
 }
-
-//UAction* UBattleStateMachine::CharacterSelected()
-//{
-//	UAction* action = NewObject<UAction>(this, TEXT("Action"));
-//
-//	return action;
-//}
-//
-//UAction* UBattleStateMachine::EnemyLocked()
-//{
-//	UAction* action = NewObject<UAction>(this, TEXT("Action"));
-//
-//	return action;
-//}
-//
-//UAction* UBattleStateMachine::TileSelected()
-//{
-//	UAction* action = NewObject<UAction>(this, TEXT("Action"));
-//
-//	return action;
-//}
