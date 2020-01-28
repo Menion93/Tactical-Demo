@@ -182,6 +182,9 @@
     <ClCompile Include="..\..\Source\TacticalGame\Formation.cpp">
       <Filter>Source\TacticalGame\Party</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\TacticalGame\GridDrawer.cpp">
+      <Filter>Source\TacticalGame\Grid</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Source\TacticalGame\BaseEnemyAIController.h">
@@ -285,6 +288,9 @@
     </ClInclude>
     <ClInclude Include="..\..\Source\TacticalGame\Formation.h">
       <Filter>Source\TacticalGame\Party</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\TacticalGame\GridDrawer.h">
+      <Filter>Source\TacticalGame\Grid</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

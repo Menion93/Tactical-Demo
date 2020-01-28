@@ -319,7 +319,9 @@
     <ClInclude Include="..\..\Source\TacticalGame\GCharacter.h" />
     <ClCompile Include="..\..\Source\TacticalGame\GPlayerController.cpp" />
     <ClInclude Include="..\..\Source\TacticalGame\GPlayerController.h" />
+    <ClCompile Include="..\..\Source\TacticalGame\GridDrawer.cpp" />
     <ClCompile Include="..\..\Source\TacticalGame\GridUtils.cpp" />
+    <ClInclude Include="..\..\Source\TacticalGame\GridDrawer.h" />
     <ClInclude Include="..\..\Source\TacticalGame\GridUtils.h" />
     <ClCompile Include="..\..\Source\TacticalGame\Inventory.cpp" />
     <ClInclude Include="..\..\Source\TacticalGame\Inventory.h" />
