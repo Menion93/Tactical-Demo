@@ -41,8 +41,16 @@ class TACTICALGAME_API UGridUtils : public UObject
 public:
 		static DijkstraOutput GetShortestPaths(FTile* CurrentTile, int PathLenght);
 
-		static TArray<TPair<FVector, FVector>> GetPerimeterSegments(TArray<FDijkstraNode*> Nodes, int Distance, float CellSize, float ZOffset);
+		static TArray<FVector> GetPerimeterPoints(TArray<FDijkstraNode*> Nodes, int Distance, float CellSize, float ZOffset);
 
 		static void InitStruct(FDijkstraNode &OutNode, FTile* tile, FDijkstraNode* prev, float distance);
 	
+		static void BuildGrid(AActor* Map,
+			TMap<FTileIndex, FTile> &TilesMap,
+			TArray<UDecalComponent*> &DebugDecals,
+			UMaterialInterface* DecalMaterial,
+			int Rows,
+			int Columns,
+			int CellSize,
+			bool DrawLinesInEditor);
 };

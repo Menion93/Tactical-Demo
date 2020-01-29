@@ -11,9 +11,12 @@ UGridDrawer::UGridDrawer()
 
 }
 
-void UGridDrawer::DrawPerimeter(TArray<TPair<FVector, FVector>> segments, FLinearColor Color, float Tickness)
+void UGridDrawer::DrawPerimeter(TArray<FVector> Points)
 {
-
+	for (auto p : Points)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s"), *p.ToString())
+	}
 }
 
 

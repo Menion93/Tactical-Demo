@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
-#include "Components/SplineComponent.h"
 #include "GridDrawer.generated.h"
 
 /**
@@ -18,16 +17,8 @@ class TACTICALGAME_API UGridDrawer : public UObject
 public:
 	UGridDrawer();
 
-	FPrimitiveDrawInterface* PDI;
-
-	UPROPERTY()
-	USplineComponent* Perimeter;
-
-	UPROPERTY()
-	USplineComponent* Path;
-
 public:
-	void DrawPerimeter(TArray<TPair<FVector, FVector>> segments, FLinearColor Color, float Tickness);
+	void DrawPerimeter(TArray<FVector> Points);
 	void DrawPath(TArray<FVector>);
 
 };

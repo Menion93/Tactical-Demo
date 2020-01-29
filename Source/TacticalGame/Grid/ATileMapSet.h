@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "Components/BoxComponent.h"
 #include "FTile.h"
+#include "Components/SplineComponent.h"
 #include "ATileMapSet.generated.h"
 
 UCLASS()
@@ -50,6 +51,12 @@ public:
 	UPROPERTY()
 	UMaterialInterface* DecalMaterial;
 
+	UPROPERTY()
+	USplineComponent* Perimeter;
+
+	UPROPERTY()
+	USplineComponent* Path;
+
 	float Height;
 	float Width;
 
@@ -74,7 +81,6 @@ public:
 	FTile* GetTileFromNearestPosition(FVector NearestPos);
 	FTile* SnapToGrid(AActor* actor);
 
-	void BuildGrid();
 	void SetCursorToTile(FTile* Tile);
 	void ShowCursor(bool show);
 };
