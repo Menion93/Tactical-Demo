@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "ATileMapSet.h"
+#include "Grid/ATileMapSet.h"
 #include "Spawner.generated.h"
 
 UCLASS()
