@@ -14,4 +14,16 @@ class TACTICALGAME_API UShieldDescriptor : public UObject
 {
 	GENERATED_BODY()
 	
+
+public:
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ShieldStat")
+		int BonusShield;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ShieldStat")
+		int BonusHealth;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ShieldStat")
+		char ShieldType;
+
 };
