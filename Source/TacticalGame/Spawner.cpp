@@ -4,8 +4,8 @@
 #include "Spawner.h"
 #include "Engine/World.h"
 #include "UObject/ConstructorHelpers.h"
-#include "TacticalGameGameMode.h"
-#include "ControllableCharacter.h"
+#include "Globals/TacticalGameGameMode.h"
+#include "Characters/ControllableCharacter.h"
 
 // Sets default values
 ASpawner::ASpawner()
