@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
+#include "Characters/CharacterState.h"
 #include "Action.generated.h"
 
 /**
@@ -16,6 +17,9 @@ class TACTICALGAME_API UAction : public UObject
 	
 public:
 	UAction();
+
+	int ActionPoints;
+	UCharacterState* Character;
 
 public:
 	bool PlayAction();

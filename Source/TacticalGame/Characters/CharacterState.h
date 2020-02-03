@@ -27,6 +27,7 @@ public:
 
 	float CurrentHealth;
 	float Health;
+	int ActionPoints;
 
 	UPROPERTY()
 	UBag* Bag;
