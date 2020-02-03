@@ -9,11 +9,11 @@
 #include "Characters/ControllableCharacter.h"
 #include "Grid/GridUtils.h"
 #include "Action.h"
-#include "BSMState.h"
-#include "BSMEnemyLockedState.h"
-#include "BSMCharacterSelectedState.h"
-#include "BSMDeselectedState.h"
-#include "BSMTileSelectedState.h"
+#include "./BattleStateMachineStates/BSMState.h"
+#include "./BattleStateMachineStates/BSMEnemyLockedState.h"
+#include "./BattleStateMachineStates/BSMCharacterSelectedState.h"
+#include "./BattleStateMachineStates/BSMDeselectedState.h"
+#include "./BattleStateMachineStates/BSMTileSelectedState.h"
 #include "BattleManager.generated.h"
 
 class ATacticalGameGameMode;
@@ -37,7 +37,6 @@ class TACTICALGAME_API UBattleManager : public UObject
 public:
 	UBattleManager();
 
-	bool GridEnabled;
 	bool PlayerTurn;
 
 	ATacticalGameGameMode* GameMode;
@@ -46,7 +45,7 @@ public:
 	CombatStateE CurrentState;
 
 	TMap<FName, DijkstraOutput> Player2Paths;
-	TMap<FName, bool> Player2Turn;
+	TMap<FName, int> Player2ActionPoints;
 
 	UPROPERTY()
 	TMap<CombatStateE, UBSMState*> StateMachine;

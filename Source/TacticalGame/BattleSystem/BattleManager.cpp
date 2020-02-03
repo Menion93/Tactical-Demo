@@ -7,7 +7,6 @@
 
 UBattleManager::UBattleManager()
 {
-	GridEnabled = true;
 	CurrentState = CombatStateE::DESELECTED_STATE;
 }
 
@@ -33,7 +32,7 @@ void UBattleManager::Init()
 
 void UBattleManager::ToggleBattleMode(bool mode)
 {
-	GridEnabled = mode;
+
 }
 
 void UBattleManager::PlayTurn()
@@ -44,10 +43,16 @@ void UBattleManager::PlayTurn()
 		// Play and see if action has ended
 		if (CurrentAction->PlayAction())
 		{
+			if (PlayerTurn)
+			{
+				Player2ActionPoints[CurrentAction->Character->Name] -= CurrentAction->ActionPoints;
+			}
+
 			if (IsBattleEnded())
 			{
 				EndBattle();
 			} 
+
 			else if (IsTurnEnded())
 			{
 				EndTurn();
@@ -71,7 +76,6 @@ void UBattleManager::PlayTurn()
 void UBattleManager::InitBattleState(bool IsPlayerTurn)
 {
 	PlayerTurn = IsPlayerTurn;
-	GridEnabled = true;
 
 	// Update current Tile
 	if (PlayerTurn)
@@ -97,14 +101,14 @@ void UBattleManager::EndTurn()
 
 bool UBattleManager::IsTurnEnded()
 {
-	bool NoTurnAvailable = true;
+	bool ArePointsLeft = true;
 
-	for (auto p2t : Player2Turn)
+	for (auto p2t : Player2ActionPoints)
 	{
-		NoTurnAvailable &= p2t.Value;
+		ArePointsLeft |= p2t.Value > 0;
 	}
 
-	return NoTurnAvailable;
+	return ArePointsLeft;
 }
 
 bool UBattleManager::IsBattleEnded()
@@ -128,7 +132,7 @@ bool UBattleManager::IsBattleEnded()
 
 void UBattleManager::EndBattle()
 {
-	GridEnabled = false;
+
 }
 
 void UBattleManager::ResetStateMachine()
@@ -137,15 +141,15 @@ void UBattleManager::ResetStateMachine()
 	GameMode->GameDirector->Camera->MoveToTile(SelectedTile);
 	CurrentState = CombatStateE::DESELECTED_STATE;
 
+	// Need to destroy older struct?
 	Player2Paths = TMap<FName, DijkstraOutput>();
-	Player2Turn = TMap<FName, bool>();
 
 	for (auto Char : GameMode->Party->GetSelectedTeam())
 	{
 		if (Char->CurrentHealth > 0)
 		{
 			Player2Paths.Emplace(Char->Name, UGridUtils::GetShortestPaths(Char->ActorCharacter->CurrentTile, 99));
-			Player2Turn.Emplace(Char->Name, false);
+			Player2ActionPoints.Add(Char->Name, Char->ActionPoints);
 		}
 	}
 

@@ -7,7 +7,7 @@
 #include "Grid/FTile.h"
 #include "Engine/World.h"
 #include "Grid/ATileMapSet.h"
-#include "Action.h"
+#include "BattleSystem/Action.h"
 #include "Globals/GPlayerController.h"
 #include "BSMState.generated.h"
 
