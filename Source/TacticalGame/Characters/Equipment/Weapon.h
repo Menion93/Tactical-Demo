@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Characters/Equipment/WeaponCore.h"
 #include "Weapon.generated.h"
 
 UCLASS()
@@ -14,6 +15,8 @@ class TACTICALGAME_API AWeapon : public AActor
 public:	
 	// Sets default values for this actor's properties
 	AWeapon();
+
+	UWeaponCore* WeaponCore;
 
 protected:
 	// Called when the game starts or when spawned
