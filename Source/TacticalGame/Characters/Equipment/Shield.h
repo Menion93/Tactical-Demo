@@ -15,6 +15,16 @@ public:
 	// Sets default values for this actor's properties
 	UShield();
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ShieldStat")
+		int Batteries;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ShieldStat")
+		int HealthPerBattery;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ShieldStat")
+		uint8 ShieldType;
+
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
