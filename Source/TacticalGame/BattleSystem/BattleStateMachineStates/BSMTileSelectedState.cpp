@@ -5,9 +5,7 @@
 
 UBSMTileSelectedState::UBSMTileSelectedState(){}
 
-UAction* UBSMTileSelectedState::PlayState()
+void UBSMTileSelectedState::PlayState()
 {
-	UAction* action = NewObject<UAction>(this, TEXT("Action"));
-	return action;
 
 }

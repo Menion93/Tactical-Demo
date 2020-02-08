@@ -24,7 +24,7 @@ public:
 	float time;
 
 public:
-	virtual UAction* PlayState() override;
+	virtual void PlayState() override;
 
 private:
 	void ResetCooldownMovementGrid();

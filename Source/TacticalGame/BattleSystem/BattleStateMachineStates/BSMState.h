@@ -7,7 +7,6 @@
 #include "Grid/FTile.h"
 #include "Engine/World.h"
 #include "Grid/ATileMapSet.h"
-#include "BattleSystem/Action.h"
 #include "Globals/GPlayerController.h"
 #include "BSMState.generated.h"
 
@@ -33,5 +32,5 @@ protected:
 public:
 	virtual void Init();
 
-	virtual UAction* PlayState();	
+	virtual void PlayState();	
 };

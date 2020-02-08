@@ -7,10 +7,8 @@
 
 UBSMCharacterSelectedState::UBSMCharacterSelectedState(){}
 
-UAction* UBSMCharacterSelectedState::PlayState()
+void UBSMCharacterSelectedState::PlayState()
 {
-	UAction* action = NewObject<UAction>(this, TEXT("Action"));
-
 	// Deselect the character
 	if (Input->B)
 	{
@@ -43,6 +41,7 @@ UAction* UBSMCharacterSelectedState::PlayState()
 				ATacticalGameGameMode* GameMode = Cast<ATacticalGameGameMode>(GetWorld()->GetAuthGameMode());
 
 				BattleManager->SelectedTile = BattleManager->SelectedTile->Direction2Neighbours[Index].Key;
+				//BattleManager->TileMap->Drawer->
 				TileMap->SetCursorToTile(BattleManager->SelectedTile);
 				GameMode->GameDirector->Camera->MoveToTile(BattleManager->SelectedTile);
 
@@ -59,8 +58,6 @@ UAction* UBSMCharacterSelectedState::PlayState()
 	{
 		AxisReleased = true;
 	}
-
-	return nullptr;
 
 }
 

@@ -18,7 +18,7 @@ public:
 	UBSMTileSelectedState();
 
 public:
-	virtual UAction* PlayState() override;
+	virtual void PlayState() override;
 
 	
 };

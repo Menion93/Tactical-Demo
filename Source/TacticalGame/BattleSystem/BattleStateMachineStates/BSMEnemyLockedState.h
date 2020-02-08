@@ -20,7 +20,7 @@ public:
 
 
 public:
-	virtual UAction* PlayState() override;
+	virtual void PlayState() override;
 
 
 };
