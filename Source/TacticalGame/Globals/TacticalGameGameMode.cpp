@@ -50,6 +50,8 @@ void ATacticalGameGameMode::Tick(float DeltaSeconds)
 
 void ATacticalGameGameMode::SwitchToBattleMode(bool IsPlayerTurn)
 {
+	// Here put Dynamic Grid Creation
+
 	CurrentMode = GameModeE::GSE_Battle;
 	BattleManager->InitBattleState(IsPlayerTurn);
 }
