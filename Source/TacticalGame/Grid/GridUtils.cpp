@@ -7,48 +7,52 @@
 #include "Kismet/GameplayStatics.h"
 
 
-DijkstraOutput UGridUtils::GetShortestPaths(FTile* CurrentTile, int PathLenght)
+void UGridUtils::GetShortestPaths(DijkstraOutput &output, FTile* CurrentTile, int PathLenght)
 {
-	DijkstraOutput output;
-
-	TArray<FDijkstraNode*> Q;
+	TArray<FDijkstraNode> Q;
 
 	FDijkstraNode Source;
 	InitStruct(Source, CurrentTile, nullptr, 0);
 
-	Q.Add(&Source);
+	Q.Add(Source);
 
 	while (Q.Num() > 0)
 	{
 		Q.Sort();
-		FDijkstraNode* node = Q[0];
+		FDijkstraNode node = Q[0];
 		Q.RemoveAt(0);
 
-		output.Add(node->Tile->Index, node);
+		output.Add(node.Tile->Index, node);
 
-		for (auto pair : node->Tile->Direction2Neighbours)
+
+		for (auto& pair : node.Tile->Direction2Neighbours)
 		{
 			TPair<FTile*, float> tile2weight = pair.Value;
 
-			if (node->Distance + tile2weight.Value > PathLenght) continue;
+			if (node.Distance + tile2weight.Value > PathLenght) continue;
 
 			if (!output.Contains(tile2weight.Key->Index)) 
 			{
 				FDijkstraNode Neighbour;
-				InitStruct(Neighbour, tile2weight.Key, node, node->Distance + tile2weight.Value);
+				InitStruct(Neighbour, tile2weight.Key, &node, node.Distance + tile2weight.Value);
 
-				Q.Add(&Neighbour);
-				output.Add(tile2weight.Key->Index, &Neighbour);
+				Q.Add(Neighbour);
+				output.Add(tile2weight.Key->Index, Neighbour);
 			} 
-			else if(node->Distance + tile2weight.Value < output[tile2weight.Key->Index]->Distance)
+			else if(node.Distance + tile2weight.Value < output[tile2weight.Key->Index].Distance)
 			{
-				output[tile2weight.Key->Index]->Distance = node->Distance + tile2weight.Value;
-				output[tile2weight.Key->Index]->Prev = node;
+				output[tile2weight.Key->Index].Distance = node.Distance + tile2weight.Value;
+				output[tile2weight.Key->Index].Prev = &node;
 			}
 		}
 	}
+}
 
-	return output;
+void UGridUtils::InitStruct(FDijkstraNode &OutNode, FTile* tile, FDijkstraNode* prev, float distance)
+{
+	OutNode.Tile = tile;
+	OutNode.Prev = prev;
+	OutNode.Distance = distance;
 }
 
 TArray<FVector> UGridUtils::GetPerimeterPoints(TArray<FDijkstraNode*> Nodes, int Distance, float CellSize, float ZOffset)
@@ -73,6 +77,12 @@ TArray<FVector> UGridUtils::GetPerimeterPoints(TArray<FDijkstraNode*> Nodes, int
 	// Trace a line if a disconnection is found in tiles < than a certain distance --> perimeter
 	for (auto Node : Nodes)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("yolo2d"));
+		UE_LOG(LogTemp, Warning, TEXT("%d"), Node->Distance);
+		UE_LOG(LogTemp, Warning, TEXT("X is %d"), Node->Tile->Index.X);
+		UE_LOG(LogTemp, Warning, TEXT("Y is %d"), Node->Tile->Index.Y);
+
+
 		if (FMath::FloorToInt(Node->Distance) <= Distance)
 		{
 			for (auto Direction : Directions)
@@ -100,6 +110,7 @@ TArray<FVector> UGridUtils::GetPerimeterPoints(TArray<FDijkstraNode*> Nodes, int
 			}
 		}
 	}
+	UE_LOG(LogTemp, Warning, TEXT("yolo3"));
 
 	// Simplify Segments
 	Result.Add(Segments[0].Key);
@@ -122,14 +133,6 @@ TArray<FVector> UGridUtils::GetPerimeterPoints(TArray<FDijkstraNode*> Nodes, int
 		}
 	}
 	return Result;
-}
-
-
-void UGridUtils::InitStruct(FDijkstraNode &OutNode, FTile* tile, FDijkstraNode* prev, float distance)
-{
-	OutNode.Tile = tile;
-	OutNode.Prev = prev;
-	OutNode.Distance = distance;
 }
 
 

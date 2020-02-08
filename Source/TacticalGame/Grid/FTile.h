@@ -1,7 +1,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Characters/GCharacter.h"
 #include "Items/APickable.h"
 #include "FTile.generated.h"
 
@@ -80,4 +79,9 @@ struct FTile
 
 	UPROPERTY(EditAnywhere)
 		bool IsCover = false;
+
+	FString ToString()
+	{
+		return FString::Printf(TEXT("%s"), *TileCenter.ToString());
+	}
 };
