@@ -31,7 +31,7 @@ public:
 	int CurrentActionPoints;
 
 	// Number of tiles per movement action
-	int MovementSpeed = 6;
+	int MovementSpeed = 1;
 
 
 	UPROPERTY()
@@ -43,5 +43,7 @@ public:
 	
 public:
 	void Init(FString BPClassName, FName name);
+
+	void ResetActionPoints();
 
 };
