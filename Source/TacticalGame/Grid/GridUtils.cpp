@@ -55,9 +55,21 @@ void UGridUtils::InitStruct(FDijkstraNode &OutNode, FTile* tile, FDijkstraNode* 
 	OutNode.Distance = distance;
 }
 
-TArray<FVector> UGridUtils::GetPerimeterPoints(TArray<FDijkstraNode*> Nodes, int Distance, float CellSize, float ZOffset)
+TArray<FVector> UGridUtils::GetPerimeterPoints(DijkstraOutput &output, int Distance, float CellSize, float ZOffset)
 {
-	TArray<TPair<FVector, FVector>> Segments;
+	TArray<FDijkstraNode*> Nodes;
+
+	for (auto& pair : output)
+	{
+		Nodes.Add(&pair.Value);
+	}
+
+	// Points of the perimeter 2 adjacent points. FVector2D instead of FVector are used becuse
+	// we need the vector to be integer and thus indexable
+	TMap<FTileIndex, TArray<FTileIndex>> Segments;
+
+	// Used to retrieve floating precision vectors from the integer representation, along with the Z axis
+	TMap<FTileIndex, FVector> Index2Vec;
 	TArray<FVector> Result;
 
 	FTileIndex OffSetU(1, 0);
@@ -77,19 +89,20 @@ TArray<FVector> UGridUtils::GetPerimeterPoints(TArray<FDijkstraNode*> Nodes, int
 	// Trace a line if a disconnection is found in tiles < than a certain distance --> perimeter
 	for (auto Node : Nodes)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("yolo2d"));
-		UE_LOG(LogTemp, Warning, TEXT("%d"), Node->Distance);
-		UE_LOG(LogTemp, Warning, TEXT("X is %d"), Node->Tile->Index.X);
-		UE_LOG(LogTemp, Warning, TEXT("Y is %d"), Node->Tile->Index.Y);
-
-
 		if (FMath::FloorToInt(Node->Distance) <= Distance)
 		{
+
 			for (auto Direction : Directions)
 			{
 				// if we find a wall, save the perimeter segment (2 points)
-				if (!Node->Tile->Direction2Neighbours.Contains(Direction))
+
+				if (!Node->Tile->Direction2Neighbours.Contains(Direction) || FMath::FloorToInt(output[Node->Tile->Index + Direction].Distance) > Distance)
 				{
+					if (Node->Tile->Direction2Neighbours.Contains(Direction))
+					{
+						UE_LOG(LogTemp, Warning, TEXT("%f"), output[Node->Tile->Index + Direction].Distance)
+					}
+
 					FVector WallMidPoint = Node->Tile->TileCenter + Direction.ToVector() * HalfCellSize;
 
 					FVector A;
@@ -105,33 +118,68 @@ TArray<FVector> UGridUtils::GetPerimeterPoints(TArray<FDijkstraNode*> Nodes, int
 						A = WallMidPoint + FVector::ForwardVector * HalfCellSize + ZVector;
 						B = WallMidPoint - FVector::ForwardVector * HalfCellSize + ZVector;
 					}
-					Segments.Emplace(TPair<FVector, FVector>(A, B));
+
+					FTileIndex AIndex(FMath::RoundToInt(A.X), FMath::RoundToInt(A.Y));
+					FTileIndex BIndex(FMath::RoundToInt(B.X), FMath::RoundToInt(B.Y));
+
+
+					if (!Segments.Contains(AIndex))
+					{
+						Segments.Emplace(AIndex, TArray<FTileIndex>());
+					}
+
+					if(!Segments.Contains(BIndex))
+					{
+						Segments.Emplace(BIndex, TArray<FTileIndex>());
+					}
+
+					Segments[AIndex].Emplace(BIndex);
+					Segments[BIndex].Emplace(AIndex);
+					Index2Vec.Emplace(AIndex, A);
+					Index2Vec.Emplace(BIndex, B);
 				}
 			}
 		}
 	}
-	UE_LOG(LogTemp, Warning, TEXT("yolo3"));
+	UE_LOG(LogTemp, Warning, TEXT("%d"), Segments.Num())
 
-	// Simplify Segments
-	Result.Add(Segments[0].Key);
-	Result.Add(Segments[0].Value);
+	FTileIndex PerimeterPointIndex;
 
-	for (int i=1; i<Segments.Num(); i++)
+	// Get first Point
+	for (auto& pair : Segments) 
 	{
-		for (int j = 1; j < Segments.Num(); j++)
+		PerimeterPointIndex = pair.Key;
+		break;
+	}
+
+	TArray<FTileIndex> PerimeterIndexes;
+	bool NewPointFound = true;
+
+	while (NewPointFound)
+	{
+		NewPointFound = false;
+
+		PerimeterIndexes.Emplace(PerimeterPointIndex);
+		TArray<FTileIndex> Neighbours = Segments[PerimeterPointIndex];
+		
+		UE_LOG(LogTemp, Warning, TEXT("%d"), Neighbours.Num())
+
+		for (auto& Neighbour : Neighbours)
 		{
-			if (Result[Result.Num()-1] == Segments[j].Key)
+			if (!PerimeterIndexes.Contains(Neighbour))
 			{
-				Result.Add(Segments[j].Key);
-				Result.Add(Segments[j].Value);
-			}
-			else if (Result[Result.Num() - 1] == Segments[j].Value)
-			{
-				Result.Add(Segments[j].Value);
-				Result.Add(Segments[j].Key);
+				PerimeterPointIndex = Neighbour;
+				NewPointFound = true;
+				break;
 			}
 		}
 	}
+
+	for (auto& Index : PerimeterIndexes)
+	{
+		Result.Emplace(Index2Vec[Index]);
+	}
+	//UE_LOG(LogTemp, Warning, TEXT("%d"), Nodes.Num())
 	return Result;
 }
 
@@ -223,15 +271,15 @@ void UGridUtils::BuildGrid(AActor* Map,
 
 	// Now link cells
 	FTileIndex OffSetU(1, 0);
-	FTileIndex OffSetL(0, 1);
+	FTileIndex OffSetR(0, 1);
 	FTileIndex OffSetIQuad(1, 1);
-	FTileIndex OffSet2Quad(-1, 1);
+	FTileIndex OffSet4Quad(-1, 1);
 
 	TArray<FTileIndex> Neighbour;
 	Neighbour.Add(OffSetU);
-	Neighbour.Add(OffSetL);
+	Neighbour.Add(OffSetR);
 	Neighbour.Add(OffSetIQuad);
-	Neighbour.Add(OffSet2Quad);
+	Neighbour.Add(OffSet4Quad);
 
 	for (auto& tile : TilesMap)
 	{

@@ -46,7 +46,7 @@ class TACTICALGAME_API UGridUtils : public UObject
 public:
 		static void GetShortestPaths(DijkstraOutput &output, FTile* CurrentTile, int PathLenght);
 
-		static TArray<FVector> GetPerimeterPoints(TArray<FDijkstraNode*> Nodes, int Distance, float CellSize, float ZOffset);
+		static TArray<FVector> GetPerimeterPoints(DijkstraOutput &output, int Distance, float CellSize, float ZOffset);
 
 		static void InitStruct(FDijkstraNode &OutNode, FTile* tile, FDijkstraNode* prev, float distance);
 	

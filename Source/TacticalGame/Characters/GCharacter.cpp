@@ -83,29 +83,20 @@ void AGCharacter::ComputeShortestPaths()
 {
 	UGridUtils::GetShortestPaths(ShortestPaths, CurrentTile, 9999);
 
-	for (auto& pair : ShortestPaths)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("result %s"), *pair.Value.Tile->ToString());
-		//values.Add(pair.Value);
-	}
+	//for (auto& pair : ShortestPaths)
+	//{
+	//	UE_LOG(LogTemp, Warning, TEXT("result %s"), *pair.Value.Tile->ToString());
+	//	//values.Add(pair.Value);
+	//}
 }
 
 
 void AGCharacter::ComputePerimeterPoints(int TilesPerMovementAction)
 {
-	TArray<FDijkstraNode*> values;
-
-	for (auto& pair : ShortestPaths)
-	{
-		//UE_LOG(LogTemp, Warning, TEXT("%s"), *pair.Value->Tile->ToString());
-		values.Add(&pair.Value);
-	}
-
-
 	ATacticalGameGameMode* GameMode = Cast<ATacticalGameGameMode>(GetWorld()->GetAuthGameMode());
 
 	PerimeterPoints = UGridUtils::GetPerimeterPoints(
-		values,
+		ShortestPaths,
 		TilesPerMovementAction,
 		GameMode->GameDirector->TileMap->CellSize,
 		GameMode->GameDirector->TileMap->PerimeterVOffset);
