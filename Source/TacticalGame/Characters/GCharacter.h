@@ -4,9 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "Grid/GridUtils.h"
 #include "GCharacter.generated.h"
 
-struct FTile;
+
 
 UCLASS()
 class TACTICALGAME_API AGCharacter : public ACharacter
@@ -18,6 +19,9 @@ public:
 	AGCharacter();
 
 	FTile* CurrentTile;
+
+	DijkstraOutput ShortestPaths;
+	TArray<FVector> PerimeterPoints;
 
 protected:
 	// Called when the game starts or when spawned
@@ -37,4 +41,7 @@ public:
 	void Melee(AGCharacter* Enemy);
 	void GetDamage(float Damage);
 	void MoveTo(FTile Tile);
+	void ComputeShortestPaths();
+	void ComputePerimeterPoints(int TilesPerMovementAction);
+	void DrawPerimeter();
 };

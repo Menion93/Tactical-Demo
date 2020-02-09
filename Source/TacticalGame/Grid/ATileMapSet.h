@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "Components/BoxComponent.h"
 #include "FTile.h"
+#include "GridDrawer.h"
 #include "Components/SplineComponent.h"
 #include "ATileMapSet.generated.h"
 
@@ -29,6 +30,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TileSettings")
 		float CellSize;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TileSettings")
+		float PerimeterVOffset;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TileSettings")
 		float VerticalHeight;
@@ -56,6 +60,9 @@ public:
 
 	UPROPERTY()
 	USplineComponent* Path;
+
+	UPROPERTY()
+	UGridDrawer* Drawer;
 
 	float Height;
 	float Width;

@@ -12,7 +12,7 @@ UBSMDeselectedState::UBSMDeselectedState()
 }
 
 
-UAction* UBSMDeselectedState::PlayState()
+void UBSMDeselectedState::PlayState()
 {
 	
 	// Try to select current tile
@@ -88,7 +88,6 @@ UAction* UBSMDeselectedState::PlayState()
 		AxisReleased = true;
 	}
 
-	return nullptr;
 }
 
 void UBSMDeselectedState::ResetCooldownMovementGrid()

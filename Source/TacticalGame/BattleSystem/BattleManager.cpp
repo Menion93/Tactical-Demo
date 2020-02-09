@@ -38,16 +38,12 @@ void UBattleManager::ToggleBattleMode(bool mode)
 void UBattleManager::PlayTurn()
 {
 	// if we already chose an action
-	if (CurrentAction)
+	if (CurrentAction.IsBound())
 	{
+		CurrentAction.ExecuteIfBound();
 		// Play and see if action has ended
-		if (CurrentAction->PlayAction())
+		if (HasActionEnded)
 		{
-			if (PlayerTurn)
-			{
-				Player2ActionPoints[CurrentAction->Character->Name] -= CurrentAction->ActionPoints;
-			}
-
 			if (IsBattleEnded())
 			{
 				EndBattle();
@@ -58,13 +54,14 @@ void UBattleManager::PlayTurn()
 				EndTurn();
 			}
 
-			CurrentAction = nullptr;
+			CurrentAction.Unbind();
+			HasActionEnded = false;
 		}
 	}
 	// Let the player choose an action
 	else if (PlayerTurn)
 	{
-		CurrentAction = StateMachine[CurrentState]->PlayState();
+		StateMachine[CurrentState]->PlayState();
 	}
 	// Let the AI choose an action
 	else
@@ -77,10 +74,19 @@ void UBattleManager::InitBattleState(bool IsPlayerTurn)
 {
 	PlayerTurn = IsPlayerTurn;
 
+	TArray<UCharacterState*> Characters = GameMode->Party->GetSelectedTeam();
+
+	for (auto character : Characters)
+	{
+		character->ActorCharacter->ComputeShortestPaths();
+		character->ActorCharacter->ComputePerimeterPoints(character->MovementSpeed);
+		character->ActorCharacter->DrawPerimeter();
+	}
+
 	// Update current Tile
 	if (PlayerTurn)
 	{
-		ResetStateMachine();
+		ResetToPlayerTurn();
 	}
 
 	// Snap Players to grid
@@ -93,7 +99,7 @@ void UBattleManager::EndTurn()
 {
 	if (!PlayerTurn)
 	{
-		ResetStateMachine();
+		ResetToPlayerTurn();
 	}
 
 	PlayerTurn = !PlayerTurn;
@@ -101,11 +107,11 @@ void UBattleManager::EndTurn()
 
 bool UBattleManager::IsTurnEnded()
 {
-	bool ArePointsLeft = true;
+	bool ArePointsLeft = false;
 
-	for (auto p2t : Player2ActionPoints)
+	for (auto character : GameMode->Party->GetSelectedTeam())
 	{
-		ArePointsLeft |= p2t.Value > 0;
+		ArePointsLeft |= character->CurrentActionPoints > 0;
 	}
 
 	return ArePointsLeft;
@@ -135,23 +141,29 @@ void UBattleManager::EndBattle()
 
 }
 
-void UBattleManager::ResetStateMachine()
+void UBattleManager::ResetToPlayerTurn()
 {
 	SelectedTile = GameMode->Party->GetSelectedTeam()[0]->ActorCharacter->CurrentTile;
 	GameMode->GameDirector->Camera->MoveToTile(SelectedTile);
 	CurrentState = CombatStateE::DESELECTED_STATE;
 
-	// Need to destroy older struct?
-	Player2Paths = TMap<FName, DijkstraOutput>();
-
 	for (auto Char : GameMode->Party->GetSelectedTeam())
 	{
 		if (Char->CurrentHealth > 0)
 		{
-			Player2Paths.Emplace(Char->Name, UGridUtils::GetShortestPaths(Char->ActorCharacter->CurrentTile, 99));
-			Player2ActionPoints.Add(Char->Name, Char->ActionPoints);
+			// reset action points
+			Char->ResetActionPoints();
 		}
 	}
 
-	UE_LOG(LogTemp, Warning, TEXT("%d"), Player2Paths[GameMode->Party->GetSelectedTeam()[0]->Name].Num())
+}
+
+void UBattleManager::EndCurrentAction()
+{
+	HasActionEnded = true;
+}
+
+UBattleManager::Action UBattleManager::GetActionDelegate()
+{
+	return CurrentAction;
 }

@@ -7,53 +7,69 @@
 #include "Kismet/GameplayStatics.h"
 
 
-DijkstraOutput UGridUtils::GetShortestPaths(FTile* CurrentTile, int PathLenght)
+void UGridUtils::GetShortestPaths(DijkstraOutput &output, FTile* CurrentTile, int PathLenght)
 {
-	DijkstraOutput output;
-
-	TArray<FDijkstraNode*> Q;
+	TArray<FDijkstraNode> Q;
 
 	FDijkstraNode Source;
 	InitStruct(Source, CurrentTile, nullptr, 0);
 
-	Q.Add(&Source);
+	Q.Add(Source);
 
 	while (Q.Num() > 0)
 	{
 		Q.Sort();
-		FDijkstraNode* node = Q[0];
+		FDijkstraNode node = Q[0];
 		Q.RemoveAt(0);
 
-		output.Add(node->Tile->Index, node);
+		output.Add(node.Tile->Index, node);
 
-		for (auto pair : node->Tile->Direction2Neighbours)
+
+		for (auto& pair : node.Tile->Direction2Neighbours)
 		{
 			TPair<FTile*, float> tile2weight = pair.Value;
 
-			if (node->Distance + tile2weight.Value > PathLenght) continue;
+			if (node.Distance + tile2weight.Value > PathLenght) continue;
 
 			if (!output.Contains(tile2weight.Key->Index)) 
 			{
 				FDijkstraNode Neighbour;
-				InitStruct(Neighbour, tile2weight.Key, node, node->Distance + tile2weight.Value);
+				InitStruct(Neighbour, tile2weight.Key, &node, node.Distance + tile2weight.Value);
 
-				Q.Add(&Neighbour);
-				output.Add(tile2weight.Key->Index, &Neighbour);
+				Q.Add(Neighbour);
+				output.Add(tile2weight.Key->Index, Neighbour);
 			} 
-			else if(node->Distance + tile2weight.Value < output[tile2weight.Key->Index]->Distance)
+			else if(node.Distance + tile2weight.Value < output[tile2weight.Key->Index].Distance)
 			{
-				output[tile2weight.Key->Index]->Distance = node->Distance + tile2weight.Value;
-				output[tile2weight.Key->Index]->Prev = node;
+				output[tile2weight.Key->Index].Distance = node.Distance + tile2weight.Value;
+				output[tile2weight.Key->Index].Prev = &node;
 			}
 		}
 	}
-
-	return output;
 }
 
-TArray<FVector> UGridUtils::GetPerimeterPoints(TArray<FDijkstraNode*> Nodes, int Distance, float CellSize, float ZOffset)
+void UGridUtils::InitStruct(FDijkstraNode &OutNode, FTile* tile, FDijkstraNode* prev, float distance)
 {
-	TArray<TPair<FVector, FVector>> Segments;
+	OutNode.Tile = tile;
+	OutNode.Prev = prev;
+	OutNode.Distance = distance;
+}
+
+TArray<FVector> UGridUtils::GetPerimeterPoints(DijkstraOutput &output, int Distance, float CellSize, float ZOffset)
+{
+	TArray<FDijkstraNode*> Nodes;
+
+	for (auto& pair : output)
+	{
+		Nodes.Add(&pair.Value);
+	}
+
+	// Points of the perimeter 2 adjacent points. FVector2D instead of FVector are used becuse
+	// we need the vector to be integer and thus indexable
+	TMap<FTileIndex, TArray<FTileIndex>> Segments;
+
+	// Used to retrieve floating precision vectors from the integer representation, along with the Z axis
+	TMap<FTileIndex, FVector> Index2Vec;
 	TArray<FVector> Result;
 
 	FTileIndex OffSetU(1, 0);
@@ -75,11 +91,18 @@ TArray<FVector> UGridUtils::GetPerimeterPoints(TArray<FDijkstraNode*> Nodes, int
 	{
 		if (FMath::FloorToInt(Node->Distance) <= Distance)
 		{
+
 			for (auto Direction : Directions)
 			{
 				// if we find a wall, save the perimeter segment (2 points)
-				if (!Node->Tile->Direction2Neighbours.Contains(Direction))
+
+				if (!Node->Tile->Direction2Neighbours.Contains(Direction) || FMath::FloorToInt(output[Node->Tile->Index + Direction].Distance) > Distance)
 				{
+					if (Node->Tile->Direction2Neighbours.Contains(Direction))
+					{
+						UE_LOG(LogTemp, Warning, TEXT("%f"), output[Node->Tile->Index + Direction].Distance)
+					}
+
 					FVector WallMidPoint = Node->Tile->TileCenter + Direction.ToVector() * HalfCellSize;
 
 					FVector A;
@@ -95,41 +118,69 @@ TArray<FVector> UGridUtils::GetPerimeterPoints(TArray<FDijkstraNode*> Nodes, int
 						A = WallMidPoint + FVector::ForwardVector * HalfCellSize + ZVector;
 						B = WallMidPoint - FVector::ForwardVector * HalfCellSize + ZVector;
 					}
-					Segments.Emplace(TPair<FVector, FVector>(A, B));
+
+					FTileIndex AIndex(FMath::RoundToInt(A.X), FMath::RoundToInt(A.Y));
+					FTileIndex BIndex(FMath::RoundToInt(B.X), FMath::RoundToInt(B.Y));
+
+
+					if (!Segments.Contains(AIndex))
+					{
+						Segments.Emplace(AIndex, TArray<FTileIndex>());
+					}
+
+					if(!Segments.Contains(BIndex))
+					{
+						Segments.Emplace(BIndex, TArray<FTileIndex>());
+					}
+
+					Segments[AIndex].Emplace(BIndex);
+					Segments[BIndex].Emplace(AIndex);
+					Index2Vec.Emplace(AIndex, A);
+					Index2Vec.Emplace(BIndex, B);
 				}
 			}
 		}
 	}
+	UE_LOG(LogTemp, Warning, TEXT("%d"), Segments.Num())
 
-	// Simplify Segments
-	Result.Add(Segments[0].Key);
-	Result.Add(Segments[0].Value);
+	FTileIndex PerimeterPointIndex;
 
-	for (int i=1; i<Segments.Num(); i++)
+	// Get first Point
+	for (auto& pair : Segments) 
 	{
-		for (int j = 1; j < Segments.Num(); j++)
+		PerimeterPointIndex = pair.Key;
+		break;
+	}
+
+	TArray<FTileIndex> PerimeterIndexes;
+	bool NewPointFound = true;
+
+	while (NewPointFound)
+	{
+		NewPointFound = false;
+
+		PerimeterIndexes.Emplace(PerimeterPointIndex);
+		TArray<FTileIndex> Neighbours = Segments[PerimeterPointIndex];
+		
+		UE_LOG(LogTemp, Warning, TEXT("%d"), Neighbours.Num())
+
+		for (auto& Neighbour : Neighbours)
 		{
-			if (Result[Result.Num()-1] == Segments[j].Key)
+			if (!PerimeterIndexes.Contains(Neighbour))
 			{
-				Result.Add(Segments[j].Key);
-				Result.Add(Segments[j].Value);
-			}
-			else if (Result[Result.Num() - 1] == Segments[j].Value)
-			{
-				Result.Add(Segments[j].Value);
-				Result.Add(Segments[j].Key);
+				PerimeterPointIndex = Neighbour;
+				NewPointFound = true;
+				break;
 			}
 		}
 	}
+
+	for (auto& Index : PerimeterIndexes)
+	{
+		Result.Emplace(Index2Vec[Index]);
+	}
+	//UE_LOG(LogTemp, Warning, TEXT("%d"), Nodes.Num())
 	return Result;
-}
-
-
-void UGridUtils::InitStruct(FDijkstraNode &OutNode, FTile* tile, FDijkstraNode* prev, float distance)
-{
-	OutNode.Tile = tile;
-	OutNode.Prev = prev;
-	OutNode.Distance = distance;
 }
 
 
@@ -220,15 +271,15 @@ void UGridUtils::BuildGrid(AActor* Map,
 
 	// Now link cells
 	FTileIndex OffSetU(1, 0);
-	FTileIndex OffSetL(0, 1);
+	FTileIndex OffSetR(0, 1);
 	FTileIndex OffSetIQuad(1, 1);
-	FTileIndex OffSet2Quad(-1, 1);
+	FTileIndex OffSet4Quad(-1, 1);
 
 	TArray<FTileIndex> Neighbour;
 	Neighbour.Add(OffSetU);
-	Neighbour.Add(OffSetL);
+	Neighbour.Add(OffSetR);
 	Neighbour.Add(OffSetIQuad);
-	Neighbour.Add(OffSet2Quad);
+	Neighbour.Add(OffSet4Quad);
 
 	for (auto& tile : TilesMap)
 	{

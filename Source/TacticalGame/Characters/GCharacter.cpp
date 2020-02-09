@@ -3,7 +3,9 @@
 
 #include "GCharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
-#include "Grid/FTile.h"
+#include "Globals/TacticalGameGameMode.h"
+#include "Grid/GridUtils.h"
+#include "Grid/ATileMapSet.h"
 #include "GameFramework/SpringArmComponent.h"
 
 
@@ -23,7 +25,6 @@ AGCharacter::AGCharacter()
 	GetCharacterMovement()->RotationRate = FRotator(0.f, 640.f, 0.f);
 	GetCharacterMovement()->bConstrainToPlane = true;
 	GetCharacterMovement()->bSnapToPlaneAtStart = true;
-
 }
 
 // Called when the game starts or when spawned
@@ -78,3 +79,31 @@ void AGCharacter::MoveTo(FTile Tile)
 
 }
 
+void AGCharacter::ComputeShortestPaths()
+{
+	UGridUtils::GetShortestPaths(ShortestPaths, CurrentTile, 9999);
+
+	//for (auto& pair : ShortestPaths)
+	//{
+	//	UE_LOG(LogTemp, Warning, TEXT("result %s"), *pair.Value.Tile->ToString());
+	//	//values.Add(pair.Value);
+	//}
+}
+
+
+void AGCharacter::ComputePerimeterPoints(int TilesPerMovementAction)
+{
+	ATacticalGameGameMode* GameMode = Cast<ATacticalGameGameMode>(GetWorld()->GetAuthGameMode());
+
+	PerimeterPoints = UGridUtils::GetPerimeterPoints(
+		ShortestPaths,
+		TilesPerMovementAction,
+		GameMode->GameDirector->TileMap->CellSize,
+		GameMode->GameDirector->TileMap->PerimeterVOffset);
+}
+
+void AGCharacter::DrawPerimeter() 
+{
+	ATacticalGameGameMode* GameMode = Cast<ATacticalGameGameMode>(GetWorld()->GetAuthGameMode());
+	GameMode->GameDirector->TileMap->Drawer->DrawPerimeter(PerimeterPoints);
+}

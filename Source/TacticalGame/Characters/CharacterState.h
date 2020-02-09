@@ -28,6 +28,11 @@ public:
 	float CurrentHealth;
 	float Health;
 	int ActionPoints;
+	int CurrentActionPoints;
+
+	// Number of tiles per movement action
+	int MovementSpeed = 1;
+
 
 	UPROPERTY()
 	UBag* Bag;
@@ -38,4 +43,7 @@ public:
 	
 public:
 	void Init(FString BPClassName, FName name);
+
+	void ResetActionPoints();
+
 };

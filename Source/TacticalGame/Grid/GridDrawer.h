@@ -6,6 +6,7 @@
 #include "UObject/NoExportTypes.h"
 #include "GridDrawer.generated.h"
 
+class AATileMapSet;
 /**
  * 
  */
@@ -17,8 +18,12 @@ class TACTICALGAME_API UGridDrawer : public UObject
 public:
 	UGridDrawer();
 
+	AATileMapSet* TileMap;
+
 public:
+	void Init(AATileMapSet* TileMapRef);
+
 	void DrawPerimeter(TArray<FVector> Points);
-	void DrawPath(TArray<FVector>);
+	void DrawPath(TArray<FVector> Path);
 
 };

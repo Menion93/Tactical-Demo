@@ -3,13 +3,19 @@
 
 #include "GridDrawer.h"
 #include "SceneManagement.h"
-
+#include "ATileMapSet.h"
 
 
 UGridDrawer::UGridDrawer()
 {
 
 }
+
+void UGridDrawer::Init(AATileMapSet* TileMapRef)
+{
+	TileMap = TileMapRef;
+}
+
 
 void UGridDrawer::DrawPerimeter(TArray<FVector> Points)
 {
@@ -20,7 +26,8 @@ void UGridDrawer::DrawPerimeter(TArray<FVector> Points)
 }
 
 
-void UGridDrawer::DrawPath(TArray<FVector>)
+void UGridDrawer::DrawPath(TArray<FVector> Path)
 {
 
 }
+

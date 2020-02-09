@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
-#include "FTile.h"
+#include "Grid/FTile.h"
 #include "GridUtils.generated.h"
 
 
@@ -26,9 +26,14 @@ struct FDijkstraNode
 		return Distance < Other.Distance;
 	}
 
+	FString ToString()
+	{
+		return FString::Printf(TEXT("%s"), *Tile->ToString());
+	}
+
 };
 
-typedef TMap<FTileIndex, FDijkstraNode*> DijkstraOutput;
+typedef TMap<FTileIndex, FDijkstraNode> DijkstraOutput;
 
 /**
  * 
@@ -39,9 +44,9 @@ class TACTICALGAME_API UGridUtils : public UObject
 	GENERATED_BODY()
 
 public:
-		static DijkstraOutput GetShortestPaths(FTile* CurrentTile, int PathLenght);
+		static void GetShortestPaths(DijkstraOutput &output, FTile* CurrentTile, int PathLenght);
 
-		static TArray<FVector> GetPerimeterPoints(TArray<FDijkstraNode*> Nodes, int Distance, float CellSize, float ZOffset);
+		static TArray<FVector> GetPerimeterPoints(DijkstraOutput &output, int Distance, float CellSize, float ZOffset);
 
 		static void InitStruct(FDijkstraNode &OutNode, FTile* tile, FDijkstraNode* prev, float distance);
 	

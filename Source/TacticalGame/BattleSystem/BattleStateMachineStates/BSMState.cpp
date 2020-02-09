@@ -22,7 +22,7 @@ void UBSMState::Init()
 
 }
 
-UAction* UBSMState::PlayState()
+void UBSMState::PlayState()
 {
-	return nullptr;
+
 }

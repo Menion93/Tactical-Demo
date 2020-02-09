@@ -42,6 +42,12 @@ AATileMapSet::AATileMapSet()
 	GridCursor->DecalSize = FVector(16.0f, 32.0f, 32.0f);
 	GridCursor->SetRelativeRotation(FRotator(90.0f, 0.0f, 0.0f).Quaternion());
 
+	Perimeter = CreateDefaultSubobject<USplineComponent>("Perimeter");
+	Path = CreateDefaultSubobject<USplineComponent>("Path");
+
+	Drawer = NewObject<UGridDrawer>(this, TEXT("GridDrawer"));
+	Drawer->Init(this);
+
 }
 
 // Called when the game starts or when spawned

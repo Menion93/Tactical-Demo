@@ -5,9 +5,7 @@
 
 UBSMEnemyLockedState::UBSMEnemyLockedState(){}
 
-UAction* UBSMEnemyLockedState::PlayState()
+void UBSMEnemyLockedState::PlayState()
 {
-	UAction* action = NewObject<UAction>(this, TEXT("Action"));
-	return action;
 
 }

@@ -8,7 +8,6 @@
 #include "Characters/CharacterState.h"
 #include "Characters/ControllableCharacter.h"
 #include "Grid/GridUtils.h"
-#include "Action.h"
 #include "./BattleStateMachineStates/BSMState.h"
 #include "./BattleStateMachineStates/BSMEnemyLockedState.h"
 #include "./BattleStateMachineStates/BSMCharacterSelectedState.h"
@@ -44,8 +43,6 @@ public:
 
 	CombatStateE CurrentState;
 
-	TMap<FName, DijkstraOutput> Player2Paths;
-	TMap<FName, int> Player2ActionPoints;
 
 	UPROPERTY()
 	TMap<CombatStateE, UBSMState*> StateMachine;
@@ -55,8 +52,10 @@ public:
 	AATileMapSet* TileMap;
 	FTile* SelectedTile;
 
-	UPROPERTY()
-	UAction* CurrentAction = nullptr;
+	DECLARE_DELEGATE(Action)
+	Action CurrentAction = nullptr;
+
+	bool HasActionEnded = true;
 
 	UPROPERTY()
 	UBSMDeselectedState* DeselectedState;
@@ -81,5 +80,7 @@ public:
 	bool IsBattleEnded();
 	void EndTurn();
 	void EndBattle();
-	void ResetStateMachine();
+	void ResetToPlayerTurn();
+	void EndCurrentAction();
+	Action GetActionDelegate();
 };
