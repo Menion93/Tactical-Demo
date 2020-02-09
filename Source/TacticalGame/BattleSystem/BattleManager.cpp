@@ -80,6 +80,7 @@ void UBattleManager::InitBattleState(bool IsPlayerTurn)
 	{
 		character->ActorCharacter->ComputeShortestPaths();
 		character->ActorCharacter->ComputePerimeterPoints(character->MovementSpeed);
+		character->ActorCharacter->DrawPerimeter();
 	}
 
 	// Update current Tile
@@ -151,7 +152,7 @@ void UBattleManager::ResetToPlayerTurn()
 		if (Char->CurrentHealth > 0)
 		{
 			// reset action points
-			Char->CurrentActionPoints = Char->ActionPoints;
+			Char->ResetActionPoints();
 		}
 	}
 
