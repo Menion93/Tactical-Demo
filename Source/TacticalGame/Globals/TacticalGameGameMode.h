@@ -10,6 +10,7 @@
 #include "BattleSystem/BattleManager.h"
 #include "Characters/CharacterState.h"
 #include "Party/Party.h"
+#include "Globals/GPlayerController.h"
 #include "TacticalGameGameMode.generated.h"
 
 
@@ -43,12 +44,16 @@ public:
 
 	UPROPERTY()
 	UBattleManager* BattleManager;
+
+	AGPlayerController* Input;
+
 	
 
 public:
 	virtual void Tick(float DeltaTime) override;
 	virtual void StartPlay() override;
 
-	void SwitchToBattleMode(bool IsPlayerTurn);
+	void SwitchToBattleMode(bool IsPlayerTurn, bool ForceEngage);
+	void SwitchToFreeMode();
 
 };

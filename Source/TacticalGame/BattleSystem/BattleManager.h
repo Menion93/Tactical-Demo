@@ -49,7 +49,6 @@ public:
 
 	AGPlayerController* Input;
 
-	AATileMapSet* TileMap;
 	FTile* SelectedTile;
 
 	DECLARE_DELEGATE(Action)
@@ -68,6 +67,9 @@ public:
 
 	UPROPERTY()
 	UBSMTileSelectedState* TileSelectedState;
+
+	UPROPERTY()
+	bool BattleEngaged;
 	
 public:
 	UFUNCTION()
@@ -75,7 +77,7 @@ public:
 
 	void PlayTurn();
 	void Init();
-	void InitBattleState(bool PlayerTurn);
+	void InitBattleState(bool PlayerTurn, bool ForceEngage);
 	bool IsTurnEnded();
 	bool IsBattleEnded();
 	void EndTurn();

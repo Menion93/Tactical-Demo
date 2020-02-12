@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GCharacter.h"
+#include "Globals/GPlayerController.h"
 #include "ControllableCharacter.generated.h"
 
 
@@ -23,8 +24,18 @@ public:
 	UPROPERTY(EditAnywhere)
 	UCharacterState* State;
 
+	AGPlayerController* Input;
+
+	UPROPERTY(EditAnywhere)
+	float Speed = 100;
+
+
+
+
 public:
 	virtual void Tick(float DeltaTime) override;
+	virtual void BeginPlay() override;
 
 	void Selected();
+	void HandleInput();
 };
