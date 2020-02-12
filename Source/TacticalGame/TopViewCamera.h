@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Camera/CameraActor.h"
 #include "Grid/FTile.h"
+#include "GameFramework/Actor.h"
 #include "TopViewCamera.generated.h"
 
 /**
@@ -29,6 +30,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "CameraPosition")
 	float CameraAngle;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "CameraPosition")
+	float CameraDistanceFromActor;
 
 private:
 	bool IsLerping;
