@@ -7,6 +7,7 @@
 
 AGPlayerController::AGPlayerController()
 {
+
 }
 
 void AGPlayerController::PlayerTick(float DeltaTime)
@@ -41,19 +42,14 @@ void AGPlayerController::SetupInputComponent()
 	InputComponent->BindAction("Pause", EInputEvent::IE_Pressed, this, &AGPlayerController::PausePressed);
 	InputComponent->BindAction("Pause", EInputEvent::IE_Released, this, &AGPlayerController::PauseReleased);
 
+	InputComponent->BindAction("R1", EInputEvent::IE_Pressed, this, &AGPlayerController::R1Pressed);
+	InputComponent->BindAction("R1", EInputEvent::IE_Released, this, &AGPlayerController::R1Released);
+
 }
 
 void AGPlayerController::HandleActionInputPressed(bool& down, bool& button)
 {
-	if (!down)
-	{
-		button = true;
-	}
-	else
-	{
-		button = false;
-	}
-
+	button = true;
 	down = true;
 }
 
@@ -180,4 +176,14 @@ void AGPlayerController::StartReleased()
 void AGPlayerController::PauseReleased()
 {
 	HandleActionInputReleased(Pause_DOWN, Pause);
+}
+
+void AGPlayerController::R1Pressed()
+{
+	HandleActionInputPressed(R1_DOWN, R1);
+}
+
+void AGPlayerController::R1Released()
+{
+	HandleActionInputReleased(R1_DOWN, R1);
 }

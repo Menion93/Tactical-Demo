@@ -47,6 +47,9 @@ public:
 	bool B;
 	bool B_DOWN;
 
+	bool R1;
+	bool R1_DOWN;
+
 	bool Start;
 	bool Start_DOWN;
 
@@ -71,20 +74,25 @@ private:
 	void PadY(float Value);
 
 	void InputXPressed();
-	void InputYPressed();
-	void InputAPressed();
-	void InputBPressed();
-
 	void InputXReleased();
+
+	void InputYPressed();
 	void InputYReleased();
+
+	void InputAPressed();
 	void InputAReleased();
+
+	void InputBPressed();
 	void InputBReleased();
 
 	void StartPressed();
-	void PausePressed();
-
 	void StartReleased();
+
+	void PausePressed();
 	void PauseReleased();
+
+	void R1Pressed();
+	void R1Released();
 
 	void HandleActionInputPressed(bool& down, bool& button);
 	void HandleActionInputReleased(bool& down, bool& button);
