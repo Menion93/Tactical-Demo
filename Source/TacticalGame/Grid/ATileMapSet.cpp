@@ -114,10 +114,13 @@ FTile* AATileMapSet::GetTileFromNearestPosition(FVector NearestPos)
 	return NearestTile;
 }
 
-FTile* AATileMapSet::SnapToGrid(AActor* Actor)
+FTile* AATileMapSet::SnapToGrid(AGCharacter* Character)
 {
-	FTile* Tile = GetTileFromNearestPosition(Actor->GetActorLocation());
-	Actor->SetActorLocation(Tile->TileCenter);
+	Character->GetActorLocation();
+	FTile* Tile = GetTileFromNearestPosition(Character->GetActorLocation());
+	Character->SetActorLocation(Tile->TileCenter);
+	Character->CurrentTile = Tile;
+	Tile->Character = Character;
 	return Tile;
 }
 

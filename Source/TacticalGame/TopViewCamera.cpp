@@ -10,7 +10,7 @@
 
 ATopViewCamera::ATopViewCamera()
 {
-	
+	PrimaryActorTick.bCanEverTick = true;
 }
 
 void ATopViewCamera::BeginPlay()
@@ -20,16 +20,23 @@ void ATopViewCamera::BeginPlay()
 		SetViewTarget();
 	}
 
-	SetActorRelativeRotation(FRotator(CameraAngle, 0, 0));
+	//SetActorRelativeRotation(FRotator(CameraAngle, 0, 0));
 
 	OffsetVector = - FVector::ForwardVector * CameraVerticalPan;
 }
 
 void ATopViewCamera::Tick(float DeltaTime)
 {
+	Super::Tick(DeltaTime);
+
 	if (FollowedActor)
-	{
-		SetActorLocation(FollowedActor->GetActorLocation() + OffsetVector);
+	{ 
+		const FRotator PitchRotation(CameraAngle, 0, 0);
+
+		FVector ActorUpVector = PitchRotation.RotateVector(FVector::UpVector * CameraDistanceFromActor) + FollowedActor->GetActorLocation();
+		SetActorLocation(ActorUpVector);
+
+		SetActorRotation((FollowedActor->GetActorLocation() - GetActorLocation()).ToOrientationRotator());
 	}
 	else if (IsLerping)
 	{
@@ -64,12 +71,11 @@ void ATopViewCamera::LerpToTile(FTile* Tile, float seconds)
 
 void ATopViewCamera::MoveToTile(FTile* Tile)
 {
-	// Move Instantly to a Tile
-	FVector TileToLookInPlane(Tile->TileCenter.X, Tile->TileCenter.Y, GetActorLocation().Z);
-	FVector TileSnappedToPlane(Tile->TileCenter.X, Tile->TileCenter.Y, PlaneZ);
-
-	SetActorLocation(TileToLookInPlane + OffsetVector);
-	SetActorRotation((TileSnappedToPlane - GetActorLocation()).ToOrientationRotator());
+	const FRotator PitchRotation(CameraAngle, 0, 0);
+	FVector ActorUpVector = PitchRotation.RotateVector(FVector::UpVector * CameraDistanceFromActor) + Tile->TileCenter;
+	
+	SetActorLocation(ActorUpVector);
+	SetActorRotation((Tile->TileCenter - GetActorLocation()).ToOrientationRotator());
 }
 
 void ATopViewCamera::AttachToActor(AActor* Actor)

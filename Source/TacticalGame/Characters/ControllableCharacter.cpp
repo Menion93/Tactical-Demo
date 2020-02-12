@@ -2,10 +2,18 @@
 
 
 #include "ControllableCharacter.h"
+#include "Engine/World.h"
 
 AControllableCharacter::AControllableCharacter()
 {
+}
 
+void AControllableCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+	SpawnDefaultController();
+
+	Input = Cast<AGPlayerController>(GetWorld()->GetFirstPlayerController());
 }
 
 
@@ -19,4 +27,12 @@ void AControllableCharacter::Tick(float DeltaTime)
 void AControllableCharacter::Selected()
 {
 
+}
+
+void AControllableCharacter::HandleInput()
+{
+	if (!Input->Axis.IsZero())
+	{
+		this->AddMovementInput(FVector(Input->Axis.X, Input->Axis.Y, this->GetActorLocation().Z), Speed);
+	}
 }

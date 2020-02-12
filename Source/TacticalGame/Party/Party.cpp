@@ -28,3 +28,13 @@ TArray<UCharacterState*> UParty::GetSelectedTeam()
 {
 	return Teams2Characters[SelectedTeam];
 }
+
+void UParty::HandlePlayerInput()
+{
+	Teams2Characters[SelectedTeam][0]->ActorCharacter->HandleInput();
+}
+
+UCharacterState* UParty::GetCurrentLeader()
+{
+	return Teams2Characters[SelectedTeam][0];
+}
