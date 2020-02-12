@@ -70,26 +70,35 @@ void UBattleManager::PlayTurn()
 	}
 }
 
-void UBattleManager::InitBattleState(bool IsPlayerTurn)
+void UBattleManager::InitBattleState(bool IsPlayerTurn, bool ForceEngage)
 {
 	PlayerTurn = IsPlayerTurn;
 
 	TArray<UCharacterState*> Characters = GameMode->Party->GetSelectedTeam();
-
+	 
 	for (auto character : Characters)
 	{
-		character->ActorCharacter->ComputeShortestPaths();
-		character->ActorCharacter->ComputePerimeterPoints(character->MovementSpeed);
-		character->ActorCharacter->DrawPerimeter();
+		//character->ActorCharacter->ComputeShortestPaths();
+		//character->ActorCharacter->ComputePerimeterPoints(character->MovementSpeed);
+		//character->ActorCharacter->DrawPerimeter();
+		UE_LOG(LogTemp, Warning, TEXT("%s"), *character->ActorCharacter->GetActorLocation().ToString())
+		GameMode->GameDirector->TileMap->SnapToGrid(character->ActorCharacter);
 	}
 
 	// Update current Tile
 	if (PlayerTurn)
 	{
 		ResetToPlayerTurn();
+	} 
+	else
+	{
+		BattleEngaged = true;
 	}
 
+	BattleEngaged |= ForceEngage;
+
 	// Snap Players to grid
+
 
 	// Init player health and equip
 }
@@ -144,6 +153,7 @@ void UBattleManager::EndBattle()
 void UBattleManager::ResetToPlayerTurn()
 {
 	SelectedTile = GameMode->Party->GetSelectedTeam()[0]->ActorCharacter->CurrentTile;
+	GameMode->GameDirector->TileMap->SetCursorToTile(SelectedTile);
 	GameMode->GameDirector->Camera->MoveToTile(SelectedTile);
 	CurrentState = CombatStateE::DESELECTED_STATE;
 

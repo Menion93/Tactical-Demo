@@ -7,6 +7,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "UObject/ConstructorHelpers.h"
 #include "GPlayerController.h"
+#include "Components/DecalComponent.h"
 #include "Characters/CharacterState.h"
 
 
@@ -33,8 +34,11 @@ void ATacticalGameGameMode::StartPlay()
 
 	BattleManager = NewObject<UBattleManager>(this, TEXT("BattleManager"));
 	BattleManager->Init();
-	SwitchToBattleMode(true);
+	SwitchToBattleMode(true, false);
 
+	Input = Cast<AGPlayerController>(GetWorld()->GetFirstPlayerController());
+
+	//SwitchToFreeMode();
 }
 
 void ATacticalGameGameMode::Tick(float DeltaSeconds)
@@ -46,12 +50,44 @@ void ATacticalGameGameMode::Tick(float DeltaSeconds)
 	{
 		BattleManager->PlayTurn();
 	}
+	else if(CurrentMode == GameModeE::GSE_None)
+	{
+		Party->HandlePlayerInput();
+	}
+
+	if (GameDirector->Camera)
+	{
+		GameDirector->Camera->Tick(DeltaSeconds);
+	}
+
+	if (!BattleManager->BattleEngaged && Input->R1_DOWN)
+	{
+		Input->R1_DOWN = false;
+
+		if (CurrentMode == GameModeE::GSE_Battle)
+		{
+			SwitchToFreeMode();
+		}
+		else
+		{
+			SwitchToBattleMode(true, false);
+		}
+	}
 }
 
-void ATacticalGameGameMode::SwitchToBattleMode(bool IsPlayerTurn)
+void ATacticalGameGameMode::SwitchToBattleMode(bool IsPlayerTurn, bool ForceEngage)
 {
 	// Here put Dynamic Grid Creation
-
 	CurrentMode = GameModeE::GSE_Battle;
-	BattleManager->InitBattleState(IsPlayerTurn);
+	GameDirector->TileMap->GridCursor->SetVisibility(true);
+	GameDirector->Camera->DetachFromActor();
+	BattleManager->InitBattleState(IsPlayerTurn, ForceEngage);
+}
+
+void ATacticalGameGameMode::SwitchToFreeMode()
+{
+	// Here put Dynamic Grid Creation
+	CurrentMode = GameModeE::GSE_None;
+	GameDirector->TileMap->GridCursor->SetVisibility(false);
+	GameDirector->Camera->AttachToActor(Party->GetCurrentLeader()->ActorCharacter);
 }

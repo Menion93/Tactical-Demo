@@ -48,8 +48,6 @@ void ASpawner::SpawnCharacters(bool SnapToGrid)
 			if (SnapToGrid)
 			{
 				FTile* Tile = GameMode->GameDirector->TileMap->SnapToGrid(Character);
-				Character->CurrentTile = Tile;
-				Tile->Character = Character;
 			}
 		}
 	}

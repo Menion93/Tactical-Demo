@@ -7,6 +7,7 @@
 #include "Components/BoxComponent.h"
 #include "FTile.h"
 #include "GridDrawer.h"
+#include "Characters/GCharacter.h"
 #include "Components/SplineComponent.h"
 #include "ATileMapSet.generated.h"
 
@@ -86,7 +87,7 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	
 	FTile* GetTileFromNearestPosition(FVector NearestPos);
-	FTile* SnapToGrid(AActor* actor);
+	FTile* SnapToGrid(AGCharacter* actor);
 
 	void SetCursorToTile(FTile* Tile);
 	void ShowCursor(bool show);
