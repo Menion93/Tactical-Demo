@@ -26,13 +26,15 @@ public:
 	TMap<int, TArray<UCharacterState*>> Teams2Characters;
 	TMap<int, UFormation*> Team2Formation;
 
-	int SelectedTeam = 0;
 
+
+	int SelectedTeam = 0;
 
 public:
 	void Init();
 
 	TArray<UCharacterState*> GetSelectedTeam();
-
+	void HandlePlayerInput();
+	UCharacterState* GetCurrentLeader();
 	
 };
