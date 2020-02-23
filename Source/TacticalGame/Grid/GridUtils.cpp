@@ -24,7 +24,6 @@ void UGridUtils::GetShortestPaths(DijkstraOutput &output, FTile* CurrentTile, in
 
 		output.Add(node.Tile->Index, node);
 
-
 		for (auto& pair : node.Tile->Direction2Neighbours)
 		{
 			TPair<FTile*, float> tile2weight = pair.Value;
@@ -98,11 +97,6 @@ TArray<FVector> UGridUtils::GetPerimeterPoints(DijkstraOutput &output, int Dista
 
 				if (!Node->Tile->Direction2Neighbours.Contains(Direction) || FMath::FloorToInt(output[Node->Tile->Index + Direction].Distance) > Distance)
 				{
-					if (Node->Tile->Direction2Neighbours.Contains(Direction))
-					{
-						UE_LOG(LogTemp, Warning, TEXT("%f"), output[Node->Tile->Index + Direction].Distance)
-					}
-
 					FVector WallMidPoint = Node->Tile->TileCenter + Direction.ToVector() * HalfCellSize;
 
 					FVector A;
@@ -141,7 +135,6 @@ TArray<FVector> UGridUtils::GetPerimeterPoints(DijkstraOutput &output, int Dista
 			}
 		}
 	}
-	UE_LOG(LogTemp, Warning, TEXT("%d"), Segments.Num())
 
 	FTileIndex PerimeterPointIndex;
 
@@ -162,8 +155,6 @@ TArray<FVector> UGridUtils::GetPerimeterPoints(DijkstraOutput &output, int Dista
 		PerimeterIndexes.Emplace(PerimeterPointIndex);
 		TArray<FTileIndex> Neighbours = Segments[PerimeterPointIndex];
 		
-		UE_LOG(LogTemp, Warning, TEXT("%d"), Neighbours.Num())
-
 		for (auto& Neighbour : Neighbours)
 		{
 			if (!PerimeterIndexes.Contains(Neighbour))
@@ -181,6 +172,127 @@ TArray<FVector> UGridUtils::GetPerimeterPoints(DijkstraOutput &output, int Dista
 	}
 	//UE_LOG(LogTemp, Warning, TEXT("%d"), Nodes.Num())
 	return Result;
+}
+
+
+TArray<FVector> UGridUtils::GetPerimeterPoints2(DijkstraOutput &output, int Distance, float CellSize, float ZOffset)
+{
+	TArray<FDijkstraNode*> Nodes;
+
+	for (auto& pair : output)
+	{
+		Nodes.Add(&pair.Value);
+	}
+
+	// Points of the perimeter 2 adjacent points. FVector2D instead of FVector are used becuse
+	// we need the vector to be integer and thus indexable
+	TMap<FTileIndex, TArray<FTileIndex>> Segments;
+
+	// Used to retrieve floating precision vectors from the integer representation, along with the Z axis
+	TMap<FTileIndex, FVector> Index2Vec;
+	TSet<FVector> Result;
+
+	FTileIndex OffSetU(1, 0);
+	FTileIndex OffSetR(0, 1);
+	FTileIndex OffSetD(-1, 0);
+	FTileIndex OffSetL(0, -1);
+
+	TArray<FTileIndex> Directions;
+	Directions.Add(OffSetU);
+	Directions.Add(OffSetD);
+	Directions.Add(OffSetR);
+	Directions.Add(OffSetL);
+
+	float HalfCellSize = CellSize * 0.5;
+	FVector ZVector = FVector::UpVector * ZOffset;
+
+	// Trace a line if a disconnection is found in tiles < than a certain distance --> perimeter
+	for (auto Node : Nodes)
+	{
+		if (FMath::FloorToInt(Node->Distance) <= Distance)
+		{
+
+			for (auto Direction : Directions)
+			{
+				// if we find a wall, save the perimeter segment (2 points)
+
+				if (!Node->Tile->Direction2Neighbours.Contains(Direction) || FMath::FloorToInt(output[Node->Tile->Index + Direction].Distance) > Distance)
+				{
+					FVector WallMidPoint = Node->Tile->TileCenter + Direction.ToVector() * HalfCellSize;
+
+					FVector A;
+					FVector B;
+
+					if (FMath::Abs(Direction.X) > 0)
+					{
+						A = WallMidPoint + FVector::RightVector * HalfCellSize + ZVector;
+						B = WallMidPoint - FVector::RightVector * HalfCellSize + ZVector;
+					}
+					else
+					{
+						A = WallMidPoint + FVector::ForwardVector * HalfCellSize + ZVector;
+						B = WallMidPoint - FVector::ForwardVector * HalfCellSize + ZVector;
+					}
+
+					FTileIndex AIndex(FMath::RoundToInt(A.X), FMath::RoundToInt(A.Y));
+					FTileIndex BIndex(FMath::RoundToInt(B.X), FMath::RoundToInt(B.Y));
+
+
+					if (!Segments.Contains(AIndex))
+					{
+						Segments.Emplace(AIndex, TArray<FTileIndex>());
+					}
+
+					if (!Segments.Contains(BIndex))
+					{
+						Segments.Emplace(BIndex, TArray<FTileIndex>());
+					}
+
+					Segments[AIndex].Emplace(BIndex);
+					Segments[BIndex].Emplace(AIndex);
+					Index2Vec.Emplace(AIndex, WallMidPoint);
+					Index2Vec.Emplace(BIndex, WallMidPoint);
+				}
+			}
+		}
+	}
+
+	FTileIndex PerimeterPointIndex;
+
+	// Get first Point
+	for (auto& pair : Segments)
+	{
+		PerimeterPointIndex = pair.Key;
+		break;
+	}
+
+	TArray<FTileIndex> PerimeterIndexes;
+	bool NewPointFound = true;
+
+	while (NewPointFound)
+	{
+		NewPointFound = false;
+
+		PerimeterIndexes.Emplace(PerimeterPointIndex);
+		TArray<FTileIndex> Neighbours = Segments[PerimeterPointIndex];
+
+		for (auto& Neighbour : Neighbours)
+		{
+			if (!PerimeterIndexes.Contains(Neighbour))
+			{
+				PerimeterPointIndex = Neighbour;
+				NewPointFound = true;
+				break;
+			}
+		}
+	}
+
+	for (auto& Index : PerimeterIndexes)
+	{
+		Result.Emplace(Index2Vec[Index]);
+	}
+	//UE_LOG(LogTemp, Warning, TEXT("%d"), Nodes.Num())
+	return Result.Array();
 }
 
 

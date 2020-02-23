@@ -47,6 +47,7 @@ public:
 		static void GetShortestPaths(DijkstraOutput &output, FTile* CurrentTile, int PathLenght);
 
 		static TArray<FVector> GetPerimeterPoints(DijkstraOutput &output, int Distance, float CellSize, float ZOffset);
+		static TArray<FVector> GetPerimeterPoints2(DijkstraOutput &output, int Distance, float CellSize, float ZOffset);
 
 		static void InitStruct(FDijkstraNode &OutNode, FTile* tile, FDijkstraNode* prev, float distance);
 	
