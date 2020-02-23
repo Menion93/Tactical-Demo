@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "Grid/GridUtils.h"
+#include "Grid/APerimeter.h"
 #include "GCharacter.generated.h"
 
 
@@ -21,6 +22,9 @@ public:
 	FTile* CurrentTile;
 
 	DijkstraOutput ShortestPaths;
+
+	// Perimeters Data
+	TArray<APerimeter*> Perimeters;
 	TArray<FVector> PerimeterPoints;
 
 protected:

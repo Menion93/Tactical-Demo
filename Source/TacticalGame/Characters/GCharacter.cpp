@@ -4,7 +4,6 @@
 #include "GCharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Globals/TacticalGameGameMode.h"
-#include "Grid/GridUtils.h"
 #include "Grid/ATileMapSet.h"
 #include "GameFramework/SpringArmComponent.h"
 
@@ -100,10 +99,21 @@ void AGCharacter::ComputePerimeterPoints(int TilesPerMovementAction)
 		TilesPerMovementAction,
 		GameMode->GameDirector->TileMap->CellSize,
 		GameMode->GameDirector->TileMap->PerimeterVOffset);
+
+	APerimeter* Perimeter = GetWorld()->SpawnActor<APerimeter>(
+		GetActorLocation(), FRotator::ZeroRotator);
+
+	Perimeter->DrawPerimeter(PerimeterPoints);
+	Perimeter->SetActorHiddenInGame(true);
+	Perimeters.Add(Perimeter);
 }
 
 void AGCharacter::DrawPerimeter() 
 {
 	ATacticalGameGameMode* GameMode = Cast<ATacticalGameGameMode>(GetWorld()->GetAuthGameMode());
-	GameMode->GameDirector->TileMap->Drawer->DrawPerimeter(PerimeterPoints);
+
+	for (auto p : Perimeters)
+	{
+		p->SetActorHiddenInGame(false);
+	}
 }

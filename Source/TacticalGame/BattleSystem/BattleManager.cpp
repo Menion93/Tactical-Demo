@@ -78,10 +78,13 @@ void UBattleManager::InitBattleState(bool IsPlayerTurn, bool ForceEngage)
 	 
 	for (auto character : Characters)
 	{
-		//character->ActorCharacter->ComputeShortestPaths();
-		//character->ActorCharacter->ComputePerimeterPoints(character->MovementSpeed);
-		//character->ActorCharacter->DrawPerimeter();
-		UE_LOG(LogTemp, Warning, TEXT("%s"), *character->ActorCharacter->GetActorLocation().ToString())
+		UE_LOG(LogTemp, Warning, TEXT("23434"))
+
+		character->ActorCharacter->ComputeShortestPaths();
+		character->ActorCharacter->ComputePerimeterPoints(character->MovementSpeed);
+		UE_LOG(LogTemp, Warning, TEXT("HERE"))
+
+		character->ActorCharacter->DrawPerimeter();
 		GameMode->GameDirector->TileMap->SnapToGrid(character->ActorCharacter);
 	}
 
