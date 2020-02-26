@@ -73,14 +73,14 @@ void AATileMapSet::OnConstruction(const FTransform & Transform)
 
 	DebugDecals = TArray<UDecalComponent*>();
 
-	UGridUtils::BuildGrid(this,
-		TilesMap,
-		DebugDecals,
-		DecalMaterial,
-		Rows,
-		Columns,
-		CellSize,
-		DrawLinesInEditor);
+	//UGridUtils::BuildGrid(this,
+	//	TilesMap,
+	//	DebugDecals,
+	//	DecalMaterial,
+	//	Rows,
+	//	Columns,
+	//	CellSize,
+	//	DrawLinesInEditor);
 }
 
 
