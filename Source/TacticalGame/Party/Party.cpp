@@ -11,7 +11,7 @@ UParty::UParty()
 void UParty::Init()
 {
 	UCharacterState* cs1 = NewObject<UCharacterState>(this, TEXT("cs1"));
-	cs1->Init(TEXT("/Game/TopDownCPP/Blueprints/Characters/Player1"), TEXT("player1"));
+	cs1->Init(TEXT("/Game/Characters/Female_Pirate/Models/BP_Female_Pirate"), TEXT("player1")); 
 
 	UCharacterState* cs2 = NewObject<UCharacterState>(this, TEXT("cs2"));
 	cs2->Init(TEXT("/Game/TopDownCPP/Blueprints/Characters/Player2"), TEXT("player2"));
