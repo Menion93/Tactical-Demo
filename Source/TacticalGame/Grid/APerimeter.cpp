@@ -56,6 +56,6 @@ void APerimeter::DrawPerimeter(TArray<FVector> Points)
 		MeshComp->RegisterComponent();
 		MeshComp->SetCastShadow(false);
 
-		MeshComp->AttachTo(GetDefaultAttachComponent(), TEXT(""), EAttachLocation::KeepWorldPosition, true);
+		//MeshComp->AttachTo(GetDefaultAttachComponent(), TEXT(""), EAttachLocation::KeepWorldPosition, true);
 	}
 }

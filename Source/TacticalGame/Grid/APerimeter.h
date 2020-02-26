@@ -22,6 +22,7 @@ public:
 	UPROPERTY()
 	USplineComponent* Perimeter;
 
+	UPROPERTY()
 	UStaticMesh* Mesh;
 
 public:
