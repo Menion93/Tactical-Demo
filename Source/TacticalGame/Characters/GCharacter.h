@@ -18,6 +18,9 @@ public:
 	// Sets default values for this character's properties
 	AGCharacter();
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
+	bool IsMoving = false;
+
 	FTile* CurrentTile;
 
 	DijkstraOutput ShortestPaths;

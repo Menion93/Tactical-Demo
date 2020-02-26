@@ -26,7 +26,7 @@ public:
 
 	AGPlayerController* Input;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Option")
 	float Speed = 100;
 
 
