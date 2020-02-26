@@ -11,18 +11,16 @@ void UGridUtils::GetShortestPaths(DijkstraOutput &output, FTile* CurrentTile, in
 {
 	TArray<FDijkstraNode> Q;
 
-	FDijkstraNode Source;
-	InitStruct(Source, CurrentTile, nullptr, 0);
+	FDijkstraNode Source(CurrentTile, FTileIndex(-1,-1), 0);
 
 	Q.Add(Source);
+	output.Add(Source.Tile->Index, Source);
 
 	while (Q.Num() > 0)
 	{
 		Q.Sort();
-		FDijkstraNode node = Q[0];
+		FDijkstraNode node(Q[0].Tile, Q[0].Prev, Q[0].Distance);
 		Q.RemoveAt(0);
-
-		output.Add(node.Tile->Index, node);
 
 		for (auto& pair : node.Tile->Direction2Neighbours)
 		{
@@ -30,29 +28,23 @@ void UGridUtils::GetShortestPaths(DijkstraOutput &output, FTile* CurrentTile, in
 
 			if (node.Distance + tile2weight.Value > PathLenght) continue;
 
-			if (!output.Contains(tile2weight.Key->Index)) 
+			if (!output.Contains(tile2weight.Key->Index))
 			{
-				FDijkstraNode Neighbour;
-				InitStruct(Neighbour, tile2weight.Key, &node, node.Distance + tile2weight.Value);
+
+				FDijkstraNode Neighbour(tile2weight.Key, node.Tile->Index, node.Distance + tile2weight.Value);
 
 				Q.Add(Neighbour);
 				output.Add(tile2weight.Key->Index, Neighbour);
-			} 
+			}
 			else if(node.Distance + tile2weight.Value < output[tile2weight.Key->Index].Distance)
 			{
 				output[tile2weight.Key->Index].Distance = node.Distance + tile2weight.Value;
-				output[tile2weight.Key->Index].Prev = &node;
+				output[tile2weight.Key->Index].Prev = node.Tile->Index;
 			}
 		}
 	}
 }
 
-void UGridUtils::InitStruct(FDijkstraNode &OutNode, FTile* tile, FDijkstraNode* prev, float distance)
-{
-	OutNode.Tile = tile;
-	OutNode.Prev = prev;
-	OutNode.Distance = distance;
-}
 
 TArray<FVector> UGridUtils::GetPerimeterPoints(DijkstraOutput &output, int Distance, float CellSize, float ZOffset)
 {
@@ -404,7 +396,7 @@ void UGridUtils::BuildGrid(AActor* Map,
 
 				if (TilesMap.Contains(NeighbourKey))
 				{
-					float Weight = FMath::Abs(Direction.X) == FMath::Abs(Direction.Y) ? 1.05 : 1;
+					float Weight = FMath::Abs(Direction.X) == FMath::Abs(Direction.Y) ? 1.05 : 1.0;
 
 					TPair<FTile*, float> Pair(&TilesMap[NeighbourKey], Weight);
 					tile.Value.Direction2Neighbours.Add(Direction, Pair);

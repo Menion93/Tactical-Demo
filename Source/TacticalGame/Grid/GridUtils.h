@@ -16,10 +16,14 @@ struct FDijkstraNode
 
 	FTile* Tile;
 
-	FDijkstraNode* Prev;
+	FTileIndex Prev;
 
 	UPROPERTY()
-		float Distance;
+	float Distance;
+
+	FDijkstraNode() {}
+
+	FDijkstraNode(FTile* TileParam, FTileIndex PrevNode, float DistanceParam) : Tile(TileParam), Prev(PrevNode), Distance(DistanceParam) {}
 
 	bool operator<(const FDijkstraNode &Other) const
 	{
@@ -49,8 +53,6 @@ public:
 		static TArray<FVector> GetPerimeterPoints(DijkstraOutput &output, int Distance, float CellSize, float ZOffset);
 		static TArray<FVector> GetPerimeterPoints2(DijkstraOutput &output, int Distance, float CellSize, float ZOffset);
 
-		static void InitStruct(FDijkstraNode &OutNode, FTile* tile, FDijkstraNode* prev, float distance);
-	
 		static void BuildGrid(AActor* Map,
 			TMap<FTileIndex, FTile> &TilesMap,
 			TArray<UDecalComponent*> &DebugDecals,
