@@ -12,6 +12,9 @@ void UBSMCharacterSelectedState::PlayState()
 	// Deselect the character
 	if (Input->B)
 	{
+		Input->B_DOWN = false;
+		BattleManager->CurrentCharacter->ShowPerimeter(false);
+		BattleManager->CurrentCharacter->ShowShortestPath(false);
 		BattleManager->CurrentCharacter = nullptr;
 		BattleManager->CurrentState = CombatStateE::DESELECTED_STATE;
 	}
@@ -41,7 +44,10 @@ void UBSMCharacterSelectedState::PlayState()
 				ATacticalGameGameMode* GameMode = Cast<ATacticalGameGameMode>(GetWorld()->GetAuthGameMode());
 
 				BattleManager->SelectedTile = BattleManager->SelectedTile->Direction2Neighbours[Index].Key;
-				//BattleManager->TileMap->Drawer->
+				BattleManager->CurrentCharacter->DrawShortestPath(BattleManager->SelectedTile);
+				BattleManager->CurrentCharacter->ShowShortestPath(true);
+				UE_LOG(LogTemp, Warning, TEXT("hello3"))
+
 				TileMap->SetCursorToTile(BattleManager->SelectedTile);
 				GameMode->GameDirector->Camera->MoveToTile(BattleManager->SelectedTile);
 

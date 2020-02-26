@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "Grid/GridUtils.h"
 #include "Grid/APerimeter.h"
+#include "Grid/APath.h"
 #include "GCharacter.generated.h"
 
 
@@ -25,7 +26,9 @@ public:
 
 	// Perimeters Data
 	TArray<APerimeter*> Perimeters;
-	TArray<FVector> PerimeterPoints;
+
+	UPROPERTY()
+	APath* PathActor;
 
 protected:
 	// Called when the game starts or when spawned
@@ -45,7 +48,11 @@ public:
 	void Melee(AGCharacter* Enemy);
 	void GetDamage(float Damage);
 	void MoveTo(FTile Tile);
+
+	// Grid Path Methods
 	void ComputeShortestPaths();
 	void ComputePerimeterPoints(int TilesPerMovementAction);
-	void DrawPerimeter();
+	void ShowPerimeter(bool Show);
+	void ShowShortestPath(bool Show);
+	void DrawShortestPath(FTile* Tile);
 };

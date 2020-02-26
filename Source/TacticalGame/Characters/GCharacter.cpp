@@ -33,7 +33,6 @@ void AGCharacter::BeginPlay()
 }
 
 
-
 // Called every frame
 void AGCharacter::Tick(float DeltaTime)
 {
@@ -81,12 +80,6 @@ void AGCharacter::MoveTo(FTile Tile)
 void AGCharacter::ComputeShortestPaths()
 {
 	UGridUtils::GetShortestPaths(ShortestPaths, CurrentTile, 9999);
-
-	//for (auto& pair : ShortestPaths)
-	//{
-	//	UE_LOG(LogTemp, Warning, TEXT("result %s"), *pair.Value.Tile->ToString());
-	//	//values.Add(pair.Value);
-	//}
 }
 
 
@@ -94,7 +87,7 @@ void AGCharacter::ComputePerimeterPoints(int TilesPerMovementAction)
 {
 	ATacticalGameGameMode* GameMode = Cast<ATacticalGameGameMode>(GetWorld()->GetAuthGameMode());
 
-	PerimeterPoints = UGridUtils::GetPerimeterPoints(
+	TArray<FVector> PerimeterPoints = UGridUtils::GetPerimeterPoints(
 		ShortestPaths,
 		TilesPerMovementAction,
 		GameMode->GameDirector->TileMap->CellSize,
@@ -108,12 +101,48 @@ void AGCharacter::ComputePerimeterPoints(int TilesPerMovementAction)
 	Perimeters.Add(Perimeter);
 }
 
-void AGCharacter::DrawPerimeter() 
+void AGCharacter::ShowPerimeter(bool Show)
 {
-	ATacticalGameGameMode* GameMode = Cast<ATacticalGameGameMode>(GetWorld()->GetAuthGameMode());
-
 	for (auto p : Perimeters)
 	{
-		p->SetActorHiddenInGame(false);
+		p->SetActorHiddenInGame(!Show);
 	}
+}
+
+void AGCharacter::ShowShortestPath(bool Show)
+{
+	PathActor->SetActorHiddenInGame(!Show);
+}
+
+void AGCharacter::DrawShortestPath(FTile* Tile)
+{
+	FDijkstraNode* node = &ShortestPaths[Tile->Index];
+
+	// If tile is the actor's tile, dont do anything
+	if (!ShortestPaths.Contains(node->Prev))
+	{
+		return;
+	}
+
+	//UE_LOG(LogTemp, Warning, TEXT("must be null %s"), *node->Tile->TileCenter.ToString())
+
+	TArray<FVector> Points;
+
+	while (ShortestPaths.Contains(node->Prev))
+	{
+		Points.Add(node->Tile->TileCenter);
+		node = &ShortestPaths[node->Prev];
+	}
+
+	Points.Add(node->Tile->TileCenter);
+
+	if (!PathActor)
+	{
+		PathActor = GetWorld()->SpawnActor<APath>(
+			GetActorLocation(),
+			FRotator::ZeroRotator);
+	}
+
+	PathActor->DrawPath(Points);
+	PathActor->SetActorHiddenInGame(true);
 }

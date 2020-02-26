@@ -23,8 +23,10 @@ void UBSMDeselectedState::PlayState()
 			// this will show an aura or spawn a decal under the character
 			AControllableCharacter* Character = Cast<AControllableCharacter>(BattleManager->SelectedTile->Character);
 			Character->Selected();
+			Character->ShowPerimeter(true);
 			BattleManager->CurrentCharacter = Character;
 			BattleManager->CurrentState = CombatStateE::CHARACTER_SELECTED;
+			UE_LOG(LogTemp, Warning, TEXT("hello1"))
 		}
 	}
 

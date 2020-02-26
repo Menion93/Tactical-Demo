@@ -78,13 +78,9 @@ void UBattleManager::InitBattleState(bool IsPlayerTurn, bool ForceEngage)
 	 
 	for (auto character : Characters)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("23434"))
-
 		character->ActorCharacter->ComputeShortestPaths();
 		character->ActorCharacter->ComputePerimeterPoints(character->MovementSpeed);
-		UE_LOG(LogTemp, Warning, TEXT("HERE"))
-
-		character->ActorCharacter->DrawPerimeter();
+		//character->ActorCharacter->DrawPerimeter();
 		GameMode->GameDirector->TileMap->SnapToGrid(character->ActorCharacter);
 	}
 
