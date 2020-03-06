@@ -56,7 +56,7 @@ void ATacticalGameGameMode::Tick(float DeltaSeconds)
 		{
 			Input = Cast<AGPlayerController>(World->GetFirstPlayerController());
 		}
-	}
+	} 
 
 
 	Super::Tick(DeltaSeconds);
@@ -77,8 +77,6 @@ void ATacticalGameGameMode::Tick(float DeltaSeconds)
 
 	if (!BattleManager->BattleEngaged && Input->R1_DOWN)
 	{
-		Input->R1_DOWN = false;
-
 		if (CurrentMode == GameModeE::GSE_Battle)
 		{
 			SwitchToFreeMode();

@@ -72,29 +72,14 @@ private:
 
 	void PadX(float Value);
 	void PadY(float Value);
+	void InputX(float Value);
+	void InputY(float Value);
+	void InputA(float Value);
+	void InputB(float Value);
+	void InputStart(float Value);
+	void InputPause(float Value);
+	void InputR1(float Value);
 
-	void InputXPressed();
-	void InputXReleased();
-
-	void InputYPressed();
-	void InputYReleased();
-
-	void InputAPressed();
-	void InputAReleased();
-
-	void InputBPressed();
-	void InputBReleased();
-
-	void StartPressed();
-	void StartReleased();
-
-	void PausePressed();
-	void PauseReleased();
-
-	void R1Pressed();
-	void R1Released();
-
-	void HandleActionInputPressed(bool& down, bool& button);
-	void HandleActionInputReleased(bool& down, bool& button);
+	void HandleActionInput(bool& down, bool& button, float value);
 
 };
