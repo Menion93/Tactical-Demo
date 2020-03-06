@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
 #include "Grid/FTile.h"
+#include "Structs.h"
 #include "GridUtils.generated.h"
 
 
@@ -50,8 +51,7 @@ class TACTICALGAME_API UGridUtils : public UObject
 public:
 		static void GetShortestPaths(DijkstraOutput &output, FTile* CurrentTile, int PathLenght);
 
-		static TArray<FVector> GetPerimeterPoints(DijkstraOutput &output, int Distance, float CellSize, float ZOffset);
-		static TArray<FVector> GetPerimeterPoints2(DijkstraOutput &output, int Distance, float CellSize, float ZOffset);
+		static TArray<FArrayOfArray> GetPerimeterPoints(DijkstraOutput &output, int Distance, float CellSize, float ZOffset);
 
 		static void BuildGrid(AActor* Map,
 			TMap<FTileIndex, FTile> &TilesMap,
@@ -61,4 +61,12 @@ public:
 			int Columns,
 			int CellSize,
 			bool DrawLinesInEditor);
+
+private:
+	static bool AddPerimeterBlock(
+		TArray<FArrayOfArray>& Result,
+		TMap<FTileIndex, TArray<FTileIndex>> &Segments,
+		TMap<FTileIndex, FVector>& Index2Vec,
+		TArray<FTileIndex>& Visited
+	);
 };

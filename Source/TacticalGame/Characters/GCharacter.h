@@ -4,12 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
-#include "Grid/GridUtils.h"
+#include "Utils/GridUtils.h"
 #include "Grid/APerimeter.h"
 #include "Grid/APath.h"
 #include "GCharacter.generated.h"
-
-
 
 UCLASS()
 class TACTICALGAME_API AGCharacter : public ACharacter

@@ -6,6 +6,7 @@
 #include "Globals/TacticalGameGameMode.h"
 #include "Grid/ATileMapSet.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Utils/Structs.h"
 
 
 // Sets default values
@@ -87,18 +88,22 @@ void AGCharacter::ComputePerimeterPoints(int TilesPerMovementAction)
 {
 	ATacticalGameGameMode* GameMode = Cast<ATacticalGameGameMode>(GetWorld()->GetAuthGameMode());
 
-	TArray<FVector> PerimeterPoints = UGridUtils::GetPerimeterPoints(
+	TArray<FArrayOfArray> PerimeterBlocks = UGridUtils::GetPerimeterPoints(
 		ShortestPaths,
 		TilesPerMovementAction,
 		GameMode->GameDirector->TileMap->CellSize,
 		GameMode->GameDirector->TileMap->PerimeterVOffset);
 
-	APerimeter* Perimeter = GetWorld()->SpawnActor<APerimeter>(
-		GetActorLocation(), FRotator::ZeroRotator);
+	for (auto& perimeter : PerimeterBlocks)
+	{
+		APerimeter* Perimeter = GetWorld()->SpawnActor<APerimeter>(
+			GetActorLocation(), FRotator::ZeroRotator);
 
-	Perimeter->DrawPerimeter(PerimeterPoints);
-	Perimeter->SetActorHiddenInGame(true);
-	Perimeters.Add(Perimeter);
+		Perimeter->DrawPerimeter(perimeter.Array);
+		Perimeter->SetActorHiddenInGame(true);
+		Perimeters.Add(Perimeter);
+	}
+
 }
 
 void AGCharacter::ShowPerimeter(bool Show)
