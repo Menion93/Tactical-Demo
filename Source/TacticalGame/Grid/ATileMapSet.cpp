@@ -10,14 +10,14 @@
 #include "Materials/Material.h"
 #include "Kismet/GameplayStatics.h"
 #include "DrawDebugHelpers.h"
-#include "GridUtils.h"
+#include "Utils/GridUtils.h"
 #include "Math/UnrealMathUtility.h"
 
 // Sets default values
 AATileMapSet::AATileMapSet()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 
 	// Create Box to place the grid
 	BoxComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxGrid"));
@@ -42,12 +42,8 @@ AATileMapSet::AATileMapSet()
 	GridCursor->DecalSize = FVector(16.0f, 32.0f, 32.0f);
 	GridCursor->SetRelativeRotation(FRotator(90.0f, 0.0f, 0.0f).Quaternion());
 
-	Perimeter = CreateDefaultSubobject<USplineComponent>("Perimeter");
 	Path = CreateDefaultSubobject<USplineComponent>("Path");
-
-	Drawer = NewObject<UGridDrawer>(this, TEXT("GridDrawer"));
-	Drawer->Init(this);
-
+	Path->SetupAttachment(RootComponent);
 }
 
 // Called when the game starts or when spawned
@@ -77,14 +73,14 @@ void AATileMapSet::OnConstruction(const FTransform & Transform)
 
 	DebugDecals = TArray<UDecalComponent*>();
 
-	UGridUtils::BuildGrid(this,
-		TilesMap,
-		DebugDecals,
-		DecalMaterial,
-		Rows,
-		Columns,
-		CellSize,
-		DrawLinesInEditor);
+	//UGridUtils::BuildGrid(this,
+	//	TilesMap,
+	//	DebugDecals,
+	//	DecalMaterial,
+	//	Rows,
+	//	Columns,
+	//	CellSize,
+	//	DrawLinesInEditor);
 }
 
 

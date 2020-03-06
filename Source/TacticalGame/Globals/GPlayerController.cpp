@@ -13,8 +13,9 @@ AGPlayerController::AGPlayerController()
 void AGPlayerController::PlayerTick(float DeltaTime)
 {
 	Super::PlayerTick(DeltaTime);
-
+	//UE_LOG(LogTemp, Warning, TEXT("CIAOOOdf"))
 }
+
 
 void AGPlayerController::SetupInputComponent()
 {
@@ -23,40 +24,20 @@ void AGPlayerController::SetupInputComponent()
 
 	InputComponent->BindAxis("StickAxisX", this, &AGPlayerController::AxisX);
 	InputComponent->BindAxis("StickAxisY", this, &AGPlayerController::AxisY);
-
-	InputComponent->BindAction("A", EInputEvent::IE_Pressed, this, &AGPlayerController::InputAPressed);
-	InputComponent->BindAction("A", EInputEvent::IE_Released, this, &AGPlayerController::InputAReleased);
-
-	InputComponent->BindAction("B", EInputEvent::IE_Pressed, this, &AGPlayerController::InputBPressed);
-	InputComponent->BindAction("B", EInputEvent::IE_Released, this, &AGPlayerController::InputBReleased);
-
-	InputComponent->BindAction("X", EInputEvent::IE_Pressed, this, &AGPlayerController::InputXPressed);
-	InputComponent->BindAction("X", EInputEvent::IE_Released, this, &AGPlayerController::InputXReleased);
-
-	InputComponent->BindAction("Y", EInputEvent::IE_Pressed, this, &AGPlayerController::InputYPressed);
-	InputComponent->BindAction("Y", EInputEvent::IE_Released, this, &AGPlayerController::InputYReleased);
-
-	InputComponent->BindAction("Start", EInputEvent::IE_Pressed, this, &AGPlayerController::StartPressed);
-	InputComponent->BindAction("Start", EInputEvent::IE_Released, this, &AGPlayerController::StartReleased);
-
-	InputComponent->BindAction("Pause", EInputEvent::IE_Pressed, this, &AGPlayerController::PausePressed);
-	InputComponent->BindAction("Pause", EInputEvent::IE_Released, this, &AGPlayerController::PauseReleased);
-
-	InputComponent->BindAction("R1", EInputEvent::IE_Pressed, this, &AGPlayerController::R1Pressed);
-	InputComponent->BindAction("R1", EInputEvent::IE_Released, this, &AGPlayerController::R1Released);
+	InputComponent->BindAxis("A", this, &AGPlayerController::InputA);
+	InputComponent->BindAxis("B", this, &AGPlayerController::InputB);
+	InputComponent->BindAxis("X", this, &AGPlayerController::InputX);
+	InputComponent->BindAxis("Y", this, &AGPlayerController::InputY);
+	InputComponent->BindAxis("Start", this, &AGPlayerController::InputStart);
+	InputComponent->BindAxis("Pause", this, &AGPlayerController::InputPause);
+	InputComponent->BindAxis("R1", this, &AGPlayerController::InputR1);
 
 }
 
-void AGPlayerController::HandleActionInputPressed(bool& down, bool& button)
+void AGPlayerController::HandleActionInput(bool& button, bool& down, float value)
 {
-	button = true;
-	down = true;
-}
-
-void AGPlayerController::HandleActionInputReleased(bool& down, bool& button)
-{
-	button = false;
-	down = false;
+	down = !button && int(value);
+	button = int(value) > 0;
 }
 
 void AGPlayerController::AxisX(float Value)
@@ -117,73 +98,37 @@ void AGPlayerController::PadY(float Value)
 	PAD_BOTTOM = PAD_UP;
 }
 
-void AGPlayerController::InputXPressed()
+void AGPlayerController::InputX(float Value)
 {
-	HandleActionInputPressed(X, X_DOWN);
+	HandleActionInput(X, X_DOWN, Value);
 }
 
-void AGPlayerController::InputYPressed()
+void AGPlayerController::InputY(float Value)
 {
-	HandleActionInputPressed(Y, Y_DOWN);
+	HandleActionInput(Y, Y_DOWN, Value);
 }
 
-void AGPlayerController::InputAPressed()
+void AGPlayerController::InputA(float Value)
 {
-	HandleActionInputPressed(A, A_DOWN);
+	HandleActionInput(A, A_DOWN, Value);
 }
 
-void AGPlayerController::InputBPressed()
+void AGPlayerController::InputB(float Value)
 {
-	HandleActionInputPressed(B, B_DOWN);
+	HandleActionInput(B, B_DOWN, Value);
 }
 
-void AGPlayerController::InputXReleased()
+void AGPlayerController::InputStart(float Value)
 {
-	HandleActionInputReleased(X_DOWN, X);
+	HandleActionInput(Start, Start_DOWN, Value);
 }
 
-void AGPlayerController::InputYReleased()
+void AGPlayerController::InputPause(float Value)
 {
-
-	HandleActionInputReleased(Y_DOWN, Y);
+	HandleActionInput(Pause, Pause_DOWN, Value);
 }
 
-void AGPlayerController::InputAReleased()
+void AGPlayerController::InputR1(float Value)
 {
-	HandleActionInputReleased(A_DOWN, A);
-}
-
-void AGPlayerController::InputBReleased()
-{
-	HandleActionInputReleased(B_DOWN, B);
-}
-
-void AGPlayerController::StartPressed()
-{
-	HandleActionInputPressed(Start_DOWN, Start);
-}
-
-void AGPlayerController::PausePressed()
-{
-	HandleActionInputPressed(Pause_DOWN, Pause);
-}
-
-void AGPlayerController::StartReleased()
-{
-	HandleActionInputReleased(Start_DOWN, Start);
-}
-
-void AGPlayerController::PauseReleased()
-{
-	HandleActionInputReleased(Pause_DOWN, Pause);
-}
-
-void AGPlayerController::R1Pressed()
-{
-	HandleActionInputPressed(R1_DOWN, R1);
-}
-
-void AGPlayerController::R1Released()
-{
-	HandleActionInputReleased(R1_DOWN, R1);
+	HandleActionInput(R1, R1_DOWN, Value);
 }

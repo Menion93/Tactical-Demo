@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "BattleManager.h"
-#include "Grid/GridUtils.h"
+#include "Utils/GridUtils.h"
 #include "Globals/TacticalGameGameMode.h"
 
 
@@ -16,6 +16,7 @@ void UBattleManager::Init()
 	CharacterSelectedState = NewObject<UBSMCharacterSelectedState>(this, TEXT("CharacterSelectedState"));
 	EnemyLockedState = NewObject<UBSMEnemyLockedState>(this, TEXT("EnemyLockedState"));
 	TileSelectedState = NewObject<UBSMTileSelectedState>(this, TEXT("TileSelectedState"));
+	NpcSelectedState = NewObject<UBSMNpcSelectedState>(this, TEXT("NpcSelectedState"));
 
 	DeselectedState->Init();
 	CharacterSelectedState->Init();
@@ -26,6 +27,7 @@ void UBattleManager::Init()
 	StateMachine.Emplace(CombatStateE::ENEMY_LOCKED, EnemyLockedState );
 	StateMachine.Emplace(CombatStateE::TILE_SELECTED, TileSelectedState);
 	StateMachine.Emplace(CombatStateE::CHARACTER_SELECTED, CharacterSelectedState);
+	StateMachine.Emplace(CombatStateE::NPC_SELECTED, NpcSelectedState);
 
 	GameMode = Cast<ATacticalGameGameMode>(GetWorld()->GetAuthGameMode());
 }
@@ -78,10 +80,9 @@ void UBattleManager::InitBattleState(bool IsPlayerTurn, bool ForceEngage)
 	 
 	for (auto character : Characters)
 	{
-		//character->ActorCharacter->ComputeShortestPaths();
-		//character->ActorCharacter->ComputePerimeterPoints(character->MovementSpeed);
+		character->ActorCharacter->ComputeShortestPaths();
+		character->ActorCharacter->ComputePerimeterPoints(character->MovementSpeed);
 		//character->ActorCharacter->DrawPerimeter();
-		UE_LOG(LogTemp, Warning, TEXT("%s"), *character->ActorCharacter->GetActorLocation().ToString())
 		GameMode->GameDirector->TileMap->SnapToGrid(character->ActorCharacter);
 	}
 

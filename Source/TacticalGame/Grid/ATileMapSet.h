@@ -6,7 +6,6 @@
 #include "GameFramework/Actor.h"
 #include "Components/BoxComponent.h"
 #include "FTile.h"
-#include "GridDrawer.h"
 #include "Characters/GCharacter.h"
 #include "Components/SplineComponent.h"
 #include "ATileMapSet.generated.h"
@@ -57,13 +56,7 @@ public:
 	UMaterialInterface* DecalMaterial;
 
 	UPROPERTY()
-	USplineComponent* Perimeter;
-
-	UPROPERTY()
 	USplineComponent* Path;
-
-	UPROPERTY()
-	UGridDrawer* Drawer;
 
 	float Height;
 	float Width;

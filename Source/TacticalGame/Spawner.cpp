@@ -39,8 +39,8 @@ void ASpawner::SpawnCharacters(bool SnapToGrid)
 		if (World && Spawns.Num() > pos)
 		{
 			AControllableCharacter* Character = World->SpawnActor<AControllableCharacter>(
-				Team[pos]->ActorCharacterClass, 
-				Spawns[pos]->GetActorLocation(), 
+				Team[pos]->ActorCharacterClass,
+				Spawns[pos]->GetActorLocation(),
 				FRotator::ZeroRotator);
 
 			Team[pos]->ActorCharacter = Character;

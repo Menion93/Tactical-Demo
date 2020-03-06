@@ -4,10 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
-#include "Grid/GridUtils.h"
+#include "Utils/GridUtils.h"
+#include "Grid/APerimeter.h"
+#include "Grid/APath.h"
 #include "GCharacter.generated.h"
-
-
 
 UCLASS()
 class TACTICALGAME_API AGCharacter : public ACharacter
@@ -24,7 +24,12 @@ public:
 	FTile* CurrentTile;
 
 	DijkstraOutput ShortestPaths;
-	TArray<FVector> PerimeterPoints;
+
+	// Perimeters Data
+	TArray<APerimeter*> Perimeters;
+
+	UPROPERTY()
+	APath* PathActor;
 
 protected:
 	// Called when the game starts or when spawned
@@ -44,7 +49,11 @@ public:
 	void Melee(AGCharacter* Enemy);
 	void GetDamage(float Damage);
 	void MoveTo(FTile Tile);
+
+	// Grid Path Methods
 	void ComputeShortestPaths();
 	void ComputePerimeterPoints(int TilesPerMovementAction);
-	void DrawPerimeter();
+	void ShowPerimeter(bool Show);
+	void ShowShortestPath(bool Show);
+	void DrawShortestPath(FTile* Tile);
 };

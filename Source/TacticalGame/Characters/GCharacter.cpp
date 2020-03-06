@@ -4,9 +4,9 @@
 #include "GCharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Globals/TacticalGameGameMode.h"
-#include "Grid/GridUtils.h"
 #include "Grid/ATileMapSet.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Utils/Structs.h"
 
 
 // Sets default values
@@ -32,7 +32,6 @@ void AGCharacter::BeginPlay()
 {
 	Super::BeginPlay();	
 }
-
 
 
 // Called every frame
@@ -82,12 +81,6 @@ void AGCharacter::MoveTo(FTile Tile)
 void AGCharacter::ComputeShortestPaths()
 {
 	UGridUtils::GetShortestPaths(ShortestPaths, CurrentTile, 9999);
-
-	//for (auto& pair : ShortestPaths)
-	//{
-	//	UE_LOG(LogTemp, Warning, TEXT("result %s"), *pair.Value.Tile->ToString());
-	//	//values.Add(pair.Value);
-	//}
 }
 
 
@@ -95,15 +88,66 @@ void AGCharacter::ComputePerimeterPoints(int TilesPerMovementAction)
 {
 	ATacticalGameGameMode* GameMode = Cast<ATacticalGameGameMode>(GetWorld()->GetAuthGameMode());
 
-	PerimeterPoints = UGridUtils::GetPerimeterPoints(
+	TArray<FArrayOfArray> PerimeterBlocks = UGridUtils::GetPerimeterPoints(
 		ShortestPaths,
 		TilesPerMovementAction,
 		GameMode->GameDirector->TileMap->CellSize,
 		GameMode->GameDirector->TileMap->PerimeterVOffset);
+
+	for (auto& perimeter : PerimeterBlocks)
+	{
+		APerimeter* Perimeter = GetWorld()->SpawnActor<APerimeter>(
+			GetActorLocation(), FRotator::ZeroRotator);
+
+		Perimeter->DrawPerimeter(perimeter.Array);
+		Perimeter->SetActorHiddenInGame(true);
+		Perimeters.Add(Perimeter);
+	}
+
 }
 
-void AGCharacter::DrawPerimeter() 
+void AGCharacter::ShowPerimeter(bool Show)
 {
-	ATacticalGameGameMode* GameMode = Cast<ATacticalGameGameMode>(GetWorld()->GetAuthGameMode());
-	GameMode->GameDirector->TileMap->Drawer->DrawPerimeter(PerimeterPoints);
+	for (auto p : Perimeters)
+	{
+		p->SetActorHiddenInGame(!Show);
+	}
+}
+
+void AGCharacter::ShowShortestPath(bool Show)
+{
+	PathActor->SetActorHiddenInGame(!Show);
+}
+
+void AGCharacter::DrawShortestPath(FTile* Tile)
+{
+	FDijkstraNode* node = &ShortestPaths[Tile->Index];
+
+	// If tile is the actor's tile, dont do anything
+	if (!ShortestPaths.Contains(node->Prev))
+	{
+		return;
+	}
+
+	//UE_LOG(LogTemp, Warning, TEXT("must be null %s"), *node->Tile->TileCenter.ToString())
+
+	TArray<FVector> Points;
+
+	while (ShortestPaths.Contains(node->Prev))
+	{
+		Points.Add(node->Tile->TileCenter);
+		node = &ShortestPaths[node->Prev];
+	}
+
+	Points.Add(node->Tile->TileCenter);
+
+	if (!PathActor)
+	{
+		PathActor = GetWorld()->SpawnActor<APath>(
+			GetActorLocation(),
+			FRotator::ZeroRotator);
+	}
+
+	PathActor->DrawPath(Points);
+	PathActor->SetActorHiddenInGame(true);
 }
