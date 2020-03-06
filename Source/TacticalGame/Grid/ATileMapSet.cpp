@@ -10,7 +10,7 @@
 #include "Materials/Material.h"
 #include "Kismet/GameplayStatics.h"
 #include "DrawDebugHelpers.h"
-#include "GridUtils.h"
+#include "Utils/GridUtils.h"
 #include "Math/UnrealMathUtility.h"
 
 // Sets default values
