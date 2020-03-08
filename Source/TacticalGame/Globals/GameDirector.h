@@ -9,14 +9,16 @@
 #include "Grid/ATileMapSet.h"
 #include "GameDirector.generated.h"
 
-UCLASS()
+class ATacticalGameGameMode;
+
+UCLASS(Blueprintable, BlueprintType)
 class TACTICALGAME_API UGameDirector : public UObject
 {
 	GENERATED_BODY()
 	
 public:	
 	// Sets default values for this actor's properties
-	UGameDirector();
+	UGameDirector();	
 
 	UPROPERTY()
 	ASpawner* Spawner;
@@ -26,6 +28,8 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	AATileMapSet* TileMap;
+
+	UWorld* World = nullptr;
 
 public:
 	// Called when the game starts or when spawned

@@ -17,17 +17,21 @@ ATacticalGameGameMode::ATacticalGameGameMode()
 
 	PlayerControllerClass = AGPlayerController::StaticClass();
 	DefaultPawnClass = nullptr;
-
-	GameDirector = NewObject<UGameDirector>(this, TEXT("GameDirector"));
-
-	Party = NewObject<UParty>(this, TEXT("Party"));
-	Party->Init();
 }
 
 
 void ATacticalGameGameMode::StartPlay()
 {
 	Super::StartPlay();
+	GameDirector = NewObject<UGameDirector>(this, TEXT("GameDirector"));
+
+	if (PartyClass)
+	{
+		Party = NewObject<UParty>(this, PartyClass->GetFName(), RF_NoFlags, PartyClass.GetDefaultObject());
+		Party->Init();
+	}
+
+	UWorld* World = GetWorld();
 
 	GameDirector->Init();
 	GameDirector->SpawnCharacters(true);
@@ -35,8 +39,6 @@ void ATacticalGameGameMode::StartPlay()
 	BattleManager = NewObject<UBattleManager>(this, TEXT("BattleManager"));
 	BattleManager->Init();
 	SwitchToBattleMode(true, false);
-
-	UWorld* World = GetWorld();
 
 	if (World)
 	{
@@ -48,6 +50,7 @@ void ATacticalGameGameMode::StartPlay()
 
 void ATacticalGameGameMode::Tick(float DeltaSeconds)
 {
+
 	if (!Input)
 	{
 		UWorld* World = GetWorld();

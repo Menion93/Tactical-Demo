@@ -2,12 +2,14 @@
 
 #include "GameDirector.h"
 #include "Kismet/GameplayStatics.h"
+#include "TacticalGameGameMode.h"
+#include "Engine/Engine.h"
 #include "Engine/World.h"
 
 // Sets default values
 UGameDirector::UGameDirector()
 {
-
+	UE_LOG(LogTemp, Warning, TEXT("game director created"))
 
 }
 
@@ -50,8 +52,7 @@ void UGameDirector::SetCamera()
 
 	if (CameraTmp)
 	{
+		Cast<ATopViewCamera>(CameraTmp);
 		Camera = Cast<ATopViewCamera>(CameraTmp);
 	}
 }
-
-
