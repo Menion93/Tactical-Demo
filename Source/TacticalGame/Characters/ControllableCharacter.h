@@ -21,7 +21,7 @@ public:
 
 	AControllableCharacter();
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UCharacterState* State;
 
 	AGPlayerController* Input;
