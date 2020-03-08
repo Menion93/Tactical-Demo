@@ -20,6 +20,7 @@ APerimeter::APerimeter()
 
 	Perimeter = CreateDefaultSubobject<USplineComponent>("Perimeter");
 	Perimeter->SetupAttachment(RootComponent);
+
 }
 
 void APerimeter::DrawPerimeter(TArray<FVector> Points)

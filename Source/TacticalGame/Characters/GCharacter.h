@@ -31,6 +31,12 @@ public:
 	UPROPERTY()
 	APath* PathActor;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<APath> PathClass;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<APerimeter> PerimeterClass;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

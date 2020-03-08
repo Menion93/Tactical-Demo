@@ -11,7 +11,7 @@
 /**
  * 
  */
-UCLASS()
+UCLASS(Blueprintable)
 class TACTICALGAME_API APerimeter : public AActor
 {
 	GENERATED_BODY()
@@ -19,10 +19,10 @@ class TACTICALGAME_API APerimeter : public AActor
 public:
 	APerimeter();
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	USplineComponent* Perimeter;
 
-	UPROPERTY()
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UStaticMesh* Mesh;
 
 public:

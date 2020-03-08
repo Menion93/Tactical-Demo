@@ -9,7 +9,7 @@
 #include "Components/SplineMeshComponent.h"
 #include "APath.generated.h"
 
-UCLASS()
+UCLASS(Blueprintable)
 class TACTICALGAME_API APath : public AActor
 {
 	GENERATED_BODY()
@@ -18,10 +18,10 @@ public:
 	// Sets default values for this actor's properties
 	APath();
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	USplineComponent* Path;
 
-	UPROPERTY()
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UStaticMesh* Mesh;
 
 	TArray<USplineMeshComponent*> ArrowMeshes;
