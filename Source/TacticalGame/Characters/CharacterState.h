@@ -11,7 +11,7 @@
 /**
  * 
  */
-UCLASS()
+UCLASS(BlueprintType)
 class TACTICALGAME_API UCharacterState : public UObject
 {
 	GENERATED_BODY()
