@@ -22,9 +22,22 @@ void UBSMDeselectedState::PlayState()
 		{
 			// this will show an aura or spawn a decal under the character
 			AControllableCharacter* Character = Cast<AControllableCharacter>(BattleManager->SelectedTile->Character);
-			Character->Selected();
-			BattleManager->CurrentCharacter = Character;
-			BattleManager->CurrentState = CombatStateE::CHARACTER_SELECTED;
+
+			// if is a controllable character
+			if (Character)
+			{
+				Character->Selected();
+				Character->ShowPerimeter(true);
+				BattleManager->CurrentCharacter = Character;
+				BattleManager->CurrentState = CombatStateE::CHARACTER_SELECTED;
+			} 
+			// Otherwise show character info
+			else
+			{
+				BattleManager->CurrentCharacter = Cast<AGCharacter>(BattleManager->SelectedTile->Character);
+			}
+
+
 		}
 	}
 
@@ -60,7 +73,7 @@ void UBSMDeselectedState::PlayState()
 
 			if (AxisReleased)
 			{
-				time = 0.5;
+				time = 0.25;
 			}
 
 			AxisReleased = false;

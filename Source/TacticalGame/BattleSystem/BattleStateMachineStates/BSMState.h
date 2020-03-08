@@ -32,5 +32,5 @@ protected:
 public:
 	virtual void Init();
 
-	virtual void PlayState();	
+	virtual void PlayState();
 };

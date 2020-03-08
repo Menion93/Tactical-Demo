@@ -31,7 +31,8 @@ public:
 	int CurrentActionPoints;
 
 	// Number of tiles per movement action
-	int MovementSpeed = 1;
+	UPROPERTY(EditAnywhere)
+	int MovementSpeed = 10;
 
 
 	UPROPERTY()

@@ -5,15 +5,30 @@
 #include "Globals/TacticalGameGameMode.h"
 #include "Engine/World.h"
 
-UBSMCharacterSelectedState::UBSMCharacterSelectedState(){}
+UBSMCharacterSelectedState::UBSMCharacterSelectedState()
+{
+	
+}
 
 void UBSMCharacterSelectedState::PlayState()
 {
 	// Deselect the character
 	if (Input->B)
 	{
+		BattleManager->CurrentCharacter->ShowPerimeter(false);
+		BattleManager->CurrentCharacter->ShowShortestPath(false);
 		BattleManager->CurrentCharacter = nullptr;
 		BattleManager->CurrentState = CombatStateE::DESELECTED_STATE;
+	}
+
+	if (Input->A)
+	{
+		//// Character under tile
+		//if (BattleManager->SelectedTile->Character && 
+		//	BattleManager->SelectedTile->Character)
+		//{
+
+		//}
 	}
 
 	// Move the cursor
@@ -30,7 +45,7 @@ void UBSMCharacterSelectedState::PlayState()
 
 			if (AxisReleased)
 			{
-				time = 0.5;
+				time = 0.25;
 			}
 
 			AxisReleased = false;
@@ -41,7 +56,9 @@ void UBSMCharacterSelectedState::PlayState()
 				ATacticalGameGameMode* GameMode = Cast<ATacticalGameGameMode>(GetWorld()->GetAuthGameMode());
 
 				BattleManager->SelectedTile = BattleManager->SelectedTile->Direction2Neighbours[Index].Key;
-				//BattleManager->TileMap->Drawer->
+				BattleManager->CurrentCharacter->DrawShortestPath(BattleManager->SelectedTile);
+				BattleManager->CurrentCharacter->ShowShortestPath(true);
+
 				TileMap->SetCursorToTile(BattleManager->SelectedTile);
 				GameMode->GameDirector->Camera->MoveToTile(BattleManager->SelectedTile);
 
