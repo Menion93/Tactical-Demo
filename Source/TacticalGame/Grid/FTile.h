@@ -7,15 +7,15 @@
 class AGCharacter;
 class AAPickable;
 
-USTRUCT()
+USTRUCT(BlueprintType)
 struct FTileIndex
 {
 	GENERATED_BODY()
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		int X;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		int Y;
 
 	FTileIndex() : X(0), Y(0) {}
@@ -55,30 +55,33 @@ struct FTileIndex
 	}
 };
 
-USTRUCT()
+USTRUCT(BlueprintType)
 struct FTile
 {
 	GENERATED_BODY()
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(BlueprintReadWrite)
 		bool IsObstacle = false;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(BlueprintReadWrite)
 		FTileIndex Index;
 		
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(BlueprintReadWrite)
 		FVector TileCenter = FVector(0, 0, 0);
 	
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(BlueprintReadWrite)
 		FVector SurfaceNormal = FVector(0, 0, 0);
 
+	UPROPERTY(BlueprintReadWrite)
 	AGCharacter* Character = nullptr;
+
+	UPROPERTY(BlueprintReadWrite)
 	AAPickable* Pickable = nullptr;
 	
 	TMap<FTileIndex, TPair<FTile*, float>> Direction2Neighbours;
 
-	UPROPERTY(EditAnywhere)
-		bool IsCover = false;
+	UPROPERTY(BlueprintReadWrite)
+	bool IsCover = false;
 
 	FString ToString()
 	{

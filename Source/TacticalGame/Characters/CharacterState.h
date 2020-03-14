@@ -35,7 +35,7 @@ public:
 	int MovementSpeed = 10;
 
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	UBag* Bag;
 
 	TSubclassOf<class AControllableCharacter> ActorCharacterClass;
