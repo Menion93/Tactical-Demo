@@ -7,13 +7,12 @@
 #include "AI/BaseEnemyAIController.h"
 #include "Characters/CharacterState.h"
 #include "Characters/GCharacter.h"
+#include "Characters/ControllableCharacter.h"
 #include "Utils/GridUtils.h"
 #include "./BattleStateMachineStates/BSMState.h"
-#include "./BattleStateMachineStates/BSMEnemyLockedState.h"
+#include "./BattleStateMachineStates/BSMCharacterInfoState.h"
 #include "./BattleStateMachineStates/BSMCharacterSelectedState.h"
-#include "./BattleStateMachineStates/BSMNpcSelectedState.h"
 #include "./BattleStateMachineStates/BSMDeselectedState.h"
-#include "./BattleStateMachineStates/BSMTileSelectedState.h"
 #include "BattleManager.generated.h"
 
 class ATacticalGameGameMode;
@@ -23,9 +22,7 @@ enum class CombatStateE : uint8
 {
 	DESELECTED_STATE UMETA(DisplayName = "Deselected State"),
 	CHARACTER_SELECTED UMETA(DisplayName = "Character Selected"),
-	NPC_SELECTED UMETA(DisplayName = "Npc Selected"),
-	ENEMY_LOCKED UMETA(DisplayName = "Enemy Locked"),
-	TILE_SELECTED UMETA(DisplayName = "Tile Selected"),
+	CHARACTER_INFO UMETA(DisplayName = "Character Info"),
 };
 /**
  * 
@@ -41,7 +38,12 @@ public:
 	bool PlayerTurn;
 
 	ATacticalGameGameMode* GameMode;
-	AGCharacter* CurrentCharacter;
+
+	UPROPERTY(BlueprintReadWrite)
+	AControllableCharacter* CurrentCharacter;
+
+	UPROPERTY()
+	AGCharacter* NotAlliedCharacter;
 
 	CombatStateE CurrentState;
 
@@ -65,13 +67,7 @@ public:
 	UBSMCharacterSelectedState* CharacterSelectedState;
 
 	UPROPERTY()
-	UBSMEnemyLockedState* EnemyLockedState;
-
-	UPROPERTY()
-	UBSMTileSelectedState* TileSelectedState;
-
-	UPROPERTY()
-	UBSMNpcSelectedState* NpcSelectedState;
+	UBSMCharacterInfoState* CharacterInfoState;
 
 	UPROPERTY()
 	bool BattleEngaged;
