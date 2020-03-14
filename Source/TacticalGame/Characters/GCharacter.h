@@ -9,6 +9,8 @@
 #include "Grid/APath.h"
 #include "GCharacter.generated.h"
 
+class UCharacterState;
+
 UCLASS()
 class TACTICALGAME_API AGCharacter : public ACharacter
 {
@@ -21,12 +23,17 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
 	bool IsMoving = false;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UCharacterState* State;
+
 	FTile* CurrentTile;
 
 	DijkstraOutput ShortestPaths;
 
 	// Perimeters Data
 	TArray<APerimeter*> Perimeters;
+
+	bool TileInRange(FTile* Tile);
 
 	UPROPERTY()
 	APath* PathActor;

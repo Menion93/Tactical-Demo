@@ -150,3 +150,16 @@ void AGCharacter::DrawShortestPath(FTile* Tile)
 	PathActor->DrawPath(Points);
 	PathActor->SetActorHiddenInGame(true);
 }
+
+bool AGCharacter::TileInRange(FTile* Tile)
+{
+	for (auto& pair : ShortestPaths)
+	{
+		if (Tile->Index == pair.Value.Tile->Index)
+		{
+			return pair.Value.Distance < State->MovementSpeed;
+		}
+	}
+
+	return false;
+}

@@ -8,7 +8,6 @@
 #include "ControllableCharacter.generated.h"
 
 
-class UCharacterState;
 /**
  * 
  */
@@ -21,15 +20,10 @@ public:
 
 	AControllableCharacter();
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UCharacterState* State;
-
 	AGPlayerController* Input;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Option")
 	float Speed = 100;
-
-
 
 
 public:
