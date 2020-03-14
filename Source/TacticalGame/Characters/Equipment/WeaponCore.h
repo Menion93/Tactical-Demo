@@ -3,12 +3,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Components/ActorComponent.h"
+#include "Items/Item.h"
 #include "WeaponCore.generated.h"
 
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
-class TACTICALGAME_API UWeaponCore : public UActorComponent
+class TACTICALGAME_API UWeaponCore : public UItem
 {
 	GENERATED_BODY()
 
@@ -61,13 +61,5 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "WeaponStat")
 		int Magazine;
 
-protected:
-	// Called when the game starts
-	virtual void BeginPlay() override;
 
-public:	
-	// Called every frame
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-
-		
 };

@@ -3,11 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Actor.h"
+#include "Items/Item.h"
 #include "Shield.generated.h"
 
 UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
-class TACTICALGAME_API UShield : public UActorComponent
+class TACTICALGAME_API UShield : public UItem
 {
 	GENERATED_BODY()
 	
@@ -23,14 +23,5 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ShieldStat")
 		uint8 ShieldType;
-
-
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-
-public:	
-	// Called every frame
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 };

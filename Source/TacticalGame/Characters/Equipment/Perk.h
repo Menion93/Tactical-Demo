@@ -3,12 +3,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Components/ActorComponent.h"
+#include "Items/Item.h"
 #include "Perk.generated.h"
 
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
-class TACTICALGAME_API UPerk : public UActorComponent
+class TACTICALGAME_API UPerk : public UItem
 {
 	GENERATED_BODY()
 
@@ -18,7 +18,7 @@ public:
 
 protected:
 	// Called when the game starts
-	virtual void BeginPlay() override;
+
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PerkStat")
 	FString PerkName;
@@ -26,9 +26,6 @@ protected:
 
 
 public:	
-	// Called every frame
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-
 	//void SetupPerk();
 
 	//void ActivatePerk();
