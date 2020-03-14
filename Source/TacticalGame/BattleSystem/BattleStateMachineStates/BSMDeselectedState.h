@@ -24,8 +24,13 @@ public:
 	float time;
 
 public:
-	virtual void PlayState() override;
-	//virtual void Init() override;
+	void InputEventX() override;
+	void InputEventY() override;
+	void InputEventA() override;
+	void InputEventB() override;
+
+	void InputEventLAxis() override;
+
 
 private:
 	void ResetCooldownMovementGrid();

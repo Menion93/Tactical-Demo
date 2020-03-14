@@ -5,6 +5,9 @@
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
 #include "BSMState.h"
+#include "Characters/ControllableCharacter.h"
+#include "Characters/GCharacter.h"
+#include "Grid/FTile.h"
 #include "BSMCharacterSelectedState.generated.h"
 
 /**
@@ -24,8 +27,14 @@ public:
 	float time;
 
 public:
-	virtual void PlayState() override;
+	void InputEventX() override;
+	void InputEventY() override;
+	void InputEventA() override;
+	void InputEventB() override;
 
+	void InputEventLAxis() override;
+
+	
 private:
 	void ResetCooldownMovementGrid();
 

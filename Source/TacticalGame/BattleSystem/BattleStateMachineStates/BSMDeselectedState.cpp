@@ -11,57 +11,51 @@ UBSMDeselectedState::UBSMDeselectedState()
 
 }
 
-
-void UBSMDeselectedState::PlayState()
+void UBSMDeselectedState::InputEventX()
 {
-	
-	// Try to select current tile
-	if (Input->A)
+
+}
+
+void UBSMDeselectedState::InputEventY()
+{
+
+}
+
+// When selecting a Tile
+void UBSMDeselectedState::InputEventA()
+{
+	if (BattleManager->SelectedTile->Character)
 	{
-		if (BattleManager->SelectedTile->Character)
+		// this will show an aura or spawn a decal under the character
+		AControllableCharacter* Character = Cast<AControllableCharacter>(BattleManager->SelectedTile->Character);
+
+		// if is a controllable character
+		if (Character)
 		{
-			// this will show an aura or spawn a decal under the character
-			AControllableCharacter* Character = Cast<AControllableCharacter>(BattleManager->SelectedTile->Character);
-
-			// if is a controllable character
-			if (Character)
-			{
-				Character->Selected();
-				Character->ShowPerimeter(true);
-				BattleManager->CurrentCharacter = Character;
-				BattleManager->CurrentState = CombatStateE::CHARACTER_SELECTED;
-			} 
-			// Otherwise show character info
-			else
-			{
-				BattleManager->CurrentCharacter = Cast<AGCharacter>(BattleManager->SelectedTile->Character);
-			}
-
-
+			BattleManager->GameMode->BattleUI->SetCharacterBar(Character->State);
+			Character->Selected();
+			Character->ShowPerimeter(true);
+			BattleManager->CurrentCharacter = Character;
+			BattleManager->CurrentState = CombatStateE::CHARACTER_SELECTED;
+		}
+		// Otherwise show character info
+		else
+		{
+			BattleManager->NotAlliedCharacter = Cast<AGCharacter>(BattleManager->SelectedTile->Character);
 		}
 	}
+}
 
-	// Move Cursor to Different Character
-	if (Input->PAD_UP)
-	{
+void UBSMDeselectedState::InputEventB()
+{
 
-	}
+}
 
-	// Move Cursor to Different Character 
-	if (Input->PAD_BOTTOM)
-	{
 
-	}
+void UBSMDeselectedState::InputEventLAxis()
+{
+	if (!Input->HardAxis.IsZero()) {
 
-	// Move Cursor to Selected Character
-	if (Input->X)
-	{
-
-	}
-
-	// Move the cursor
-	if (!Input->HardAxis.IsZero())
-	{
 		if (!CooldownMovementGrid || Input->Axis_DOWN)
 		{
 			UWorld* World = GetWorld();
@@ -95,13 +89,13 @@ void UBSMDeselectedState::PlayState()
 				CooldownMovementGrid = true;
 			}
 		}
-	}
+	}	
 	else
 	{
 		AxisReleased = true;
 	}
-
 }
+
 
 void UBSMDeselectedState::ResetCooldownMovementGrid()
 {

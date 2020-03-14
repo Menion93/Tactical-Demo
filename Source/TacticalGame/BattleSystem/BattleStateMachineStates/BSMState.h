@@ -29,8 +29,39 @@ protected:
 	AGPlayerController* Input;
 	AATileMapSet* TileMap;
 
+	bool InputDisabled = false;
+
 public:
 	virtual void Init();
-
+	bool IsInputDisabled();
+	void DisableInput(bool DisInput);
 	virtual void PlayState();
+
+	void BindState();
+	void UnbindState();
+
+	virtual void InputEventX();
+	virtual void InputEventY();
+	virtual void InputEventA();
+	virtual void InputEventB();
+
+	virtual void InputEventStart();
+	virtual void InputEventPause();
+
+	virtual void InputEventR1();
+	virtual void InputEventR2();
+
+	virtual void InputEventL1();
+	virtual void InputEventL2();
+
+	virtual void InputEventLAxis();
+	virtual void InputEventRAxis();
+
+	virtual void InputEventPadUpDown();
+	virtual void InputEventPadLeftRight();
+
+
+
+
+
 };

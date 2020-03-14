@@ -10,27 +10,56 @@ UBSMCharacterSelectedState::UBSMCharacterSelectedState()
 	
 }
 
-void UBSMCharacterSelectedState::PlayState()
+void UBSMCharacterSelectedState::InputEventX()
 {
-	// Deselect the character
-	if (Input->B)
+	//DisableInput(true);
+	BattleManager->GameMode->BattleUI->OpenBag();
+	BattleManager->CurrentState = CombatStateE::CHARACTER_INFO;
+}
+
+void UBSMCharacterSelectedState::InputEventY()
+{
+	
+}
+
+void UBSMCharacterSelectedState::InputEventA()
+{
+	FTile* SelectedTile = BattleManager->SelectedTile;
+
+	if (SelectedTile && SelectedTile->IsObstacle)
 	{
-		BattleManager->CurrentCharacter->ShowPerimeter(false);
-		BattleManager->CurrentCharacter->ShowShortestPath(false);
-		BattleManager->CurrentCharacter = nullptr;
-		BattleManager->CurrentState = CombatStateE::DESELECTED_STATE;
+		return;
 	}
 
-	if (Input->A)
-	{
-		//// Character under tile
-		//if (BattleManager->SelectedTile->Character && 
-		//	BattleManager->SelectedTile->Character)
-		//{
+	AGCharacter* Character = SelectedTile->Character;
 
-		//}
+	if (Character)
+	{
+		//DisableInput(true);
+		BattleManager->GameMode->BattleUI->OpenActionMenu(BattleManager->CurrentCharacter, Character, *SelectedTile);
+		BattleManager->CurrentState = CombatStateE::CHARACTER_INFO;
 	}
 
+	if (BattleManager->CurrentCharacter->TileInRange(SelectedTile))
+	{
+		//DisableInput(true);
+		BattleManager->GameMode->BattleUI->OpenActionMenu(BattleManager->CurrentCharacter, nullptr, *SelectedTile);
+		BattleManager->CurrentState = CombatStateE::CHARACTER_INFO;
+	}
+}
+
+void UBSMCharacterSelectedState::InputEventB()
+{
+	BattleManager->GameMode->BattleUI->HideCharacterBar();
+	BattleManager->CurrentCharacter->ShowPerimeter(false);
+	BattleManager->CurrentCharacter->ShowShortestPath(false);
+	BattleManager->CurrentCharacter = nullptr;
+	BattleManager->CurrentState = CombatStateE::DESELECTED_STATE;
+}
+
+
+void UBSMCharacterSelectedState::InputEventLAxis()
+{
 	// Move the cursor
 	if (!Input->HardAxis.IsZero())
 	{
@@ -75,8 +104,10 @@ void UBSMCharacterSelectedState::PlayState()
 	{
 		AxisReleased = true;
 	}
-
 }
+
+
+
 
 void UBSMCharacterSelectedState::ResetCooldownMovementGrid()
 {
