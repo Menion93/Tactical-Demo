@@ -45,11 +45,13 @@ void ATacticalGameGameMode::StartPlay()
 		Input = Cast<AGPlayerController>(World->GetFirstPlayerController());
 	}
 
+	InitializeUI();
 	//SwitchToFreeMode();
 }
 
 void ATacticalGameGameMode::Tick(float DeltaSeconds)
 {
+	Super::Tick(DeltaSeconds);
 
 	if (!Input)
 	{
@@ -60,9 +62,6 @@ void ATacticalGameGameMode::Tick(float DeltaSeconds)
 			Input = Cast<AGPlayerController>(World->GetFirstPlayerController());
 		}
 	} 
-
-
-	Super::Tick(DeltaSeconds);
 
 	if (CurrentMode == GameModeE::GSE_Battle)
 	{

@@ -11,7 +11,7 @@
 #include "Characters/CharacterState.h"
 #include "Party/Party.h"
 #include "Blueprint/UserWidget.h"
-#include "BattleUI.h"
+#include "UI/BattleUI.h"
 #include "Globals/GPlayerController.h"
 #include "TacticalGameGameMode.generated.h"
 
@@ -51,7 +51,7 @@ public:
 	UBattleManager* BattleManager;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UUserWidget* BattleUI;
+	UBattleUI* BattleUI;
 
 	AGPlayerController* Input;
 	
@@ -65,5 +65,8 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void SwitchToFreeMode();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void InitializeUI();
 
 };

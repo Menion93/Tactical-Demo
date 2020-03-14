@@ -14,20 +14,15 @@ void UBattleManager::Init()
 {
 	DeselectedState = NewObject<UBSMDeselectedState>(this, TEXT("DeselectedState"));
 	CharacterSelectedState = NewObject<UBSMCharacterSelectedState>(this, TEXT("CharacterSelectedState"));
-	EnemyLockedState = NewObject<UBSMEnemyLockedState>(this, TEXT("EnemyLockedState"));
-	TileSelectedState = NewObject<UBSMTileSelectedState>(this, TEXT("TileSelectedState"));
-	NpcSelectedState = NewObject<UBSMNpcSelectedState>(this, TEXT("NpcSelectedState"));
+	CharacterInfoState = NewObject<UBSMCharacterInfoState>(this, TEXT("CharacterInfoState"));
 
 	DeselectedState->Init();
 	CharacterSelectedState->Init();
-	EnemyLockedState->Init();
-	TileSelectedState->Init();
+	CharacterInfoState->Init();
 
 	StateMachine.Emplace(CombatStateE::DESELECTED_STATE, DeselectedState);
-	StateMachine.Emplace(CombatStateE::ENEMY_LOCKED, EnemyLockedState );
-	StateMachine.Emplace(CombatStateE::TILE_SELECTED, TileSelectedState);
 	StateMachine.Emplace(CombatStateE::CHARACTER_SELECTED, CharacterSelectedState);
-	StateMachine.Emplace(CombatStateE::NPC_SELECTED, NpcSelectedState);
+	StateMachine.Emplace(CombatStateE::CHARACTER_INFO, CharacterInfoState);
 
 	GameMode = Cast<ATacticalGameGameMode>(GetWorld()->GetAuthGameMode());
 }
@@ -63,7 +58,10 @@ void UBattleManager::PlayTurn()
 	// Let the player choose an action
 	else if (PlayerTurn)
 	{
-		StateMachine[CurrentState]->PlayState();
+		if (!StateMachine[CurrentState]->IsInputDisabled())
+		{
+			StateMachine[CurrentState]->PlayState();
+		}
 	}
 	// Let the AI choose an action
 	else
