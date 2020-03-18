@@ -10,6 +10,8 @@
 #include "BattleSystem/BattleManager.h"
 #include "Characters/CharacterState.h"
 #include "Party/Party.h"
+#include "Blueprint/UserWidget.h"
+#include "UI/BattleUI.h"
 #include "Globals/GPlayerController.h"
 #include "TacticalGameGameMode.generated.h"
 
@@ -30,30 +32,44 @@ class ATacticalGameGameMode : public AGameModeBase
 public:
 	ATacticalGameGameMode();
 
-	UPROPERTY()
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	GameModeE CurrentMode;
 
-	UPROPERTY()
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UGameDirector* GameDirector;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	UParty* Party;
 
-	UPROPERTY()
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<class UParty> PartyClass;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UInventory* Inventory;
 
-	UPROPERTY()
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UBattleManager* BattleManager;
 
-	AGPlayerController* Input;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UBattleUI* BattleUI;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool BattleModeOnLoad;
+
+	AGPlayerController* Input;
 	
 
 public:
 	virtual void Tick(float DeltaTime) override;
 	virtual void StartPlay() override;
-
+	
+	UFUNCTION(BlueprintCallable)
 	void SwitchToBattleMode(bool IsPlayerTurn, bool ForceEngage);
+
+	UFUNCTION(BlueprintCallable)
 	void SwitchToFreeMode();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void InitializeUI();
 
 };

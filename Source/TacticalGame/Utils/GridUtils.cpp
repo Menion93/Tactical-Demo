@@ -46,7 +46,7 @@ void UGridUtils::GetShortestPaths(DijkstraOutput &output, FTile* CurrentTile, in
 }
 
 
-TArray<FArrayOfArray> UGridUtils::GetPerimeterPoints(DijkstraOutput &output, int Distance, float CellSize, float ZOffset)
+TArray<FVectorArray> UGridUtils::GetPerimeterPoints(DijkstraOutput &output, int Distance, float CellSize, float ZOffset)
 {
 	TArray<FDijkstraNode*> Nodes;
 
@@ -61,7 +61,7 @@ TArray<FArrayOfArray> UGridUtils::GetPerimeterPoints(DijkstraOutput &output, int
 
 	// Used to retrieve floating precision vectors from the integer representation, along with the Z axis
 	TMap<FTileIndex, FVector> Index2Vec;
-	TArray<FArrayOfArray> Result;
+	TArray<FVectorArray> Result;
 
 	FTileIndex OffSetU(1, 0);
 	FTileIndex OffSetR(0, 1);
@@ -87,7 +87,7 @@ TArray<FArrayOfArray> UGridUtils::GetPerimeterPoints(DijkstraOutput &output, int
 			{
 				// if we find a wall, save the perimeter segment (2 points)
 
-				if (!Node->Tile->Direction2Neighbours.Contains(Direction) || 
+				if (!Node->Tile->Direction2Neighbours.Contains(Direction) ||
 					FMath::FloorToInt(output[Node->Tile->Index + Direction].Distance) > Distance)
 				{
 					FVector WallMidPoint = Node->Tile->TileCenter + Direction.ToVector() * HalfCellSize;
@@ -115,7 +115,7 @@ TArray<FArrayOfArray> UGridUtils::GetPerimeterPoints(DijkstraOutput &output, int
 						Segments.Emplace(AIndex, TArray<FTileIndex>());
 					}
 
-					if(!Segments.Contains(BIndex))
+					if (!Segments.Contains(BIndex))
 					{
 						Segments.Emplace(BIndex, TArray<FTileIndex>());
 					}
@@ -135,18 +135,18 @@ TArray<FArrayOfArray> UGridUtils::GetPerimeterPoints(DijkstraOutput &output, int
 	while (AreMoreBlocks)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("ciao"))
-		AreMoreBlocks = AddPerimeterBlock(Result, Segments, Index2Vec, Visited);
+			AreMoreBlocks = AddPerimeterBlock(Result, Segments, Index2Vec, Visited);
 	}
-	
+
 	return Result;
 }
 
 bool UGridUtils::AddPerimeterBlock(
-	TArray<FArrayOfArray>& Result, 
+	TArray<FVectorArray>& Result,
 	TMap<FTileIndex, TArray<FTileIndex>> &Segments,
 	TMap<FTileIndex, FVector>& Index2Vec,
 	TArray<FTileIndex>& Visited
-	)
+)
 {
 	bool NewBlockFound = false;
 	FTileIndex PerimeterPointIndex;
@@ -190,7 +190,7 @@ bool UGridUtils::AddPerimeterBlock(
 		}
 	}
 
-	FArrayOfArray ArrayContainer;
+	FVectorArray ArrayContainer;
 
 	for (auto& Index : PerimeterIndexes)
 	{

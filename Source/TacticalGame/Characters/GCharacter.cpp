@@ -88,7 +88,7 @@ void AGCharacter::ComputePerimeterPoints(int TilesPerMovementAction)
 {
 	ATacticalGameGameMode* GameMode = Cast<ATacticalGameGameMode>(GetWorld()->GetAuthGameMode());
 
-	TArray<FArrayOfArray> PerimeterBlocks = UGridUtils::GetPerimeterPoints(
+	TArray<FVectorArray> PerimeterBlocks = UGridUtils::GetPerimeterPoints(
 		ShortestPaths,
 		TilesPerMovementAction,
 		GameMode->GameDirector->TileMap->CellSize,
@@ -97,7 +97,7 @@ void AGCharacter::ComputePerimeterPoints(int TilesPerMovementAction)
 	for (auto& perimeter : PerimeterBlocks)
 	{
 		APerimeter* Perimeter = GetWorld()->SpawnActor<APerimeter>(
-			GetActorLocation(), FRotator::ZeroRotator);
+			PerimeterClass, GetActorLocation(), FRotator::ZeroRotator);
 
 		Perimeter->DrawPerimeter(perimeter.Array);
 		Perimeter->SetActorHiddenInGame(true);
@@ -129,8 +129,6 @@ void AGCharacter::DrawShortestPath(FTile* Tile)
 		return;
 	}
 
-	//UE_LOG(LogTemp, Warning, TEXT("must be null %s"), *node->Tile->TileCenter.ToString())
-
 	TArray<FVector> Points;
 
 	while (ShortestPaths.Contains(node->Prev))
@@ -144,10 +142,24 @@ void AGCharacter::DrawShortestPath(FTile* Tile)
 	if (!PathActor)
 	{
 		PathActor = GetWorld()->SpawnActor<APath>(
+			PathClass,
 			GetActorLocation(),
 			FRotator::ZeroRotator);
 	}
 
 	PathActor->DrawPath(Points);
 	PathActor->SetActorHiddenInGame(true);
+}
+
+bool AGCharacter::TileInRange(FTile* Tile)
+{
+	for (auto& pair : ShortestPaths)
+	{
+		if (Tile->Index == pair.Value.Tile->Index)
+		{
+			return pair.Value.Distance < State->MovementSpeed;
+		}
+	}
+
+	return false;
 }

@@ -24,7 +24,6 @@ void ASpawner::BeginPlay()
 void ASpawner::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
 void ASpawner::SpawnCharacters(bool SnapToGrid)
@@ -44,6 +43,7 @@ void ASpawner::SpawnCharacters(bool SnapToGrid)
 				FRotator::ZeroRotator);
 
 			Team[pos]->ActorCharacter = Character;
+			Character->State = Team[pos];
 
 			if (SnapToGrid)
 			{

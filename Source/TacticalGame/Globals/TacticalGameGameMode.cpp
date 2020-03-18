@@ -17,37 +17,49 @@ ATacticalGameGameMode::ATacticalGameGameMode()
 
 	PlayerControllerClass = AGPlayerController::StaticClass();
 	DefaultPawnClass = nullptr;
-
-	GameDirector = NewObject<UGameDirector>(this, TEXT("GameDirector"));
-
-	Party = NewObject<UParty>(this, TEXT("Party"));
-	Party->Init();
 }
 
 
 void ATacticalGameGameMode::StartPlay()
 {
 	Super::StartPlay();
+	GameDirector = NewObject<UGameDirector>(this, TEXT("GameDirector"));
+
+	if (PartyClass)
+	{
+		Party = NewObject<UParty>(this, PartyClass->GetFName(), RF_NoFlags, PartyClass.GetDefaultObject());
+		Party->Init();
+	}
+
+	UWorld* World = GetWorld();
 
 	GameDirector->Init();
-	GameDirector->SpawnCharacters(true);
+	GameDirector->SpawnCharacters(BattleModeOnLoad);
 
 	BattleManager = NewObject<UBattleManager>(this, TEXT("BattleManager"));
 	BattleManager->Init();
-	SwitchToBattleMode(true, false);
 
-	UWorld* World = GetWorld();
+	if (BattleModeOnLoad)
+	{
+		SwitchToBattleMode(true, false);
+	} 
+	else
+	{
+		SwitchToFreeMode();
+	}
 
 	if (World)
 	{
 		Input = Cast<AGPlayerController>(World->GetFirstPlayerController());
 	}
 
-	//SwitchToFreeMode();
+	InitializeUI();
 }
 
 void ATacticalGameGameMode::Tick(float DeltaSeconds)
 {
+	Super::Tick(DeltaSeconds);
+
 	if (!Input)
 	{
 		UWorld* World = GetWorld();
@@ -57,9 +69,6 @@ void ATacticalGameGameMode::Tick(float DeltaSeconds)
 			Input = Cast<AGPlayerController>(World->GetFirstPlayerController());
 		}
 	} 
-
-
-	Super::Tick(DeltaSeconds);
 
 	if (CurrentMode == GameModeE::GSE_Battle)
 	{

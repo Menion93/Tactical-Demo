@@ -114,7 +114,7 @@ FTile* AATileMapSet::SnapToGrid(AGCharacter* Character)
 {
 	Character->GetActorLocation();
 	FTile* Tile = GetTileFromNearestPosition(Character->GetActorLocation());
-	Character->SetActorLocation(Tile->TileCenter);
+	Character->SetActorLocation(Tile->TileCenter + FVector::UpVector * Character->GetDefaultHalfHeight());
 	Character->CurrentTile = Tile;
 	Tile->Character = Character;
 	return Tile;

@@ -11,7 +11,7 @@
 /**
  * 
  */
-UCLASS()
+UCLASS(BlueprintType)
 class TACTICALGAME_API UCharacterState : public UObject
 {
 	GENERATED_BODY()
@@ -35,7 +35,7 @@ public:
 	int MovementSpeed = 10;
 
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	UBag* Bag;
 
 	TSubclassOf<class AControllableCharacter> ActorCharacterClass;

@@ -3,12 +3,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Components/ActorComponent.h"
+#include "Items/Item.h"
 #include "Armor.generated.h"
 
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
-class TACTICALGAME_API UArmor : public UActorComponent
+class TACTICALGAME_API UArmor : public UItem
 {
 	GENERATED_BODY()
 
@@ -33,17 +33,6 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ArmorStat")
 		int SlotLevel;  //eventuale livello degli slot
-
-protected:
-	// Called when the game starts
-	virtual void BeginPlay() override;
-
-
-
-public:	
-	// Called every frame
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-
 
 
 		

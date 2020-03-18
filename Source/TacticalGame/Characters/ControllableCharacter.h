@@ -4,11 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "GCharacter.h"
+#include "BattleSystem/Actions/Action.h"
 #include "Globals/GPlayerController.h"
 #include "ControllableCharacter.generated.h"
 
 
-class UCharacterState;
 /**
  * 
  */
@@ -21,15 +21,13 @@ public:
 
 	AControllableCharacter();
 
-	UPROPERTY(EditAnywhere)
-	UCharacterState* State;
-
 	AGPlayerController* Input;
+
+	// List of reversible actions done in the current turn
+	TArray<UAction*> ActionsBuffer;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Option")
 	float Speed = 100;
-
-
 
 
 public:
@@ -38,4 +36,9 @@ public:
 
 	void Selected();
 	void HandleInput();
+
+	TArray<UAction*> GetAdditionalActions();
+
+	void ReverseAction();
+
 };

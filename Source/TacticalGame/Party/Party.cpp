@@ -10,31 +10,33 @@ UParty::UParty()
 
 void UParty::Init()
 {
-	UCharacterState* cs1 = NewObject<UCharacterState>(this, TEXT("cs1"));
-	cs1->Init(TEXT("/Game/Characters/Female_Pirate/Models/BP_Female_Pirate"), TEXT("player1")); 
+	for (auto& Pair : Teams2ActorBPClass)
+	{
+		FCharacterStateArray Team;
 
-	UCharacterState* cs2 = NewObject<UCharacterState>(this, TEXT("cs2"));
-	cs2->Init(TEXT("/Game/TopDownCPP/Blueprints/Characters/Player2"), TEXT("player2"));
+		for (auto& Elem : Pair.Value.Array)
+		{
+			UCharacterState* Char = NewObject<UCharacterState>(this);
+			Char->ActorCharacterClass = Elem;
 
-	TArray<UCharacterState*> team1;
+			Team.Array.Add(Char);
+		}
 
-	team1.Add(cs1);
-	team1.Add(cs2);
-
-	Teams2Characters.Emplace(0, team1);
+		Teams2Characters.Emplace(Pair.Key, Team);
+	}
 }
 
 TArray<UCharacterState*> UParty::GetSelectedTeam()
 {
-	return Teams2Characters[SelectedTeam];
+	return Teams2Characters[SelectedTeam].Array;
 }
 
 void UParty::HandlePlayerInput()
 {
-	Teams2Characters[SelectedTeam][0]->ActorCharacter->HandleInput();
+	Teams2Characters[SelectedTeam].Array[0]->ActorCharacter->HandleInput();
 }
 
 UCharacterState* UParty::GetCurrentLeader()
 {
-	return Teams2Characters[SelectedTeam][0];
+	return Teams2Characters[SelectedTeam].Array[0];
 }

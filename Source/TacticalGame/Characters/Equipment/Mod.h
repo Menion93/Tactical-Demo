@@ -3,12 +3,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Components/ActorComponent.h"
+#include "Items/Item.h"
 #include "Mod.generated.h"
 
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
-class TACTICALGAME_API UMod : public UActorComponent
+class TACTICALGAME_API UMod : public UItem
 {
 	GENERATED_BODY()
 
@@ -25,13 +25,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ModStat")
 	int SlotMod;   //che livello di slot è necessario, oppure quanti slot occupa una mod
 
-protected:
-	// Called when the game starts
-	virtual void BeginPlay() override;
-
-public:	
-	// Called every frame
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 		
 };
