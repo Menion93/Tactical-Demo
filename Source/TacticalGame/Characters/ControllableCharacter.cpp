@@ -36,3 +36,19 @@ void AControllableCharacter::HandleInput()
 		this->AddMovementInput(FVector(Input->Axis.X, Input->Axis.Y, this->GetActorLocation().Z), Speed);
 	}
 }
+
+TArray<UAction*> AControllableCharacter::GetAdditionalActions()
+{
+	TArray<UAction*> AdditionalActions;
+	return AdditionalActions;
+}
+
+void AControllableCharacter::ReverseAction()
+{
+	if (ActionsBuffer.Num() > 0)
+	{
+		int Index = ActionsBuffer.Num() - 1;
+		ActionsBuffer[Index]->ReverseAction();
+		ActionsBuffer.RemoveAt(Index);
+	}
+}

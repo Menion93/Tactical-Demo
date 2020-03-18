@@ -36,7 +36,7 @@ void UBSMDeselectedState::InputEventA()
 			Character->Selected();
 			Character->ShowPerimeter(true);
 			BattleManager->CurrentCharacter = Character;
-			BattleManager->CurrentState = CombatStateE::CHARACTER_SELECTED;
+			BattleManager->TransitionToState(CombatStateE::CHARACTER_SELECTED);
 		}
 		// Otherwise show character info
 		else

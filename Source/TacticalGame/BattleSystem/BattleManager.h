@@ -9,10 +9,14 @@
 #include "Characters/GCharacter.h"
 #include "Characters/ControllableCharacter.h"
 #include "Utils/GridUtils.h"
+#include "./Actions/Action.h"
 #include "./BattleStateMachineStates/BSMState.h"
 #include "./BattleStateMachineStates/BSMCharacterInfoState.h"
 #include "./BattleStateMachineStates/BSMCharacterSelectedState.h"
 #include "./BattleStateMachineStates/BSMDeselectedState.h"
+#include "./BattleStateMachineStates/BSMSelectAttackState.h"
+#include "./BattleStateMachineStates/BSMSelectEnemyState.h"
+#include "./BattleStateMachineStates/BSMBagState.h"
 #include "BattleManager.generated.h"
 
 class ATacticalGameGameMode;
@@ -23,6 +27,9 @@ enum class CombatStateE : uint8
 	DESELECTED_STATE UMETA(DisplayName = "Deselected State"),
 	CHARACTER_SELECTED UMETA(DisplayName = "Character Selected"),
 	CHARACTER_INFO UMETA(DisplayName = "Character Info"),
+	OPEN_BAG UMETA(DisplayName = "Open Bag"),
+	SELECT_ATTACK UMETA(DisplayName = "Select Attack"),
+	SELECT_ENEMY UMETA(DisplayName = "Select Enemy"),
 };
 /**
  * 
@@ -47,6 +54,8 @@ public:
 
 	CombatStateE CurrentState;
 
+	UPROPERTY()
+	UAction* CurrentAction;
 
 	UPROPERTY()
 	TMap<CombatStateE, UBSMState*> StateMachine;
@@ -55,26 +64,27 @@ public:
 
 	FTile* SelectedTile;
 
-	DECLARE_DELEGATE(Action)
-	Action CurrentAction = nullptr;
-
-	bool HasActionEnded = true;
-
 	UPROPERTY()
 	UBSMDeselectedState* DeselectedState;
-
 	UPROPERTY()
 	UBSMCharacterSelectedState* CharacterSelectedState;
-
 	UPROPERTY()
 	UBSMCharacterInfoState* CharacterInfoState;
-
 	UPROPERTY()
+	UBSMBagState* BagState;
+	UPROPERTY()
+	UBSMSelectEnemyState* SelectEnemyState;
+	UPROPERTY()
+	UBSMSelectAttackState* SelectAttackState;
+
 	bool BattleEngaged;
+
 	
 public:
 	UFUNCTION()
 	void ToggleBattleMode(bool mode);
+
+	void TransitionToState(CombatStateE State);
 
 	void PlayTurn();
 	void Init();
@@ -84,6 +94,5 @@ public:
 	void EndTurn();
 	void EndBattle();
 	void ResetToPlayerTurn();
-	void EndCurrentAction();
-	Action GetActionDelegate();
+	void SetAction(UAction* Action);
 };

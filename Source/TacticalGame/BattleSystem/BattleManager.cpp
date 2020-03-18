@@ -15,14 +15,23 @@ void UBattleManager::Init()
 	DeselectedState = NewObject<UBSMDeselectedState>(this, TEXT("DeselectedState"));
 	CharacterSelectedState = NewObject<UBSMCharacterSelectedState>(this, TEXT("CharacterSelectedState"));
 	CharacterInfoState = NewObject<UBSMCharacterInfoState>(this, TEXT("CharacterInfoState"));
+	BagState = NewObject<UBSMBagState>(this, TEXT("BagState"));
+	SelectEnemyState = NewObject<UBSMSelectEnemyState>(this, TEXT("SelectEnemyState"));
+	SelectAttackState = NewObject<UBSMSelectAttackState>(this, TEXT("SelectAttackState"));
 
 	DeselectedState->Init();
 	CharacterSelectedState->Init();
 	CharacterInfoState->Init();
+	BagState->Init();
+	SelectEnemyState->Init();
+	SelectAttackState->Init();
 
 	StateMachine.Emplace(CombatStateE::DESELECTED_STATE, DeselectedState);
 	StateMachine.Emplace(CombatStateE::CHARACTER_SELECTED, CharacterSelectedState);
 	StateMachine.Emplace(CombatStateE::CHARACTER_INFO, CharacterInfoState);
+	StateMachine.Emplace(CombatStateE::OPEN_BAG, BagState);
+	StateMachine.Emplace(CombatStateE::SELECT_ATTACK, SelectAttackState);
+	StateMachine.Emplace(CombatStateE::SELECT_ENEMY, SelectEnemyState);
 
 	GameMode = Cast<ATacticalGameGameMode>(GetWorld()->GetAuthGameMode());
 }
@@ -35,12 +44,20 @@ void UBattleManager::ToggleBattleMode(bool mode)
 void UBattleManager::PlayTurn()
 {
 	// if we already chose an action
-	if (CurrentAction.IsBound())
+	if (CurrentAction)
 	{
-		CurrentAction.ExecuteIfBound();
 		// Play and see if action has ended
-		if (HasActionEnded)
+		if (CurrentAction->PlayAction())
 		{
+			if (CurrentAction->ReversibleAction)
+			{
+				CurrentCharacter->ActionsBuffer.Add(CurrentAction);
+			}
+			else
+			{
+				CurrentCharacter->ActionsBuffer.Empty();
+			}
+
 			if (IsBattleEnded())
 			{
 				EndBattle();
@@ -50,9 +67,6 @@ void UBattleManager::PlayTurn()
 			{
 				EndTurn();
 			}
-
-			CurrentAction.Unbind();
-			HasActionEnded = false;
 		}
 	}
 	// Let the player choose an action
@@ -78,9 +92,9 @@ void UBattleManager::InitBattleState(bool IsPlayerTurn, bool ForceEngage)
 	 
 	for (auto character : Characters)
 	{
+		GameMode->GameDirector->TileMap->SnapToGrid(character->ActorCharacter);
 		character->ActorCharacter->ComputeShortestPaths();
 		character->ActorCharacter->ComputePerimeterPoints(character->MovementSpeed);
-		GameMode->GameDirector->TileMap->SnapToGrid(character->ActorCharacter);
 	}
 
 	// Update current Tile
@@ -166,12 +180,13 @@ void UBattleManager::ResetToPlayerTurn()
 
 }
 
-void UBattleManager::EndCurrentAction()
+void UBattleManager::SetAction(UAction* Action)
 {
-	HasActionEnded = true;
+	CurrentAction = Action;
 }
 
-UBattleManager::Action UBattleManager::GetActionDelegate()
+void UBattleManager::TransitionToState(CombatStateE State)
 {
-	return CurrentAction;
+	CurrentState = State;
+	StateMachine[CurrentState]->OnEnter();
 }

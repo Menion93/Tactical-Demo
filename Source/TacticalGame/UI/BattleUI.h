@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
 #include "Party/Party.h"
+#include "ActionMenuUI.h"
 #include "BattleUI.generated.h"
 
 /**
@@ -16,6 +17,10 @@ class TACTICALGAME_API UBattleUI : public UUserWidget
 	GENERATED_BODY()
 
 public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UActionMenuUI* ActionMenu;
+
+public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UParty* Party;
@@ -24,11 +29,11 @@ public:
 	void OpenActionMenu(
 		AControllableCharacter* CurrentCharacter,
 		AGCharacter* CharacterInTile,
-		FTile Tile);
+		FTile Tile,
+		const TArray<UAction*>& ActionList);
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void OpenBag();
-
 	
 	UFUNCTION(BlueprintImplementableEvent)
 	void SetCharacterBar(UPARAM(DisplayName = "CharacterState") UCharacterState* State);
@@ -38,8 +43,5 @@ public:
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void CloseBag();
-
-
-
 	
 };

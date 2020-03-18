@@ -152,4 +152,10 @@ void UBSMState::InputEventPadLeftRight()
 
 }
 
+void UBSMState::OnEnter()
+{
+
+}
+
+
 

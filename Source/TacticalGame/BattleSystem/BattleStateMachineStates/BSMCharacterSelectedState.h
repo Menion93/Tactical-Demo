@@ -32,11 +32,14 @@ public:
 	void InputEventA() override;
 	void InputEventB() override;
 
+	void InputEventR2() override;
+
 	void InputEventLAxis() override;
 
 	
 private:
 	void ResetCooldownMovementGrid();
 
-	
+	TArray<UAction*> GetActionEntryList();
+
 };

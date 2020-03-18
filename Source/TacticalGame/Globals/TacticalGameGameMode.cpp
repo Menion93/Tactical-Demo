@@ -34,11 +34,19 @@ void ATacticalGameGameMode::StartPlay()
 	UWorld* World = GetWorld();
 
 	GameDirector->Init();
-	GameDirector->SpawnCharacters(true);
+	GameDirector->SpawnCharacters(BattleModeOnLoad);
 
 	BattleManager = NewObject<UBattleManager>(this, TEXT("BattleManager"));
 	BattleManager->Init();
-	SwitchToBattleMode(true, false);
+
+	if (BattleModeOnLoad)
+	{
+		SwitchToBattleMode(true, false);
+	} 
+	else
+	{
+		SwitchToFreeMode();
+	}
 
 	if (World)
 	{
@@ -46,7 +54,6 @@ void ATacticalGameGameMode::StartPlay()
 	}
 
 	InitializeUI();
-	//SwitchToFreeMode();
 }
 
 void ATacticalGameGameMode::Tick(float DeltaSeconds)

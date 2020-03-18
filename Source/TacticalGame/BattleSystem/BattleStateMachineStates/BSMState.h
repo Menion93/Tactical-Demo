@@ -60,6 +60,8 @@ public:
 	virtual void InputEventPadUpDown();
 	virtual void InputEventPadLeftRight();
 
+	virtual void OnEnter();
+
 
 
 

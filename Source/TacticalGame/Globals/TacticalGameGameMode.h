@@ -53,6 +53,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UBattleUI* BattleUI;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool BattleModeOnLoad;
+
 	AGPlayerController* Input;
 	
 
