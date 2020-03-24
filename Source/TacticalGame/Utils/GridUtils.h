@@ -9,14 +9,14 @@
 #include "GridUtils.generated.h"
 
 
+class AATileMapSet;
 
-USTRUCT()
+USTRUCT(BlueprintType)
 struct FDijkstraNode
 {
 	GENERATED_BODY()
 
-	FTile* Tile;
-
+	FTileIndex TileIndex;
 	FTileIndex Prev;
 
 	UPROPERTY()
@@ -24,18 +24,12 @@ struct FDijkstraNode
 
 	FDijkstraNode() {}
 
-	FDijkstraNode(FTile* TileParam, FTileIndex PrevNode, float DistanceParam) : Tile(TileParam), Prev(PrevNode), Distance(DistanceParam) {}
+	FDijkstraNode(FTileIndex TileParam, FTileIndex PrevNode, float DistanceParam) : TileIndex(TileParam), Prev(PrevNode), Distance(DistanceParam) {}
 
 	bool operator<(const FDijkstraNode &Other) const
 	{
 		return Distance < Other.Distance;
 	}
-
-	FString ToString()
-	{
-		return FString::Printf(TEXT("%s"), *Tile->ToString());
-	}
-
 };
 
 typedef TMap<FTileIndex, FDijkstraNode> DijkstraOutput;
@@ -49,9 +43,21 @@ class TACTICALGAME_API UGridUtils : public UObject
 	GENERATED_BODY()
 
 public:
-		static void GetShortestPaths(DijkstraOutput &output, FTile* CurrentTile, int PathLenght);
+		static void GetShortestPaths(AATileMapSet* TileMap,
+			DijkstraOutput &output,
+			FTileIndex CurrentTile,
+			int PathLenght);
 
-		static TArray<FVectorArray> GetPerimeterPoints(DijkstraOutput &output, int Distance, float CellSize, float ZOffset);
+		static TArray<FVectorArray> GetPerimeterPoints(AATileMapSet* TileMap,
+			DijkstraOutput &output, 
+			int Distance,
+			float CellSize, 
+			float ZOffset);
+
+		static void UnravelPath(AATileMapSet* TileMap, 
+			DijkstraOutput &output,
+			FTileIndex Destination,
+			TArray<FVector>& Out);
 
 		static void BuildGrid(AActor* Map,
 			TMap<FTileIndex, FTile> &TilesMap,

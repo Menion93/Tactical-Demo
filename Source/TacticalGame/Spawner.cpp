@@ -30,7 +30,7 @@ void ASpawner::SpawnCharacters(bool SnapToGrid)
 {
 
 	ATacticalGameGameMode* GameMode = Cast<ATacticalGameGameMode>(GetWorld()->GetAuthGameMode());
-	TArray<UCharacterState*> Team = GameMode->Party->GetSelectedTeam();
+	TArray<UCharacterState*> Team = GameMode->Party->GetTeam();
 	for (int pos = 0; pos < Team.Num(); pos++)
 	{
 		UWorld* World = GetWorld();

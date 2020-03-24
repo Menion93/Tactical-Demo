@@ -17,6 +17,7 @@
 #include "./BattleStateMachineStates/BSMSelectAttackState.h"
 #include "./BattleStateMachineStates/BSMSelectEnemyState.h"
 #include "./BattleStateMachineStates/BSMBagState.h"
+#include "Grid/ATileMapSet.h"
 #include "BattleManager.generated.h"
 
 class ATacticalGameGameMode;
@@ -44,25 +45,31 @@ public:
 
 	bool PlayerTurn;
 
+	UPROPERTY(BlueprintReadWrite)
 	ATacticalGameGameMode* GameMode;
+
+	UPROPERTY(BlueprintReadWrite)
+	AATileMapSet* TileMap;
 
 	UPROPERTY(BlueprintReadWrite)
 	AControllableCharacter* CurrentCharacter;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	AGCharacter* NotAlliedCharacter;
 
 	CombatStateE CurrentState;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	UAction* CurrentAction;
 
 	UPROPERTY()
 	TMap<CombatStateE, UBSMState*> StateMachine;
 
+	UPROPERTY()
 	AGPlayerController* Input;
 
-	FTile* SelectedTile;
+	UPROPERTY(BlueprintReadWrite)
+	FTileIndex SelectedTile;
 
 	UPROPERTY()
 	UBSMDeselectedState* DeselectedState;
@@ -94,5 +101,10 @@ public:
 	void EndTurn();
 	void EndBattle();
 	void ResetToPlayerTurn();
+
+	UFUNCTION(BlueprintCallable)
 	void SetAction(UAction* Action);
+
+	UFUNCTION(BlueprintCallable)
+	FTile GetCurrentTile();
 };

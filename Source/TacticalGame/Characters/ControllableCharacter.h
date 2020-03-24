@@ -26,10 +26,6 @@ public:
 	// List of reversible actions done in the current turn
 	TArray<UAction*> ActionsBuffer;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Option")
-	float Speed = 100;
-
-
 public:
 	virtual void Tick(float DeltaTime) override;
 	virtual void BeginPlay() override;
@@ -40,5 +36,4 @@ public:
 	TArray<UAction*> GetAdditionalActions();
 
 	void ReverseAction();
-
 };

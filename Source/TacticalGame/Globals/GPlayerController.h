@@ -10,7 +10,7 @@
 /**
  * 
  */
-UCLASS()
+UCLASS(BlueprintType)
 class TACTICALGAME_API AGPlayerController : public APlayerController
 {
 	GENERATED_BODY()
@@ -18,42 +18,69 @@ class TACTICALGAME_API AGPlayerController : public APlayerController
 public:
 	AGPlayerController();
 
+	UPROPERTY(BlueprintReadWrite)
 	FVector2D HardAxis;
+
+	UPROPERTY(BlueprintReadWrite)
 	FVector2D Axis;
 
+	UPROPERTY(BlueprintReadWrite)
 	bool Axis_DOWN;
 
+	UPROPERTY(BlueprintReadWrite)
 	bool PAD_UP;
+	UPROPERTY(BlueprintReadWrite)
 	bool PAD_UP_DOWN;
 
+	UPROPERTY(BlueprintReadWrite)
 	bool PAD_RIGHT;
+
+	UPROPERTY(BlueprintReadWrite)
 	bool PAD_RIGHT_DOWN;
 
+	UPROPERTY(BlueprintReadWrite)
 	bool PAD_LEFT;
+	UPROPERTY(BlueprintReadWrite)
 	bool PAD_LEFT_DOWN;
 
+	UPROPERTY(BlueprintReadWrite)
 	bool PAD_BOTTOM;
+	UPROPERTY(BlueprintReadWrite)
 	bool PAD_BOTTOM_DOWN;
 
+	UPROPERTY(BlueprintReadWrite)
 	bool X;
+	UPROPERTY(BlueprintReadWrite)
 	bool X_DOWN;
 
+	UPROPERTY(BlueprintReadWrite)
 	bool Y;
+	UPROPERTY(BlueprintReadWrite)
 	bool Y_DOWN;
 
+	UPROPERTY(BlueprintReadWrite)
 	bool A;
+	UPROPERTY(BlueprintReadWrite)
 	bool A_DOWN;
 
+	UPROPERTY(BlueprintReadWrite)
 	bool B;
+	UPROPERTY(BlueprintReadWrite)
 	bool B_DOWN;
 
+	UPROPERTY(BlueprintReadWrite)
 	bool R1;
+	UPROPERTY(BlueprintReadWrite)
 	bool R1_DOWN;
 
+	UPROPERTY(BlueprintReadWrite)
 	bool Start;
+	UPROPERTY(BlueprintReadWrite)
 	bool Start_DOWN;
 
-	bool Pause;
+	UPROPERTY(BlueprintReadWrite)
+	bool MyPause;
+	UPROPERTY(BlueprintReadWrite)
 	bool Pause_DOWN;
 
 private:

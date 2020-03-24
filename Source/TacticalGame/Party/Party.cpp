@@ -10,33 +10,35 @@ UParty::UParty()
 
 void UParty::Init()
 {
-	for (auto& Pair : Teams2ActorBPClass)
+	for (auto& CharClass : CharactersClasses)
 	{
-		FCharacterStateArray Team;
+		UCharacterState* Char = NewObject<UCharacterState>(
+			this, CharClass->GetFName(), RF_NoFlags, CharClass.GetDefaultObject());
 
-		for (auto& Elem : Pair.Value.Array)
+		Char->LoadState();
+		Characters.Add(Char);
+	}
+
+	for (auto& index : TeamIndexes)
+	{
+		if (index < Characters.Num())
 		{
-			UCharacterState* Char = NewObject<UCharacterState>(this);
-			Char->ActorCharacterClass = Elem;
-
-			Team.Array.Add(Char);
+			Team.Add(Characters[index]);
 		}
-
-		Teams2Characters.Emplace(Pair.Key, Team);
 	}
 }
 
-TArray<UCharacterState*> UParty::GetSelectedTeam()
+TArray<UCharacterState*> UParty::GetTeam()
 {
-	return Teams2Characters[SelectedTeam].Array;
+	return Team;
 }
 
 void UParty::HandlePlayerInput()
 {
-	Teams2Characters[SelectedTeam].Array[0]->ActorCharacter->HandleInput();
+	Team[0]->ActorCharacter->HandleInput();
 }
 
 UCharacterState* UParty::GetCurrentLeader()
 {
-	return Teams2Characters[SelectedTeam].Array[0];
+	return Team[0];
 }

@@ -25,20 +25,23 @@ public:
 	// First elem is always the leader
 	// Member of the team follow the leader movement
 	UPROPERTY(BlueprintReadWrite)
-	TMap<int, FCharacterStateArray> Teams2Characters;
+	TArray<UCharacterState*> Characters;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TMap<int, FCharacterClassArray> Teams2ActorBPClass;
+	TArray<TSubclassOf<class UCharacterState>> CharactersClasses;
 
-	TMap<int, UFormation*> Team2Formation;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<int> TeamIndexes;
 
-	int SelectedTeam = 0;
+	UPROPERTY(BlueprintReadWrite)
+	TArray<UCharacterState*> Team;
+
 
 public:
 	void Init();
 
 	UFUNCTION(BlueprintCallable)
-	TArray<UCharacterState*> GetSelectedTeam();
+	TArray<UCharacterState*> GetTeam();
 
 	void HandlePlayerInput();
 

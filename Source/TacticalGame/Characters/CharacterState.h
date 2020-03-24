@@ -11,7 +11,7 @@
 /**
  * 
  */
-UCLASS(BlueprintType)
+UCLASS(Blueprintable, BlueprintType)
 class TACTICALGAME_API UCharacterState : public UObject
 {
 	GENERATED_BODY()
@@ -25,19 +25,27 @@ public:
 	UPROPERTY()
 	AControllableCharacter* ActorCharacter;
 
+	UPROPERTY(BlueprintReadWrite)
 	float CurrentHealth;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float Health;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int ActionPoints;
+
+	UPROPERTY(BlueprintReadWrite)
 	int CurrentActionPoints;
 
 	// Number of tiles per movement action
-	UPROPERTY(EditAnywhere)
-	int MovementSpeed = 10;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int MovementSpeed;
 
 
 	UPROPERTY(BlueprintReadWrite)
 	UBag* Bag;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<class AControllableCharacter> ActorCharacterClass;
 
 	//UArmorDescriptor* armors;
@@ -46,5 +54,6 @@ public:
 	void Init(FString BPClassName, FName name);
 
 	void ResetActionPoints();
+	void LoadState();
 
 };

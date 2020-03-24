@@ -52,11 +52,11 @@ public:
 	UPROPERTY()
 	UDecalComponent* GridCursor;
 
-	UPROPERTY()
+	UPROPERTY(EditAnywhere)
 	UMaterialInterface* DecalMaterial;
 
-	UPROPERTY()
-	USplineComponent* Path;
+	UPROPERTY(EditAnywhere)
+	UMaterialInterface* DecalMaterialDebug;
 
 	float Height;
 	float Width;
@@ -64,8 +64,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TileSettings")
 		class UBoxComponent* BoxComponent;
 
-	UPROPERTY(EditAnywhere, Category = "TileSettings")
-		TMap<FTileIndex, FTile> TilesMap;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TileSettings")
+	TMap<FTileIndex, FTile> TilesMap;
 
 	TArray<UDecalComponent*> DebugDecals;
 
@@ -81,7 +81,13 @@ public:
 	
 	FTile* GetTileFromNearestPosition(FVector NearestPos);
 	FTile* SnapToGrid(AGCharacter* actor);
+	
+	UFUNCTION(BlueprintCallable)
+	void TransferCharacterToTile(FTileIndex From, FTileIndex To);
 
-	void SetCursorToTile(FTile* Tile);
+	void SetCursorToTile(FTileIndex TileIndex);
 	void ShowCursor(bool show);
+
+	UFUNCTION(BlueprintCallable)
+	FTile GetTile(FTileIndex TileIndex);
 };

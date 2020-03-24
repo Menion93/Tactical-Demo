@@ -7,22 +7,23 @@
 #include "Kismet/GameplayStatics.h"
 
 
-void UGridUtils::GetShortestPaths(DijkstraOutput &output, FTile* CurrentTile, int PathLenght)
+void UGridUtils::GetShortestPaths(AATileMapSet* TileMap, DijkstraOutput &output, FTileIndex CurrentTile, int PathLenght)
 {
 	TArray<FDijkstraNode> Q;
 
 	FDijkstraNode Source(CurrentTile, FTileIndex(-1,-1), 0);
 
 	Q.Add(Source);
-	output.Add(Source.Tile->Index, Source);
+	output.Add(Source.TileIndex, Source);
 
 	while (Q.Num() > 0)
 	{
 		Q.Sort();
-		FDijkstraNode node(Q[0].Tile, Q[0].Prev, Q[0].Distance);
+		FDijkstraNode node(Q[0].TileIndex, Q[0].Prev, Q[0].Distance);
 		Q.RemoveAt(0);
 
-		for (auto& pair : node.Tile->Direction2Neighbours)
+		FTile Tile = TileMap->GetTile(node.TileIndex);
+		for (auto& pair : Tile.Direction2Neighbours)
 		{
 			TPair<FTile*, float> tile2weight = pair.Value;
 
@@ -31,7 +32,7 @@ void UGridUtils::GetShortestPaths(DijkstraOutput &output, FTile* CurrentTile, in
 			if (!output.Contains(tile2weight.Key->Index))
 			{
 
-				FDijkstraNode Neighbour(tile2weight.Key, node.Tile->Index, node.Distance + tile2weight.Value);
+				FDijkstraNode Neighbour(tile2weight.Key->Index, node.TileIndex, node.Distance + tile2weight.Value);
 
 				Q.Add(Neighbour);
 				output.Add(tile2weight.Key->Index, Neighbour);
@@ -39,14 +40,19 @@ void UGridUtils::GetShortestPaths(DijkstraOutput &output, FTile* CurrentTile, in
 			else if(node.Distance + tile2weight.Value < output[tile2weight.Key->Index].Distance)
 			{
 				output[tile2weight.Key->Index].Distance = node.Distance + tile2weight.Value;
-				output[tile2weight.Key->Index].Prev = node.Tile->Index;
+				output[tile2weight.Key->Index].Prev = node.TileIndex;
 			}
 		}
 	}
 }
 
 
-TArray<FVectorArray> UGridUtils::GetPerimeterPoints(DijkstraOutput &output, int Distance, float CellSize, float ZOffset)
+TArray<FVectorArray> UGridUtils::GetPerimeterPoints(
+	AATileMapSet* TileMap, 
+	DijkstraOutput &output, 
+	int Distance, 
+	float CellSize, 
+	float ZOffset)
 {
 	TArray<FDijkstraNode*> Nodes;
 
@@ -86,11 +92,11 @@ TArray<FVectorArray> UGridUtils::GetPerimeterPoints(DijkstraOutput &output, int 
 			for (auto Direction : Directions)
 			{
 				// if we find a wall, save the perimeter segment (2 points)
-
-				if (!Node->Tile->Direction2Neighbours.Contains(Direction) ||
-					FMath::FloorToInt(output[Node->Tile->Index + Direction].Distance) > Distance)
+				FTile Tile = TileMap->GetTile(Node->TileIndex);
+				if (!Tile.Direction2Neighbours.Contains(Direction) ||
+					FMath::FloorToInt(output[Node->TileIndex + Direction].Distance) > Distance)
 				{
-					FVector WallMidPoint = Node->Tile->TileCenter + Direction.ToVector() * HalfCellSize;
+					FVector WallMidPoint = Tile.TileCenter + Direction.ToVector() * HalfCellSize;
 
 					FVector A;
 					FVector B;
@@ -202,6 +208,33 @@ bool UGridUtils::AddPerimeterBlock(
 	return true;
 }
 
+void UGridUtils::UnravelPath(AATileMapSet* TileMap, DijkstraOutput& ShortestPaths, FTileIndex Destination, TArray<FVector>& Out)
+{
+	FDijkstraNode* node = &ShortestPaths[Destination];
+
+	// If tile is the actor's tile, dont do anything
+	if (!ShortestPaths.Contains(node->Prev))
+	{
+		return;
+	}
+
+	TArray<FVector> Points;
+	FTile Tile = TileMap->GetTile(node->TileIndex);
+	
+	while (ShortestPaths.Contains(node->Prev))
+	{
+		Points.Add(Tile.TileCenter);
+		node = &ShortestPaths[node->Prev];
+		Tile = TileMap->GetTile(node->TileIndex);
+	}
+
+	Points.Add(Tile.TileCenter);
+
+	for (int i = Points.Num() - 1; i >= 0; i--)
+	{
+		Out.Add(Points[i]);
+	}
+}
 
 // Build the WorldGrid in 3D dimension
 void UGridUtils::BuildGrid(AActor* Map, 
