@@ -11,8 +11,6 @@ AControllableCharacter::AControllableCharacter()
 void AControllableCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	SpawnDefaultController();
-
 	Input = Cast<AGPlayerController>(GetWorld()->GetFirstPlayerController());
 }
 
@@ -33,7 +31,29 @@ void AControllableCharacter::HandleInput()
 {
 	if (!Input->Axis.IsZero())
 	{
-		this->AddMovementInput(FVector(Input->Axis.X, Input->Axis.Y, this->GetActorLocation().Z), Speed);
+		FVector Direction = FVector(Input->Axis.X, Input->Axis.Y, GetActorLocation().Z);
+		AddMovementInput(Direction, Speed);
+
+		if (Input->Axis.X != 0 || Input->Axis.Y != 0)
+		{
+			SetActorRotation(FVector(Direction.X, Direction.Y, 0).ToOrientationRotator());
+		}
+	}
+}
+
+TArray<UAction*> AControllableCharacter::GetAdditionalActions()
+{
+	TArray<UAction*> AdditionalActions;
+	return AdditionalActions;
+}
+
+void AControllableCharacter::ReverseAction()
+{
+	if (ActionsBuffer.Num() > 0)
+	{
+		int Index = ActionsBuffer.Num() - 1;
+		ActionsBuffer[Index]->ReverseAction();
+		ActionsBuffer.RemoveAt(Index);
 	}
 }
 

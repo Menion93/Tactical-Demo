@@ -40,6 +40,5 @@ public:
 private:
 	void ResetCooldownMovementGrid();
 
-	TArray<UAction*> GetActionEntryList();
 
 };

@@ -24,14 +24,21 @@ void UBSMDeselectedState::InputEventY()
 // When selecting a Tile
 void UBSMDeselectedState::InputEventA()
 {
-	if (BattleManager->SelectedTile->Character)
+	FTile CurrentTile = BattleManager->GetCurrentTile();
+
+	if (BattleManager->GetCurrentTile().Character)
 	{
 		// this will show an aura or spawn a decal under the character
-		AControllableCharacter* Character = Cast<AControllableCharacter>(BattleManager->SelectedTile->Character);
+		AControllableCharacter* Character = Cast<AControllableCharacter>(CurrentTile.Character);
 
 		// if is a controllable character
 		if (Character)
 		{
+			if (Character->State->ActionPoints < 1)
+			{
+				return;
+			}
+
 			BattleManager->GameMode->BattleUI->SetCharacterBar(Character->State);
 			Character->Selected();
 			Character->ShowPerimeter(true);
@@ -41,7 +48,8 @@ void UBSMDeselectedState::InputEventA()
 		// Otherwise show character info
 		else
 		{
-			BattleManager->NotAlliedCharacter = Cast<AGCharacter>(BattleManager->SelectedTile->Character);
+			BattleManager->NotAlliedCharacter = Cast<AGCharacter>(CurrentTile.Character);
+			BattleManager->TransitionToState(CombatStateE::CHARACTER_INFO);
 		}
 	}
 }
@@ -73,13 +81,15 @@ void UBSMDeselectedState::InputEventLAxis()
 			AxisReleased = false;
 
 			FTileIndex Index(Input->HardAxis);
-			if (BattleManager->SelectedTile && BattleManager->SelectedTile->Direction2Neighbours.Contains(Index))
+			FTile CurrentTile = BattleManager->GetCurrentTile();
+
+			if (CurrentTile.Direction2Neighbours.Contains(Index))
 			{
 				ATacticalGameGameMode* GameMode = Cast<ATacticalGameGameMode>(GetWorld()->GetAuthGameMode());
 
-				BattleManager->SelectedTile = BattleManager->SelectedTile->Direction2Neighbours[Index].Key;
+				BattleManager->SelectedTile = CurrentTile.Direction2Neighbours[Index].Key->Index;
 				TileMap->SetCursorToTile(BattleManager->SelectedTile);
-				GameMode->GameDirector->Camera->MoveToTile(BattleManager->SelectedTile);
+				GameMode->GameDirector->Camera->LookAtPosition(BattleManager->GetCurrentTile().TileCenter);
 
 				if (World)
 				{

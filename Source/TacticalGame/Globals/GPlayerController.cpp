@@ -126,7 +126,7 @@ void AGPlayerController::InputStart(float Value)
 
 void AGPlayerController::InputPause(float Value)
 {
-	HandleActionInput(Pause, Pause_DOWN, Value);
+	HandleActionInput(MyPause, Pause_DOWN, Value);
 }
 
 void AGPlayerController::InputR1(float Value)

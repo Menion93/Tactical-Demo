@@ -2,15 +2,17 @@
 
 
 #include "Action.h"
+#include "BattleSystem/BattleManager.h"
 
 UAction::UAction()
 {
 
 }
 
-void UAction::Init(AGPlayerController* MyInput)
+void UAction::Init(UBattleManager* BM)
 {
-	Input = MyInput;
+	Input = BM->Input;
+	BattleManager = BM;
 }
 
 bool UAction::PlayAction_Implementation()
@@ -55,6 +57,16 @@ bool UAction::PlayAction_Implementation()
 	return false;
 }
 
+void UAction::OnEnter_Implementation()
+{
+
+}
+
+void UAction::OnEnd_Implementation()
+{
+
+}
+
 
 void UAction::ReverseAction_Implementation()
 {
@@ -62,7 +74,7 @@ void UAction::ReverseAction_Implementation()
 }
 
 
-bool UAction::CanExecuteAction_Implementation()
+bool UAction::CanExecuteAction_Implementation() 
 {
 	return false;
 }

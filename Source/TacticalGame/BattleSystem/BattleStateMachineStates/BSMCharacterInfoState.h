@@ -4,7 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "BSMState.h"
+#include "BattleSystem/Actions/Action.h"
 #include "BSMCharacterInfoState.generated.h"
+
 
 /**
  * 
@@ -19,5 +21,7 @@ public:
 
 public:
 	void InputEventB() override;
+	void OnEnter() override;
+	TArray<UAction*> GetActionEntryList();
 
 };

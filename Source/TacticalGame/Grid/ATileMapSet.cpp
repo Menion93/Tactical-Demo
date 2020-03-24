@@ -29,21 +29,8 @@ AATileMapSet::AATileMapSet()
 	GridCursor = CreateDefaultSubobject<UDecalComponent>("CursorToWorld");
 	GridCursor->SetupAttachment(RootComponent);
 
-	static ConstructorHelpers::FObjectFinder<UMaterial> DecalMaterialAsset(TEXT("Material'/Game/TopDownCPP/Blueprints/Grid_Decal_Debug.Grid_Decal_Debug'"));
-	static ConstructorHelpers::FObjectFinder<UMaterial> DecalMaterialDebug(TEXT("Material'/Game/TopDownCPP/Blueprints/M_Cursor_Decal.M_Cursor_Decal'"));
-
-	DecalMaterial = DecalMaterialDebug.Object;
-
-	if (DecalMaterialAsset.Succeeded())
-	{
-		GridCursor->SetDecalMaterial(DecalMaterialAsset.Object);
-	}
-
 	GridCursor->DecalSize = FVector(16.0f, 32.0f, 32.0f);
 	GridCursor->SetRelativeRotation(FRotator(90.0f, 0.0f, 0.0f).Quaternion());
-
-	Path = CreateDefaultSubobject<USplineComponent>("Path");
-	Path->SetupAttachment(RootComponent);
 }
 
 // Called when the game starts or when spawned
@@ -54,10 +41,12 @@ void AATileMapSet::BeginPlay()
 	CameraManager = GetWorld()->GetFirstPlayerController()->PlayerCameraManager;
 	PlayerController = GetWorld()->GetFirstPlayerController();
 
+	GridCursor->SetDecalMaterial(DecalMaterial);
+
 	UGridUtils::BuildGrid(this,
 		TilesMap,
 		DebugDecals,
-		DecalMaterial,
+		DecalMaterialDebug,
 		Rows,
 		Columns,
 		CellSize,
@@ -76,7 +65,7 @@ void AATileMapSet::OnConstruction(const FTransform & Transform)
 	//UGridUtils::BuildGrid(this,
 	//	TilesMap,
 	//	DebugDecals,
-	//	DecalMaterial,
+	//	DecalMaterialDebug,
 	//	Rows,
 	//	Columns,
 	//	CellSize,
@@ -115,7 +104,7 @@ FTile* AATileMapSet::SnapToGrid(AGCharacter* Character)
 	Character->GetActorLocation();
 	FTile* Tile = GetTileFromNearestPosition(Character->GetActorLocation());
 	Character->SetActorLocation(Tile->TileCenter + FVector::UpVector * Character->GetDefaultHalfHeight());
-	Character->CurrentTile = Tile;
+	Character->CurrentTileIndex = Tile->Index;
 	Tile->Character = Character;
 	return Tile;
 }
@@ -130,14 +119,40 @@ void AATileMapSet::BeginDestroy()
 	}
 }
 
-void AATileMapSet::SetCursorToTile(FTile* Tile)
+void AATileMapSet::SetCursorToTile(FTileIndex TileIndex)
 {
+	FTile Tile = TilesMap[TileIndex];
 	GridCursor->SetWorldLocationAndRotation(
-		Tile->TileCenter,
-		Tile->SurfaceNormal.ToOrientationRotator().Quaternion());
+		Tile.TileCenter,
+		Tile.SurfaceNormal.ToOrientationRotator().Quaternion());
 }
 
 void AATileMapSet::ShowCursor(bool show)
 {
 	GridCursor->SetVisibility(show);
+}
+
+void AATileMapSet::TransferCharacterToTile(FTileIndex From, FTileIndex To)
+{
+	if (!TilesMap.Contains(From) || !TilesMap.Contains(To))
+	{
+		return;
+	}
+
+	FTile FromTile = TilesMap[From];
+	FTile ToTile = TilesMap[To];
+
+	if (!FromTile.Character) return;
+	if (ToTile.Character) return;
+
+	ToTile.Character = FromTile.Character;
+	FromTile.Character = nullptr;
+
+	TilesMap[FromTile.Index] = FromTile;
+	TilesMap[ToTile.Index] = ToTile;
+}
+
+FTile AATileMapSet::GetTile(FTileIndex TileIndex)
+{
+	return TilesMap[TileIndex];
 }

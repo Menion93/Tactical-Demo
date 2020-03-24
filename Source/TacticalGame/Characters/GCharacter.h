@@ -10,6 +10,7 @@
 #include "GCharacter.generated.h"
 
 class UCharacterState;
+class AATileMapSet;
 
 UCLASS()
 class TACTICALGAME_API AGCharacter : public ACharacter
@@ -20,20 +21,20 @@ public:
 	// Sets default values for this character's properties
 	AGCharacter();
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
-	bool IsMoving = false;
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UCharacterState* State;
 
-	FTile* CurrentTile;
+	UPROPERTY(BlueprintReadWrite)
+	FTileIndex CurrentTileIndex;
 
-	DijkstraOutput ShortestPaths;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float Speed;
 
-	// Perimeters Data
+	UPROPERTY(BlueprintReadWrite)
+	AATileMapSet* TileMap;
+
+	///////////////////// Perimeters and Path
 	TArray<APerimeter*> Perimeters;
-
-	bool TileInRange(FTile* Tile);
 
 	UPROPERTY()
 	APath* PathActor;
@@ -43,6 +44,19 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<APerimeter> PerimeterClass;
+
+	///////////////// PATHFINDING
+	// Used for steering to next point during pathfinding
+	UPROPERTY(BlueprintReadWrite)
+	TMap<FTileIndex, FDijkstraNode> ShortestPaths;
+
+	UPROPERTY(EditAnywhere)
+	float ToleranceBetweetCkpts = 1;
+
+	// Used for pathfinding
+	TArray<FVector> MovePoints;
+	int PathIndex = -1;
+
 
 protected:
 	// Called when the game starts or when spawned
@@ -56,17 +70,40 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	//void Init(UPlayerInfo* PlayerInfo);
+	UFUNCTION(BlueprintCallable)
 	bool IsInMeleeRange(AGCharacter* Enemy);
+
+	UFUNCTION(BlueprintCallable)
 	bool IsInLineOfSight(AGCharacter* Enemy);
+
+	UFUNCTION(BlueprintCallable)
 	void Shoot(AGCharacter* Enemy);
+
+	UFUNCTION(BlueprintCallable)
 	void Melee(AGCharacter* Enemy);
+
+	UFUNCTION(BlueprintCallable)
 	void GetDamage(float Damage);
-	void MoveTo(FTile Tile);
+
+	UFUNCTION(BlueprintCallable)
+	bool MoveTo(FTileIndex TileIndex);
+
+	UFUNCTION(BlueprintCallable)
+	bool TileInRange(FTile Tile);
 
 	// Grid Path Methods
+	UFUNCTION(BlueprintCallable)
 	void ComputeShortestPaths();
-	void ComputePerimeterPoints(int TilesPerMovementAction);
+
+	UFUNCTION(BlueprintCallable)
+	void ComputePerimeterPoints();
+
+	UFUNCTION(BlueprintCallable)
 	void ShowPerimeter(bool Show);
+
+	UFUNCTION(BlueprintCallable)
 	void ShowShortestPath(bool Show);
-	void DrawShortestPath(FTile* Tile);
+
+	UFUNCTION(BlueprintCallable)
+	void DrawShortestPath(FTileIndex TileIndex);
 };

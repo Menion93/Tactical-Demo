@@ -49,7 +49,7 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	void LerpToTile(FTile* Tile, float seconds);
-	void MoveToTile(FTile* Tile);
+	void LookAtPosition(FVector Position);
 	void AttachToActor(AActor* Actor);
 	void DetachFromActor();
 	void SetViewTarget();

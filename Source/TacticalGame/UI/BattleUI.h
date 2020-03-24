@@ -25,23 +25,22 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UParty* Party;
 
-	UFUNCTION(BlueprintImplementableEvent)
-	void OpenActionMenu(
-		AControllableCharacter* CurrentCharacter,
-		AGCharacter* CharacterInTile,
-		FTile Tile,
-		const TArray<UAction*>& ActionList);
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
+	void OpenActionMenu(const TArray<UAction*>& ActionList);
 
-	UFUNCTION(BlueprintImplementableEvent)
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 	void OpenBag();
 	
-	UFUNCTION(BlueprintImplementableEvent)
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 	void SetCharacterBar(UPARAM(DisplayName = "CharacterState") UCharacterState* State);
 
-	UFUNCTION(BlueprintImplementableEvent)
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 	void HideCharacterBar();
 
-	UFUNCTION(BlueprintImplementableEvent)
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 	void CloseBag();
+
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
+	void CloseActionMenu();
 	
 };

@@ -69,13 +69,13 @@ void ATopViewCamera::LerpToTile(FTile* Tile, float seconds)
 	IsLerping = true;
 }
 
-void ATopViewCamera::MoveToTile(FTile* Tile)
+void ATopViewCamera::LookAtPosition(FVector Position)
 {
 	const FRotator PitchRotation(CameraAngle, 0, 0);
-	FVector ActorUpVector = PitchRotation.RotateVector(FVector::UpVector * CameraDistanceFromActor) + Tile->TileCenter;
+	FVector ActorUpVector = PitchRotation.RotateVector(FVector::UpVector * CameraDistanceFromActor) + Position;
 	
 	SetActorLocation(ActorUpVector);
-	SetActorRotation((Tile->TileCenter - GetActorLocation()).ToOrientationRotator());
+	SetActorRotation((Position - GetActorLocation()).ToOrientationRotator());
 }
 
 void ATopViewCamera::AttachToActor(AActor* Actor)

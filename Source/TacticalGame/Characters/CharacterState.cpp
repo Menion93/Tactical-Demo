@@ -17,3 +17,8 @@ void UCharacterState::ResetActionPoints()
 {
 	CurrentActionPoints = ActionPoints;
 }
+
+void UCharacterState::LoadState()
+{
+
+}
