@@ -56,3 +56,19 @@ void AControllableCharacter::ReverseAction()
 		ActionsBuffer.RemoveAt(Index);
 	}
 }
+
+TArray<UAction*> AControllableCharacter::GetAdditionalActions()
+{
+	TArray<UAction*> AdditionalActions;
+	return AdditionalActions;
+}
+
+void AControllableCharacter::ReverseAction()
+{
+	if (ActionsBuffer.Num() > 0)
+	{
+		int Index = ActionsBuffer.Num() - 1;
+		ActionsBuffer[Index]->ReverseAction();
+		ActionsBuffer.RemoveAt(Index);
+	}
+}
