@@ -2,23 +2,26 @@
 
 
 #include "BSMState.h"
-#include "Globals/TacticalGameGameMode.h"
+#include "BattleSystem/PlayerFireTeam.h"
+#include "Globals/TacticalGameMode.h"
 
 
 UBSMState::UBSMState() {}
 
-void UBSMState::Init()
+void UBSMState::Init(APlayerFireTeam* SM)
 {
-	ATacticalGameGameMode* GameMode = Cast<ATacticalGameGameMode>(GetWorld()->GetAuthGameMode());
+	ATacticalGameMode* GameMode = Cast<ATacticalGameMode>(GetWorld()->GetAuthGameMode());
 
 	if (GameMode)
 	{
-		TileMap = GameMode->GameDirector->TileMap;
+		Grid = GameMode->Grid;
 	}
 
 	Input = Cast<AGPlayerController>(GetWorld()->GetFirstPlayerController());
 
 	BattleManager = GameMode->BattleManager;
+
+	StateMachine = SM;
 
 }
 

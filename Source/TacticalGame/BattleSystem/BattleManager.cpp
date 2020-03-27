@@ -2,216 +2,101 @@
 
 #include "BattleManager.h"
 #include "Utils/GridUtils.h"
-#include "Globals/TacticalGameGameMode.h"
+#include "Globals/TacticalGameMode.h"
 
 
-UBattleManager::UBattleManager()
-{
-	CurrentState = CombatStateE::DESELECTED_STATE;
-}
-
-void UBattleManager::Init()
-{
-	DeselectedState = NewObject<UBSMDeselectedState>(this, TEXT("DeselectedState"));
-	CharacterSelectedState = NewObject<UBSMCharacterSelectedState>(this, TEXT("CharacterSelectedState"));
-	CharacterInfoState = NewObject<UBSMCharacterInfoState>(this, TEXT("CharacterInfoState"));
-	BagState = NewObject<UBSMBagState>(this, TEXT("BagState"));
-	SelectEnemyState = NewObject<UBSMSelectEnemyState>(this, TEXT("SelectEnemyState"));
-	SelectAttackState = NewObject<UBSMSelectAttackState>(this, TEXT("SelectAttackState"));
-
-	DeselectedState->Init();
-	CharacterSelectedState->Init();
-	CharacterInfoState->Init();
-	BagState->Init();
-	SelectEnemyState->Init();
-	SelectAttackState->Init();
-
-	StateMachine.Emplace(CombatStateE::DESELECTED_STATE, DeselectedState);
-	StateMachine.Emplace(CombatStateE::CHARACTER_SELECTED, CharacterSelectedState);
-	StateMachine.Emplace(CombatStateE::CHARACTER_INFO, CharacterInfoState);
-	StateMachine.Emplace(CombatStateE::OPEN_BAG, BagState);
-	StateMachine.Emplace(CombatStateE::SELECT_ATTACK, SelectAttackState);
-	StateMachine.Emplace(CombatStateE::SELECT_ENEMY, SelectEnemyState);
-
-	GameMode = Cast<ATacticalGameGameMode>(GetWorld()->GetAuthGameMode());
-
-	TileMap = GameMode->GameDirector->TileMap;
-}
-
-void UBattleManager::ToggleBattleMode(bool mode)
+ABattleManager::ABattleManager()
 {
 
 }
 
-void UBattleManager::PlayTurn()
+void ABattleManager::Init()
+{
+	GameMode = Cast<ATacticalGameMode>(GetWorld()->GetAuthGameMode());
+	Grid = GameMode->Grid;
+}
+
+
+void ABattleManager::PlayTurn()
 {
 	// if we already chose an action
-	if (CurrentAction)
+	if (GlobalAction)
 	{
-		// Play and see if action has ended
-		if (CurrentAction->PlayAction())
+		GlobalAction = CurrentAction->PlayAction() ? CurrentAction : nullptr;
+	}
+	else if (CurrentAction)
+	{
+		bool HasActionEnded = CurrentAction->PlayAction();
+
+		if (HasActionEnded)
 		{
 			CurrentAction->OnEnd();
 
-			if (CurrentAction->ReversibleAction)
-			{
-				CurrentCharacter->ActionsBuffer.Add(CurrentAction);
-			}
-			else
-			{
-				CurrentCharacter->ActionsBuffer.Empty();
-			}
+			Teams[TeamIndex]->OnActionEnd();
 
-			if (IsBattleEnded())
+			if (Teams[TeamIndex]->IsWinConditionSatisfied())
 			{
 				EndBattle();
-			} 
-
-			else if (IsTurnEnded())
+			}
+			else if (Teams[TeamIndex]->IsTurnEnded())
 			{
 				EndTurn();
-			}
-
-			if (CurrentCharacter)
-			{
-				if (CurrentCharacter->State->CurrentActionPoints > 0)
-				{
-					CurrentState = CombatStateE::CHARACTER_SELECTED;
-				}
-				else
-				{
-					CurrentState = CombatStateE::DESELECTED_STATE;
-				}
 			}
 
 			CurrentAction = nullptr;
 		}
 	}
 	// Let the player choose an action
-	else if (PlayerTurn)
-	{
-		if (!StateMachine[CurrentState]->IsInputDisabled())
-		{
-			StateMachine[CurrentState]->PlayState();
-		}
-	}
-	// Let the AI choose an action
 	else
 	{
-		// Handle AI Turn
-	}
-}
-
-void UBattleManager::InitBattleState(bool IsPlayerTurn, bool ForceEngage)
-{
-	PlayerTurn = IsPlayerTurn;
-
-	TArray<UCharacterState*> Characters = GameMode->Party->GetTeam();
-	 
-	for (auto character : Characters)
-	{
-		GameMode->GameDirector->TileMap->SnapToGrid(character->ActorCharacter);
-		character->ActorCharacter->ComputeShortestPaths();
-		character->ActorCharacter->ComputePerimeterPoints();
-	}
-
-	// Update current Tile
-	if (PlayerTurn)
-	{
-		ResetToPlayerTurn();
-	} 
-	else
-	{
-		BattleEngaged = true;
-	}
-
-	BattleEngaged |= ForceEngage;
-
-	// Snap Players to grid
-
-
-	// Init player health and equip
-}
-	
-
-void UBattleManager::EndTurn()
-{
-	if (!PlayerTurn)
-	{
-		ResetToPlayerTurn();
-	}
-
-	PlayerTurn = !PlayerTurn;
-}
-
-bool UBattleManager::IsTurnEnded()
-{
-	bool ArePointsLeft = false;
-
-	for (auto character : GameMode->Party->GetTeam())
-	{
-		ArePointsLeft |= character->CurrentActionPoints > 0;
-	}
-
-	return ArePointsLeft;
-}
-
-bool UBattleManager::IsBattleEnded()
-{
-	bool BattleEnded = true;
-
-	if (PlayerTurn)
-	{
-		
-	}
-	else
-	{
-		for (auto player : GameMode->Party->GetTeam())
+		if (PrevTeamIndex != TeamIndex)
 		{
-			BattleEnded &= player->CurrentHealth <= 0;
+			PrevTeamIndex = TeamIndex;
+			Teams[TeamIndex]->OnTurnStart();
 		}
+
+		Teams[TeamIndex]->PlayTurn();
 	}
 
-	return BattleEnded;
 }
 
-void UBattleManager::EndBattle()
+void ABattleManager::InitBattleState(bool IsPlayerTurn, bool ForceEngage)
 {
-
-}
-
-void UBattleManager::ResetToPlayerTurn()
-{
-	SelectedTile = GameMode->Party->GetTeam()[0]->ActorCharacter->CurrentTileIndex;
-	GameMode->GameDirector->TileMap->SetCursorToTile(SelectedTile);
-	GameMode->GameDirector->Camera->LookAtPosition(TileMap->GetTile(SelectedTile).TileCenter);
-
-	CurrentState = CombatStateE::DESELECTED_STATE;
-
-	for (auto Char : GameMode->Party->GetTeam())
+	for (auto& Team : Teams)
 	{
-		if (Char->CurrentHealth > 0)
-		{
-			// reset action points
-			Char->ResetActionPoints();
-		}
+		Team->Init(this);
+		Team->SpawnTeam();
 	}
+}
+
+
+void ABattleManager::EndTurn()
+{
+	TeamIndex = (TeamIndex + 1) % Teams.Num();
+
+	// Play Cool Animations & Sounds
+}
+
+
+void ABattleManager::EndBattle()
+{
 
 }
 
-void UBattleManager::SetAction(UAction* Action)
+
+void ABattleManager::SetAction(UAction* Action)
 {
 	CurrentAction = Action;
 	Action->OnEnter();
 }
 
-void UBattleManager::TransitionToState(CombatStateE State)
+
+FTile ABattleManager::GetCurrentTile()
 {
-	CurrentState = State;
-	StateMachine[CurrentState]->OnEnter();
+	return Grid->GetTile(SelectedTile);
 }
 
-FTile UBattleManager::GetCurrentTile()
+AFireTeam* ABattleManager::GetPlayerFireTeam()
 {
-	return TileMap->GetTile(SelectedTile);
+	return Teams[0];
 }

@@ -1,7 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "BSMCharacterInfoState.h"
-#include "Globals/TacticalGameGameMode.h"
+#include "BattleSystem/PlayerFireTeam.h"
+#include "Globals/TacticalGameMode.h"
 
 
 UBSMCharacterInfoState::UBSMCharacterInfoState()
@@ -18,7 +19,7 @@ void UBSMCharacterInfoState::OnEnter()
 void UBSMCharacterInfoState::InputEventB()
 {
 	BattleManager->GameMode->BattleUI->CloseActionMenu();
-	BattleManager->TransitionToState(CombatStateE::CHARACTER_SELECTED);
+	StateMachine->TransitionToState(StateMachine->PrevState);
 }
 
 TArray<UAction*> UBSMCharacterInfoState::GetActionEntryList()

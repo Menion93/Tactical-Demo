@@ -9,7 +9,7 @@
 #include "GridUtils.generated.h"
 
 
-class AATileMapSet;
+class AGrid;
 
 USTRUCT(BlueprintType)
 struct FDijkstraNode
@@ -43,18 +43,18 @@ class TACTICALGAME_API UGridUtils : public UObject
 	GENERATED_BODY()
 
 public:
-		static void GetShortestPaths(AATileMapSet* TileMap,
+		static void GetShortestPaths(AGrid* Grid,
 			DijkstraOutput &output,
 			FTileIndex CurrentTile,
 			int PathLenght);
 
-		static TArray<FVectorArray> GetPerimeterPoints(AATileMapSet* TileMap,
-			DijkstraOutput &output, 
+		static TArray<FVectorArray> GetPerimeterPoints(AGrid* Grid,
+			DijkstraOutput &output,
 			int Distance,
-			float CellSize, 
+			float CellSize,
 			float ZOffset);
 
-		static void UnravelPath(AATileMapSet* TileMap, 
+		static void UnravelPath(AGrid* Grid,
 			DijkstraOutput &output,
 			FTileIndex Destination,
 			TArray<FVector>& Out);

@@ -6,12 +6,13 @@
 #include "UObject/NoExportTypes.h"
 #include "Grid/FTile.h"
 #include "Engine/World.h"
-#include "Grid/ATileMapSet.h"
+#include "Grid/Grid.h"
 #include "Globals/GPlayerController.h"
 #include "BSMState.generated.h"
 
 
-class UBattleManager;
+class ABattleManager;
+class APlayerFireTeam;
 
 /**
  * 
@@ -25,14 +26,16 @@ public:
 	UBSMState();
 
 protected:
-	UBattleManager* BattleManager;
+	ABattleManager* BattleManager;
 	AGPlayerController* Input;
-	AATileMapSet* TileMap;
+	AGrid* Grid;
+	APlayerFireTeam* StateMachine;
 
 	bool InputDisabled = false;
 
 public:
-	virtual void Init();
+	virtual void Init(APlayerFireTeam* SM);
+
 	bool IsInputDisabled();
 	void DisableInput(bool DisInput);
 	virtual void PlayState();

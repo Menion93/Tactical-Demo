@@ -5,7 +5,6 @@
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
 #include "BSMState.h"
-#include "Characters/ControllableCharacter.h"
 #include "Characters/GCharacter.h"
 #include "Grid/FTile.h"
 #include "BSMCharacterSelectedState.generated.h"

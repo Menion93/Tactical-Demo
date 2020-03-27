@@ -30,5 +30,5 @@ struct FCharacterClassArray
 	GENERATED_BODY()
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TArray<TSubclassOf<class AControllableCharacter>> Array;
+	TArray<TSubclassOf<class AGCharacter>> Array;
 };

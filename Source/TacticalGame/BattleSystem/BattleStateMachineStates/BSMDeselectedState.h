@@ -31,6 +31,10 @@ public:
 
 	void InputEventLAxis() override;
 
+	virtual void InputEventR1();
+	virtual void InputEventL1();
+
+
 
 private:
 	void ResetCooldownMovementGrid();

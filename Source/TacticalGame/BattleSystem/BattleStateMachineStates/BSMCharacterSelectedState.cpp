@@ -2,7 +2,8 @@
 
 
 #include "BSMCharacterSelectedState.h"
-#include "Globals/TacticalGameGameMode.h"
+#include "Globals/TacticalGameMode.h"
+#include "BattleSystem/PlayerFireTeam.h"
 #include "Engine/World.h"
 
 UBSMCharacterSelectedState::UBSMCharacterSelectedState()
@@ -13,7 +14,7 @@ UBSMCharacterSelectedState::UBSMCharacterSelectedState()
 void UBSMCharacterSelectedState::InputEventX()
 {
 	//DisableInput(true);
-	BattleManager->TransitionToState(CombatStateE::OPEN_BAG);
+	StateMachine->TransitionToState(CombatStateE::OPEN_BAG);
 }
 
 void UBSMCharacterSelectedState::InputEventY()
@@ -37,7 +38,7 @@ void UBSMCharacterSelectedState::InputEventA()
 		return;
 	}
 
-	BattleManager->TransitionToState(CombatStateE::CHARACTER_INFO);
+	StateMachine->TransitionToState(CombatStateE::CHARACTER_INFO);
 
 }
 
@@ -48,13 +49,13 @@ void UBSMCharacterSelectedState::InputEventB()
 	BattleManager->CurrentCharacter->ShowShortestPath(false);
 
 	// Look at character position
-	FTile CharacterTile = TileMap->GetTile(BattleManager->CurrentCharacter->CurrentTileIndex);
-	BattleManager->GameMode->GameDirector->Camera->LookAtPosition(CharacterTile.TileCenter);
+	FTile CharacterTile = Grid->GetTile(BattleManager->CurrentCharacter->CurrentTileIndex);
+	BattleManager->GameMode->Camera->LookAtPosition(CharacterTile.TileCenter);
 
 	BattleManager->SelectedTile = BattleManager->CurrentCharacter->CurrentTileIndex;
-	TileMap->SetCursorToTile(BattleManager->SelectedTile);
+	Grid->SetCursorToTile(BattleManager->SelectedTile);
 	BattleManager->CurrentCharacter = nullptr;
-	BattleManager->TransitionToState(CombatStateE::DESELECTED_STATE);
+	StateMachine->TransitionToState(CombatStateE::DESELECTED_STATE);
 }
 
 
@@ -84,15 +85,15 @@ void UBSMCharacterSelectedState::InputEventLAxis()
 
 			if (CurrentTile.Direction2Neighbours.Contains(Index))
 			{
-				ATacticalGameGameMode* GameMode = Cast<ATacticalGameGameMode>(GetWorld()->GetAuthGameMode());
+				ATacticalGameMode* GameMode = Cast<ATacticalGameMode>(GetWorld()->GetAuthGameMode());
 
 				BattleManager->SelectedTile = CurrentTile.Direction2Neighbours[Index].Key->Index;
 
 				BattleManager->CurrentCharacter->DrawShortestPath(BattleManager->SelectedTile);
 				BattleManager->CurrentCharacter->ShowShortestPath(true);
 
-				TileMap->SetCursorToTile(BattleManager->SelectedTile);
-				GameMode->GameDirector->Camera->LookAtPosition(BattleManager->GetCurrentTile().TileCenter);
+				Grid->SetCursorToTile(BattleManager->SelectedTile);
+				GameMode->Camera->LookAtPosition(BattleManager->GetCurrentTile().TileCenter);
 
 				if (World)
 				{

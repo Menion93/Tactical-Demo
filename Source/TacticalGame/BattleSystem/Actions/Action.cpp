@@ -9,7 +9,7 @@ UAction::UAction()
 
 }
 
-void UAction::Init(UBattleManager* BM)
+void UAction::Init(ABattleManager* BM)
 {
 	Input = BM->Input;
 	BattleManager = BM;

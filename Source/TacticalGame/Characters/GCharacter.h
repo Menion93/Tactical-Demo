@@ -5,12 +5,13 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "Utils/GridUtils.h"
-#include "Grid/APerimeter.h"
-#include "Grid/APath.h"
+#include "Grid/Perimeter.h"
+#include "Grid/Path.h"
+#include "Globals/GPlayerController.h"
 #include "GCharacter.generated.h"
 
 class UCharacterState;
-class AATileMapSet;
+class AGrid;
 
 UCLASS()
 class TACTICALGAME_API AGCharacter : public ACharacter
@@ -24,6 +25,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UCharacterState* State;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<class UCharacterState> StateClass;
+
 	UPROPERTY(BlueprintReadWrite)
 	FTileIndex CurrentTileIndex;
 
@@ -31,7 +35,7 @@ public:
 	float Speed;
 
 	UPROPERTY(BlueprintReadWrite)
-	AATileMapSet* TileMap;
+	AGrid* Grid;
 
 	///////////////////// Perimeters and Path
 	TArray<APerimeter*> Perimeters;
@@ -57,6 +61,11 @@ public:
 	TArray<FVector> MovePoints;
 	int PathIndex = -1;
 
+
+	AGPlayerController* Input;
+
+	// List of reversible actions done in the current turn
+	TArray<UAction*> ActionsBuffer;
 
 protected:
 	// Called when the game starts or when spawned
@@ -106,4 +115,21 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void DrawShortestPath(FTileIndex TileIndex);
+
+	UFUNCTION(BlueprintCallable)
+	TArray<UAction*> GetAdditionalActions();
+
+	UFUNCTION(BlueprintCallable)
+	void HandleInput();
+
+	UFUNCTION(BlueprintCallable)
+	void ReverseAction();
+
+	UFUNCTION(BlueprintCallable)
+	void Selected();
+
+	UFUNCTION(BlueprintCallable)
+	void Init();
+
+
 };

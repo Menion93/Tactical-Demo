@@ -7,7 +7,7 @@
 #include "Globals/GPlayerController.h"
 #include "Action.generated.h"
 
-class UBattleManager;
+class ABattleManager;
 
 /**
  * 
@@ -27,14 +27,14 @@ public:
 	AGPlayerController* Input;
 
 	UPROPERTY(BlueprintReadWrite)
-	UBattleManager* BattleManager;
+	ABattleManager* BattleManager;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool ReversibleAction;
 
 public:
 
-	void Init(UBattleManager* BM);
+	void Init(ABattleManager* BM);
 
 	UFUNCTION(BlueprintNativeEvent)
 	bool PlayAction();

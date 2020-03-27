@@ -3,8 +3,8 @@
 
 #include "GCharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
-#include "Globals/TacticalGameGameMode.h"
-#include "Grid/ATileMapSet.h"
+#include "Globals/TacticalGameMode.h"
+#include "Grid/Grid.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Utils/Structs.h"
 
@@ -32,10 +32,13 @@ void AGCharacter::BeginPlay()
 {
 	Super::BeginPlay();	
 	SpawnDefaultController();
+}
 
-	ATacticalGameGameMode* GameMode = Cast<ATacticalGameGameMode>(GetWorld()->GetAuthGameMode());
-
-	TileMap = GameMode->GameDirector->TileMap;
+void AGCharacter::Init()
+{
+	ATacticalGameMode* GameMode = Cast<ATacticalGameMode>(GetWorld()->GetAuthGameMode());
+	Grid = GameMode->Grid;
+	Input = Cast<AGPlayerController>(GetWorld()->GetFirstPlayerController());
 }
 
 
@@ -78,15 +81,20 @@ void AGCharacter::GetDamage(float Damage)
 
 }
 
+TArray<UAction*> AGCharacter::GetAdditionalActions()
+{
+	TArray<UAction*> AdditionalActions;
+	return AdditionalActions;
+}
+
 bool AGCharacter::MoveTo(FTileIndex TileIndex)
 {
-	
 	bool IsMoving = PathIndex != -1;
 
 	if (!IsMoving)
 	{
 		MovePoints = TArray<FVector>();
-		UGridUtils::UnravelPath(TileMap, ShortestPaths, TileIndex, MovePoints);
+		UGridUtils::UnravelPath(Grid, ShortestPaths, TileIndex, MovePoints);
 		PathIndex = 1;
 	}
 
@@ -115,7 +123,7 @@ bool AGCharacter::MoveTo(FTileIndex TileIndex)
 void AGCharacter::ComputeShortestPaths()
 {
 	ShortestPaths = TMap<FTileIndex, FDijkstraNode>();
-	UGridUtils::GetShortestPaths(TileMap, ShortestPaths, CurrentTileIndex, 9999);
+	UGridUtils::GetShortestPaths(Grid, ShortestPaths, CurrentTileIndex, 9999);
 }
 
 
@@ -126,14 +134,16 @@ void AGCharacter::ComputePerimeterPoints()
 		Perimeter->Destroy();
 	}
 
-	ATacticalGameGameMode* GameMode = Cast<ATacticalGameGameMode>(GetWorld()->GetAuthGameMode());
+	Perimeters = TArray<APerimeter*>();
+
+	ATacticalGameMode* GameMode = Cast<ATacticalGameMode>(GetWorld()->GetAuthGameMode());
 
 	TArray<FVectorArray> PerimeterBlocks = UGridUtils::GetPerimeterPoints(
-		TileMap,
+		Grid,
 		ShortestPaths,
 		State->MovementSpeed,
-		GameMode->GameDirector->TileMap->CellSize,
-		GameMode->GameDirector->TileMap->PerimeterVOffset);
+		GameMode->Grid->CellSize,
+		GameMode->Grid->PerimeterVOffset);
 
 	for (auto& perimeter : PerimeterBlocks)
 	{
@@ -148,7 +158,7 @@ void AGCharacter::ComputePerimeterPoints()
 
 void AGCharacter::ShowPerimeter(bool Show)
 {
-	for (auto p : Perimeters)
+	for (auto& p : Perimeters)
 	{
 		p->SetActorHiddenInGame(!Show);
 	}
@@ -162,7 +172,7 @@ void AGCharacter::ShowShortestPath(bool Show)
 void AGCharacter::DrawShortestPath(FTileIndex TileIndex)
 {
 	TArray<FVector> Points;
-	UGridUtils::UnravelPath(TileMap, ShortestPaths, TileIndex, Points);
+	UGridUtils::UnravelPath(Grid, ShortestPaths, TileIndex, Points);
 
 	if (!PathActor)
 	{
@@ -187,4 +197,33 @@ bool AGCharacter::TileInRange(FTile Tile)
 	}
 
 	return false;
+}
+
+void AGCharacter::HandleInput()
+{
+	if (!Input->Axis.IsZero())
+	{
+		FVector Direction = FVector(Input->Axis.X, Input->Axis.Y, GetActorLocation().Z);
+		AddMovementInput(Direction, Speed);
+
+		if (Input->Axis.X != 0 || Input->Axis.Y != 0)
+		{
+			SetActorRotation(FVector(Direction.X, Direction.Y, 0).ToOrientationRotator());
+		}
+	}
+}
+
+void AGCharacter::ReverseAction()
+{
+	if (ActionsBuffer.Num() > 0)
+	{
+		int Index = ActionsBuffer.Num() - 1;
+		ActionsBuffer[Index]->ReverseAction();
+		ActionsBuffer.RemoveAt(Index);
+	}
+}
+
+void AGCharacter::Selected()
+{
+
 }

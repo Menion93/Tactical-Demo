@@ -2,6 +2,8 @@
 
 
 #include "BSMSelectEnemyState.h"
+#include "BattleSystem/PlayerFireTeam.h"
+
 
 UBSMSelectEnemyState::UBSMSelectEnemyState()
 {

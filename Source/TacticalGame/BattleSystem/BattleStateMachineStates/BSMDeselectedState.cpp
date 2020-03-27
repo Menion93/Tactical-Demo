@@ -2,7 +2,8 @@
 
 
 #include "BSMDeselectedState.h"
-#include "Globals/TacticalGameGameMode.h"
+#include "Globals/TacticalGameMode.h"
+#include "BattleSystem/PlayerFireTeam.h"
 #include "Engine/World.h"
 
 
@@ -24,17 +25,14 @@ void UBSMDeselectedState::InputEventY()
 // When selecting a Tile
 void UBSMDeselectedState::InputEventA()
 {
-	FTile CurrentTile = BattleManager->GetCurrentTile();
+	AGCharacter* Character = BattleManager->GetCurrentTile().Character;
 
-	if (BattleManager->GetCurrentTile().Character)
+	if (Character)
 	{
-		// this will show an aura or spawn a decal under the character
-		AControllableCharacter* Character = Cast<AControllableCharacter>(CurrentTile.Character);
-
 		// if is a controllable character
-		if (Character)
+		if (BattleManager->GetPlayerFireTeam()->InFireTeam(Character))
 		{
-			if (Character->State->ActionPoints < 1)
+			if (Character->State->CurrentActionPoints < 1)
 			{
 				return;
 			}
@@ -43,13 +41,13 @@ void UBSMDeselectedState::InputEventA()
 			Character->Selected();
 			Character->ShowPerimeter(true);
 			BattleManager->CurrentCharacter = Character;
-			BattleManager->TransitionToState(CombatStateE::CHARACTER_SELECTED);
+			StateMachine->TransitionToState(CombatStateE::CHARACTER_SELECTED);
 		}
 		// Otherwise show character info
 		else
 		{
-			BattleManager->NotAlliedCharacter = Cast<AGCharacter>(CurrentTile.Character);
-			BattleManager->TransitionToState(CombatStateE::CHARACTER_INFO);
+			BattleManager->NotAlliedCharacter = Character;
+			StateMachine->TransitionToState(CombatStateE::CHARACTER_INFO);
 		}
 	}
 }
@@ -85,11 +83,11 @@ void UBSMDeselectedState::InputEventLAxis()
 
 			if (CurrentTile.Direction2Neighbours.Contains(Index))
 			{
-				ATacticalGameGameMode* GameMode = Cast<ATacticalGameGameMode>(GetWorld()->GetAuthGameMode());
+				ATacticalGameMode* GameMode = Cast<ATacticalGameMode>(GetWorld()->GetAuthGameMode());
 
 				BattleManager->SelectedTile = CurrentTile.Direction2Neighbours[Index].Key->Index;
-				TileMap->SetCursorToTile(BattleManager->SelectedTile);
-				GameMode->GameDirector->Camera->LookAtPosition(BattleManager->GetCurrentTile().TileCenter);
+				Grid->SetCursorToTile(BattleManager->SelectedTile);
+				GameMode->Camera->LookAtPosition(BattleManager->GetCurrentTile().TileCenter);
 
 				if (World)
 				{
@@ -106,6 +104,15 @@ void UBSMDeselectedState::InputEventLAxis()
 	}
 }
 
+void UBSMDeselectedState::InputEventR1()
+{
+
+}
+
+void UBSMDeselectedState::InputEventL1()
+{
+
+}
 
 void UBSMDeselectedState::ResetCooldownMovementGrid()
 {

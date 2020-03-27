@@ -2,7 +2,8 @@
 
 
 #include "BSMBagState.h"
-#include "Globals/TacticalGameGameMode.h"
+#include "Globals/TacticalGameMode.h"
+#include "BattleSystem/PlayerFireTeam.h"
 
 UBSMBagState::UBSMBagState()
 {
@@ -12,7 +13,7 @@ UBSMBagState::UBSMBagState()
 void UBSMBagState::InputEventB()
 {
 	BattleManager->GameMode->BattleUI->CloseBag();
-	BattleManager->TransitionToState(CombatStateE::CHARACTER_SELECTED);
+	StateMachine->TransitionToState(CombatStateE::CHARACTER_SELECTED);
 }
 
 void UBSMBagState::OnEnter()

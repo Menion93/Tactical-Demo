@@ -2,16 +2,16 @@
 
 
 #include "GridUtils.h"
-#include "Grid/ATileMapSet.h"
+#include "Grid/Grid.h"
 #include "Math/UnrealMath.h"
 #include "Kismet/GameplayStatics.h"
 
 
-void UGridUtils::GetShortestPaths(AATileMapSet* TileMap, DijkstraOutput &output, FTileIndex CurrentTile, int PathLenght)
+void UGridUtils::GetShortestPaths(AGrid* Grid, DijkstraOutput &output, FTileIndex CurrentTile, int PathLenght)
 {
 	TArray<FDijkstraNode> Q;
 
-	FDijkstraNode Source(CurrentTile, FTileIndex(-1,-1), 0);
+	FDijkstraNode Source(CurrentTile, FTileIndex(-1, -1), 0);
 
 	Q.Add(Source);
 	output.Add(Source.TileIndex, Source);
@@ -22,7 +22,7 @@ void UGridUtils::GetShortestPaths(AATileMapSet* TileMap, DijkstraOutput &output,
 		FDijkstraNode node(Q[0].TileIndex, Q[0].Prev, Q[0].Distance);
 		Q.RemoveAt(0);
 
-		FTile Tile = TileMap->GetTile(node.TileIndex);
+		FTile Tile = Grid->GetTile(node.TileIndex);
 		for (auto& pair : Tile.Direction2Neighbours)
 		{
 			TPair<FTile*, float> tile2weight = pair.Value;
@@ -37,7 +37,7 @@ void UGridUtils::GetShortestPaths(AATileMapSet* TileMap, DijkstraOutput &output,
 				Q.Add(Neighbour);
 				output.Add(tile2weight.Key->Index, Neighbour);
 			}
-			else if(node.Distance + tile2weight.Value < output[tile2weight.Key->Index].Distance)
+			else if (node.Distance + tile2weight.Value < output[tile2weight.Key->Index].Distance)
 			{
 				output[tile2weight.Key->Index].Distance = node.Distance + tile2weight.Value;
 				output[tile2weight.Key->Index].Prev = node.TileIndex;
@@ -48,10 +48,10 @@ void UGridUtils::GetShortestPaths(AATileMapSet* TileMap, DijkstraOutput &output,
 
 
 TArray<FVectorArray> UGridUtils::GetPerimeterPoints(
-	AATileMapSet* TileMap, 
-	DijkstraOutput &output, 
-	int Distance, 
-	float CellSize, 
+	AGrid* Grid,
+	DijkstraOutput &output,
+	int Distance,
+	float CellSize,
 	float ZOffset)
 {
 	TArray<FDijkstraNode*> Nodes;
@@ -92,7 +92,7 @@ TArray<FVectorArray> UGridUtils::GetPerimeterPoints(
 			for (auto Direction : Directions)
 			{
 				// if we find a wall, save the perimeter segment (2 points)
-				FTile Tile = TileMap->GetTile(Node->TileIndex);
+				FTile Tile = Grid->GetTile(Node->TileIndex);
 				if (!Tile.Direction2Neighbours.Contains(Direction) ||
 					FMath::FloorToInt(output[Node->TileIndex + Direction].Distance) > Distance)
 				{
@@ -208,7 +208,7 @@ bool UGridUtils::AddPerimeterBlock(
 	return true;
 }
 
-void UGridUtils::UnravelPath(AATileMapSet* TileMap, DijkstraOutput& ShortestPaths, FTileIndex Destination, TArray<FVector>& Out)
+void UGridUtils::UnravelPath(AGrid* Grid, DijkstraOutput& ShortestPaths, FTileIndex Destination, TArray<FVector>& Out)
 {
 	FDijkstraNode* node = &ShortestPaths[Destination];
 
@@ -219,13 +219,13 @@ void UGridUtils::UnravelPath(AATileMapSet* TileMap, DijkstraOutput& ShortestPath
 	}
 
 	TArray<FVector> Points;
-	FTile Tile = TileMap->GetTile(node->TileIndex);
+	FTile Tile = Grid->GetTile(node->TileIndex);
 	
 	while (ShortestPaths.Contains(node->Prev))
 	{
 		Points.Add(Tile.TileCenter);
 		node = &ShortestPaths[node->Prev];
-		Tile = TileMap->GetTile(node->TileIndex);
+		Tile = Grid->GetTile(node->TileIndex);
 	}
 
 	Points.Add(Tile.TileCenter);

@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
-#include "ControllableCharacter.h"
+#include "GCharacter.h"
 #include "Characters/Equipment/Bag.h"
 #include "CharacterState.generated.h"
 
@@ -23,7 +23,7 @@ public:
 	FName Name;
 
 	UPROPERTY()
-	AControllableCharacter* ActorCharacter;
+	AGCharacter* ActorCharacter;
 
 	UPROPERTY(BlueprintReadWrite)
 	float CurrentHealth;
@@ -41,18 +41,15 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int MovementSpeed;
 
-
 	UPROPERTY(BlueprintReadWrite)
 	UBag* Bag;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TSubclassOf<class AControllableCharacter> ActorCharacterClass;
+	TSubclassOf<class AGCharacter> ActorCharacterClass;
 
 	//UArmorDescriptor* armors;
 	
 public:
-	void Init(FString BPClassName, FName name);
-
 	void ResetActionPoints();
 	void LoadState();
 

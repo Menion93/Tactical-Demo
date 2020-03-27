@@ -2,6 +2,8 @@
 
 
 #include "BSMSelectAttackState.h"
+#include "BattleSystem/PlayerFireTeam.h"
+
 
 UBSMSelectAttackState::UBSMSelectAttackState()
 {
