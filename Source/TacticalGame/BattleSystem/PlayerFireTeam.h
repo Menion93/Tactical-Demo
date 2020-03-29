@@ -49,11 +49,19 @@ public:
 	UPROPERTY()
 	UBSMSelectAttackState* SelectAttackState;
 
+	int SelectionIndex;
+
 	UPROPERTY()
 	TMap<CombatStateE, UBSMState*> StateMachine;
 
 	CombatStateE CurrentState;
 	CombatStateE PrevState;
+
+	UPROPERTY(EditAnywhere)
+	float MoveGridSpeed = 10;
+
+	UPROPERTY(EditAnywhere)
+	float DelayToSpeed = 0.25;
 
 
 public:
@@ -64,6 +72,7 @@ public:
 	bool IsWinConditionSatisfied_Implementation() override;
 	void PlayTurn_Implementation() override;
 
+	UFUNCTION(BlueprintCallable)
 	void TransitionToState(CombatStateE State);
 
 	virtual void SpawnTeam() override;

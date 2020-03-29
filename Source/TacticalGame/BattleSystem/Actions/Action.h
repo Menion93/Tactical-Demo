@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
 #include "Globals/GPlayerController.h"
+#include "Grid/FTile.h"
 #include "Action.generated.h"
 
 class ABattleManager;
@@ -29,18 +30,28 @@ public:
 	UPROPERTY(BlueprintReadWrite)
 	ABattleManager* BattleManager;
 
+	UPROPERTY(BlueprintReadWrite)
+	AGCharacter* Character;
+
+	UPROPERTY(BlueprintReadWrite)
+	AGCharacter* Target;
+
+	UPROPERTY(BlueprintReadWrite)
+	FTileIndex FocusedTile;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool ReversibleAction;
 
 public:
 
+	UFUNCTION(BlueprintNativeEvent)
 	void Init(ABattleManager* BM);
 
 	UFUNCTION(BlueprintNativeEvent)
 	bool PlayAction();
 
 	UFUNCTION(BlueprintNativeEvent)
-	void ReverseAction();
+	void RevertAction();
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	bool CanExecuteAction();
@@ -52,45 +63,45 @@ public:
 	void OnEnd();
 
 	UFUNCTION(BlueprintNativeEvent)
-	void InputEventX();
+	bool InputEventX();
 
 	UFUNCTION(BlueprintNativeEvent)
-	void InputEventY();
+	bool InputEventY();
 
 	UFUNCTION(BlueprintNativeEvent)
-	void InputEventA();
+	bool InputEventA();
 
 	UFUNCTION(BlueprintNativeEvent)
-	void InputEventB();
+	bool InputEventB();
 
 	UFUNCTION(BlueprintNativeEvent)
-	void InputEventStart();
+	bool InputEventStart();
 
 	UFUNCTION(BlueprintNativeEvent)
-	void InputEventPause();
+	bool InputEventPause();
 
 	UFUNCTION(BlueprintNativeEvent)
-	void InputEventR1();
+	bool InputEventR1();
 
 	UFUNCTION(BlueprintNativeEvent)
-	void InputEventR2();
+	bool InputEventR2();
 
 	UFUNCTION(BlueprintNativeEvent)
-	void InputEventL1();
+	bool InputEventL1();
 
 	UFUNCTION(BlueprintNativeEvent)
-	void InputEventL2();
+	bool InputEventL2();
 
 	UFUNCTION(BlueprintNativeEvent)
-	void InputEventLAxis();
+	bool InputEventLAxis();
 
 	UFUNCTION(BlueprintNativeEvent)
-	void InputEventRAxis();
+	bool InputEventRAxis();
 	
 	UFUNCTION(BlueprintNativeEvent)
-	void InputEventPadUpDown();
+	bool InputEventPadUpDown();
 
 	UFUNCTION(BlueprintNativeEvent)
-	void InputEventPadLeftRight();
+	bool InputEventPadLeftRight();
 
 };

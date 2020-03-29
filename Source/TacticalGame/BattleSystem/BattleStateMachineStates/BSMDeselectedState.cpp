@@ -12,54 +12,67 @@ UBSMDeselectedState::UBSMDeselectedState()
 
 }
 
-void UBSMDeselectedState::InputEventX()
+void UBSMDeselectedState::Init(APlayerFireTeam* SM, float MoveGridSpeed, float Delay)
 {
-
+	Super::Init(SM);
+	MoveTime = 1 / MoveGridSpeed;
+	DelayToSpeed = Delay;
 }
 
-void UBSMDeselectedState::InputEventY()
-{
 
+bool UBSMDeselectedState::InputEventX()
+{
+	return false;
+}
+
+bool UBSMDeselectedState::InputEventY()
+{
+	return false;
 }
 
 // When selecting a Tile
-void UBSMDeselectedState::InputEventA()
+bool UBSMDeselectedState::InputEventA()
 {
-	AGCharacter* Character = BattleManager->GetCurrentTile().Character;
+	AGCharacter* Character = BattleManager->GetSelectedTile().Character;
 
 	if (Character)
 	{
 		// if is a controllable character
-		if (BattleManager->GetPlayerFireTeam()->InFireTeam(Character))
+		if (StateMachine->InFireTeam(Character))
 		{
 			if (Character->State->CurrentActionPoints < 1)
 			{
-				return;
+				return false;
 			}
 
 			BattleManager->GameMode->BattleUI->SetCharacterBar(Character->State);
 			Character->Selected();
 			Character->ShowPerimeter(true);
-			BattleManager->CurrentCharacter = Character;
+			StateMachine->CurrentCharacter = Character;
 			StateMachine->TransitionToState(CombatStateE::CHARACTER_SELECTED);
+			return true;
 		}
 		// Otherwise show character info
 		else
 		{
-			BattleManager->NotAlliedCharacter = Character;
+			StateMachine->TargetCharacter = Character;
 			StateMachine->TransitionToState(CombatStateE::CHARACTER_INFO);
+			return true;
 		}
 	}
+
+	return false;
 }
 
-void UBSMDeselectedState::InputEventB()
+bool UBSMDeselectedState::InputEventB()
 {
-
+	return false;
 }
 
 
-void UBSMDeselectedState::InputEventLAxis()
+bool UBSMDeselectedState::InputEventLAxis()
 {
+
 	if (!Input->HardAxis.IsZero()) {
 
 		if (!CooldownMovementGrid || Input->Axis_DOWN)
@@ -73,21 +86,30 @@ void UBSMDeselectedState::InputEventLAxis()
 
 			if (AxisReleased)
 			{
-				time = 0.25;
+				time = DelayToSpeed;
 			}
 
 			AxisReleased = false;
 
-			FTileIndex Index(Input->HardAxis);
-			FTile CurrentTile = BattleManager->GetCurrentTile();
+			FVector2D Direction;
+
+			if (FMath::Abs(Input->Axis.X) >= FMath::Abs(Input->Axis.Y))
+			{
+				Direction = FVector2D(FMath::RoundToInt(Input->Axis.X), 0);
+			}
+			else
+			{
+				Direction = FVector2D(0, FMath::RoundToInt(Input->Axis.Y));
+			}
+
+			FTileIndex Index(Direction);
+			FTile CurrentTile = BattleManager->GetSelectedTile();
 
 			if (CurrentTile.Direction2Neighbours.Contains(Index))
 			{
-				ATacticalGameMode* GameMode = Cast<ATacticalGameMode>(GetWorld()->GetAuthGameMode());
-
-				BattleManager->SelectedTile = CurrentTile.Direction2Neighbours[Index].Key->Index;
-				Grid->SetCursorToTile(BattleManager->SelectedTile);
-				GameMode->Camera->LookAtPosition(BattleManager->GetCurrentTile().TileCenter);
+				StateMachine->SelectedTile = CurrentTile.Direction2Neighbours[Index].Key->Index;
+				Grid->SetCursorToTile(StateMachine->SelectedTile);
+				BattleManager->GameMode->Camera->LookAtPosition(BattleManager->GetSelectedTile().TileCenter);
 
 				if (World)
 				{
@@ -95,27 +117,60 @@ void UBSMDeselectedState::InputEventLAxis()
 				}
 
 				CooldownMovementGrid = true;
+				return true;
 			}
 		}
 	}	
 	else
 	{
 		AxisReleased = true;
+		return false;
 	}
+
+	return false;
 }
 
-void UBSMDeselectedState::InputEventR1()
+bool UBSMDeselectedState::InputEventR1()
 {
+	TArray<AGCharacter*> AvailableCharacters = StateMachine->Characters.FilterByPredicate([](auto& Char) 
+	{
+		return Char->State->CurrentActionPoints > 0;
+	});
 
+	StateMachine->SelectionIndex = (StateMachine->SelectionIndex + 1) % AvailableCharacters.Num();
+
+	AGCharacter* Character = AvailableCharacters[StateMachine->SelectionIndex];
+	
+	StateMachine->SelectedTile = Character->CurrentTileIndex;
+	Grid->SetCursorToTile(StateMachine->SelectedTile);
+	BattleManager->GameMode->Camera->LookAtPosition(BattleManager->GetSelectedTile().TileCenter);
+	return true;
 }
 
-void UBSMDeselectedState::InputEventL1()
+bool UBSMDeselectedState::InputEventL1()
 {
+	TArray<AGCharacter*> AvailableCharacters = StateMachine->Characters.FilterByPredicate([](auto& Char)
+	{
+		return Char->State->CurrentActionPoints > 0;
+	});
 
+	StateMachine->SelectionIndex = (StateMachine->SelectionIndex - 1) % AvailableCharacters.Num();
+
+	if (StateMachine->SelectionIndex < 0)
+	{
+		StateMachine->SelectionIndex = AvailableCharacters.Num() - 1;
+	}
+
+	AGCharacter* Character = AvailableCharacters[StateMachine->SelectionIndex];
+
+	StateMachine->SelectedTile = Character->CurrentTileIndex;
+	Grid->SetCursorToTile(StateMachine->SelectedTile);
+	BattleManager->GameMode->Camera->LookAtPosition(BattleManager->GetSelectedTile().TileCenter);
+	return true;
 }
 
 void UBSMDeselectedState::ResetCooldownMovementGrid()
 {
 	CooldownMovementGrid = false;
-	time = 0.1;
+	time = MoveTime;
 }

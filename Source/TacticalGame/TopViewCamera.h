@@ -49,8 +49,16 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	void LerpToTile(FTile* Tile, float seconds);
+
+	UFUNCTION(BlueprintCallable)
 	void LookAtPosition(FVector Position);
+
+	UFUNCTION(BlueprintCallable)
 	void AttachToActor(AActor* Actor);
+	
+	UFUNCTION(BlueprintCallable)
 	void DetachFromActor();
+
+	UFUNCTION(BlueprintCallable)
 	void SetViewTarget();
 };

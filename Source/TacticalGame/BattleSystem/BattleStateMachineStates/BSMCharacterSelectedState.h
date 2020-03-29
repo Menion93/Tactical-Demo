@@ -25,15 +25,21 @@ public:
 	bool AxisReleased;
 	float time;
 
+
+	float MoveTime;
+	float DelayToSpeed;
+
 public:
-	void InputEventX() override;
-	void InputEventY() override;
-	void InputEventA() override;
-	void InputEventB() override;
+	bool InputEventX() override;
+	bool InputEventY() override;
+	bool InputEventA() override;
+	bool InputEventB() override;
 
-	void InputEventR2() override;
+	bool InputEventR2() override;
 
-	void InputEventLAxis() override;
+	bool InputEventLAxis() override;
+
+	void Init(APlayerFireTeam* SM, float MoveGridSpeed, float Delay);
 
 	
 private:

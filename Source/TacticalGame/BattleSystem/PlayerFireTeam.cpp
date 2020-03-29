@@ -22,8 +22,8 @@ void APlayerFireTeam::Init_Implementation(ABattleManager* BM)
 	SelectEnemyState = NewObject<UBSMSelectEnemyState>(this, TEXT("SelectEnemyState"));
 	SelectAttackState = NewObject<UBSMSelectAttackState>(this, TEXT("SelectAttackState"));
 
-	DeselectedState->Init(this);
-	CharacterSelectedState->Init(this);
+	DeselectedState->Init(this, MoveGridSpeed, DelayToSpeed);
+	CharacterSelectedState->Init(this, MoveGridSpeed, DelayToSpeed);
 	CharacterInfoState->Init(this);
 	BagState->Init(this);
 	SelectEnemyState->Init(this);
@@ -49,16 +49,16 @@ void APlayerFireTeam::OnActionEnd_Implementation()
 {
 	if (BattleManager->CurrentAction->ReversibleAction)
 	{
-		BattleManager->CurrentCharacter->ActionsBuffer.Add(BattleManager->CurrentAction);
+		CurrentCharacter->ActionsBuffer.Add(BattleManager->CurrentAction);
 	}
 	else
 	{
-		BattleManager->CurrentCharacter->ActionsBuffer.Empty();
+		CurrentCharacter->ActionsBuffer.Empty();
 	}
 
-	if (BattleManager->CurrentCharacter)
+	if (CurrentCharacter)
 	{
-		if (BattleManager->CurrentCharacter->State->CurrentActionPoints > 0)
+		if (CurrentCharacter->State->CurrentActionPoints > 0)
 		{
 			CurrentState = CombatStateE::CHARACTER_SELECTED;
 		}
@@ -73,9 +73,9 @@ void APlayerFireTeam::OnTurnStart_Implementation()
 {
 	Super::OnTurnStart_Implementation();
 
-	BattleManager->SelectedTile = Characters[0]->CurrentTileIndex;
-	BattleManager->GameMode->Grid->SetCursorToTile(BattleManager->SelectedTile);
-	BattleManager->GameMode->Camera->LookAtPosition(BattleManager->Grid->GetTile(BattleManager->SelectedTile).TileCenter);
+	SelectedTile = Characters[0]->CurrentTileIndex;
+	BattleManager->GameMode->Grid->SetCursorToTile(SelectedTile);
+	BattleManager->GameMode->Camera->LookAtPosition(BattleManager->GetSelectedTile().TileCenter);
 
 	CurrentState = CombatStateE::DESELECTED_STATE;
 

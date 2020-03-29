@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
 #include "Characters/GCharacter.h"
+#include "Grid/FTile.h"
 #include "FireTeam.generated.h"
 
 //class AGCharacter;
@@ -36,6 +37,17 @@ public:
 
 	UPROPERTY()
 	USceneComponent* RootComp;
+
+	UPROPERTY(BlueprintReadWrite)
+	AGCharacter* CurrentCharacter;
+
+	UPROPERTY(BlueprintReadWrite)
+	AGCharacter* TargetCharacter;
+
+	UPROPERTY(BlueprintReadWrite)
+	FTileIndex SelectedTile;
+
+
 
 public:
 

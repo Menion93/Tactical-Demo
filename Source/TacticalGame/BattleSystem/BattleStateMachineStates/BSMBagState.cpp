@@ -10,10 +10,11 @@ UBSMBagState::UBSMBagState()
 
 }
 
-void UBSMBagState::InputEventB()
+bool UBSMBagState::InputEventB()
 {
 	BattleManager->GameMode->BattleUI->CloseBag();
 	StateMachine->TransitionToState(CombatStateE::CHARACTER_SELECTED);
+	return true;
 }
 
 void UBSMBagState::OnEnter()

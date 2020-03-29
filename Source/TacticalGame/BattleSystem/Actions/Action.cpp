@@ -9,52 +9,26 @@ UAction::UAction()
 
 }
 
-void UAction::Init(ABattleManager* BM)
+void UAction::Init_Implementation(ABattleManager* BM)
 {
 	Input = BM->Input;
 	BattleManager = BM;
 }
 
+
 bool UAction::PlayAction_Implementation()
 {
-	if (Input->X_DOWN)
-	{
-		InputEventX_Implementation();
-	}
-
-	if (Input->Y_DOWN)
-	{
-		InputEventY_Implementation();
-	}
-
-	if (Input->A_DOWN)
-	{
-		InputEventA_Implementation();
-	}
-
-	if (Input->B_DOWN)
-	{
-		InputEventB_Implementation();
-	}
-
-	if (Input->Start_DOWN)
-	{
-		InputEventStart_Implementation();
-	}
-
-	if (Input->Pause_DOWN)
-	{
-		InputEventPause_Implementation();
-	}
-
-	if (Input->R1_DOWN)
-	{
-		InputEventR1_Implementation();
-	}
-
-	InputEventLAxis_Implementation();
-
-	return false;
+	return (Input->X_DOWN && InputEventX()) ||
+		(Input->Y_DOWN && InputEventY()) ||
+		(Input->A_DOWN && InputEventA()) ||
+		(Input->B_DOWN && InputEventB()) ||
+		(Input->Start_DOWN && InputEventStart()) ||
+		(Input->Pause_DOWN && InputEventPause()) ||
+		(Input->R1_DOWN & InputEventR1()) ||
+		(Input->R2_DOWN && InputEventR2()) ||
+		(Input->L1_DOWN && InputEventL1()) ||
+		(Input->L2_DOWN && InputEventL2()) ||
+		InputEventLAxis();
 }
 
 void UAction::OnEnter_Implementation()
@@ -68,7 +42,7 @@ void UAction::OnEnd_Implementation()
 }
 
 
-void UAction::ReverseAction_Implementation()
+void UAction::RevertAction_Implementation()
 {
 
 }
@@ -79,73 +53,73 @@ bool UAction::CanExecuteAction_Implementation()
 	return false;
 }
 
-void UAction::InputEventX_Implementation()
+bool UAction::InputEventX_Implementation()
 {
-
+	return false;
 }
 
-void UAction::InputEventY_Implementation()
+bool UAction::InputEventY_Implementation()
 {
-
+	return false;
 }
 
-void UAction::InputEventA_Implementation()
+bool UAction::InputEventA_Implementation()
 {
-
+	return false;
 }
 
-void UAction::InputEventB_Implementation()
+bool UAction::InputEventB_Implementation()
 {
-
+	return false;
 }
 
-void UAction::InputEventStart_Implementation()
+bool UAction::InputEventStart_Implementation()
 {
-
+	return false;
 }
 
-void UAction::InputEventPause_Implementation()
+bool UAction::InputEventPause_Implementation()
 {
-
+	return false;
 }
 
-void UAction::InputEventR1_Implementation()
+bool UAction::InputEventR1_Implementation()
 {
-
+	return false;
 }
 
-void UAction::InputEventR2_Implementation()
+bool UAction::InputEventR2_Implementation()
 {
-
+	return false;
 }
 
-void UAction::InputEventL1_Implementation()
+bool UAction::InputEventL1_Implementation()
 {
-
+	return false;
 }
 
-void UAction::InputEventL2_Implementation()
+bool UAction::InputEventL2_Implementation()
 {
-
+	return false;
 }
 
-void UAction::InputEventLAxis_Implementation()
+bool UAction::InputEventLAxis_Implementation()
 {
-
+	return false;
 }
 
-void UAction::InputEventRAxis_Implementation()
+bool UAction::InputEventRAxis_Implementation()
 {
-
+	return false;
 }
 
-void UAction::InputEventPadUpDown_Implementation()
+bool UAction::InputEventPadUpDown_Implementation()
 {
-
+	return false;
 }
 
-void UAction::InputEventPadLeftRight_Implementation()
+bool UAction::InputEventPadLeftRight_Implementation()
 {
-
+	return false;
 }
 

@@ -31,7 +31,9 @@ void AGPlayerController::SetupInputComponent()
 	InputComponent->BindAxis("Start", this, &AGPlayerController::InputStart);
 	InputComponent->BindAxis("Pause", this, &AGPlayerController::InputPause);
 	InputComponent->BindAxis("R1", this, &AGPlayerController::InputR1);
-
+	InputComponent->BindAxis("R2", this, &AGPlayerController::InputR2);
+	InputComponent->BindAxis("L1", this, &AGPlayerController::InputL1);
+	InputComponent->BindAxis("L2", this, &AGPlayerController::InputL2);
 }
 
 void AGPlayerController::HandleActionInput(bool& button, bool& down, float value)
@@ -132,4 +134,21 @@ void AGPlayerController::InputPause(float Value)
 void AGPlayerController::InputR1(float Value)
 {
 	HandleActionInput(R1, R1_DOWN, Value);
+}
+
+void AGPlayerController::InputR2(float Value)
+{
+	HandleActionInput(R2, R2_DOWN, Value);
+
+}
+
+void AGPlayerController::InputL1(float Value)
+{
+	HandleActionInput(L1, L1_DOWN, Value);
+
+}
+
+void AGPlayerController::InputL2(float Value)
+{
+	HandleActionInput(L2, L2_DOWN, Value);
 }

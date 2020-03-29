@@ -13,7 +13,7 @@
 #include "BattleManager.generated.h"
 
 class ATacticalGameMode;
-
+class APlayerFireTeam;
 
 /**
  * 
@@ -35,12 +35,6 @@ public:
 	AGrid* Grid;
 
 	UPROPERTY(BlueprintReadWrite)
-	AGCharacter* CurrentCharacter;
-
-	UPROPERTY(BlueprintReadWrite)
-	AGCharacter* NotAlliedCharacter;
-
-	UPROPERTY(BlueprintReadWrite)
 	UAction* CurrentAction;
 
 	UPROPERTY(BlueprintReadWrite)
@@ -49,8 +43,6 @@ public:
 	UPROPERTY()
 	AGPlayerController* Input;
 
-	UPROPERTY(BlueprintReadWrite)
-	FTileIndex SelectedTile;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<AFireTeam*> Teams;
@@ -69,8 +61,11 @@ public:
 	void SetAction(UAction* Action);
 
 	UFUNCTION(BlueprintCallable)
-	FTile GetCurrentTile();
+	FTile GetSelectedTile();
 
 	UFUNCTION(BlueprintCallable)
-	AFireTeam* GetPlayerFireTeam();
+	AGCharacter* GetCurrentCharacter();
+
+	UFUNCTION(BlueprintCallable)
+	APlayerFireTeam* GetPlayerFireTeam();
 };

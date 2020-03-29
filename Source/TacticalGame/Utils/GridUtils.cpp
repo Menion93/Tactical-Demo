@@ -100,6 +100,7 @@ TArray<FVectorArray> UGridUtils::GetPerimeterPoints(
 
 					FVector A;
 					FVector B;
+					FTileIndex CycleMarker(1, 1);
 
 					if (FMath::Abs(Direction.X) > 0)
 					{
@@ -112,17 +113,26 @@ TArray<FVectorArray> UGridUtils::GetPerimeterPoints(
 						B = WallMidPoint - FVector::ForwardVector * HalfCellSize + ZVector;
 					}
 
-					FTileIndex AIndex(FMath::RoundToInt(A.X), FMath::RoundToInt(A.Y));
-					FTileIndex BIndex(FMath::RoundToInt(B.X), FMath::RoundToInt(B.Y));
-
+					FTileIndex AIndex(FMath::RoundToInt(A.X) * 10, FMath::RoundToInt(A.Y) * 10);
+					FTileIndex BIndex(FMath::RoundToInt(B.X) * 10, FMath::RoundToInt(B.Y) * 10);
 
 					if (!Segments.Contains(AIndex))
 					{
 						Segments.Emplace(AIndex, TArray<FTileIndex>());
 					}
+					else if(Segments[AIndex].Num() == 2)
+					{
+						AIndex = AIndex + CycleMarker;
+						Segments.Emplace(AIndex, TArray<FTileIndex>());
+					}
 
 					if (!Segments.Contains(BIndex))
 					{
+						Segments.Emplace(BIndex, TArray<FTileIndex>());
+					}
+					else if (Segments[BIndex].Num() == 2)
+					{
+						BIndex = BIndex + CycleMarker;
 						Segments.Emplace(BIndex, TArray<FTileIndex>());
 					}
 
@@ -140,8 +150,7 @@ TArray<FVectorArray> UGridUtils::GetPerimeterPoints(
 
 	while (AreMoreBlocks)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("ciao"))
-			AreMoreBlocks = AddPerimeterBlock(Result, Segments, Index2Vec, Visited);
+		AreMoreBlocks = AddPerimeterBlock(Result, Segments, Index2Vec, Visited);
 	}
 
 	return Result;

@@ -11,55 +11,64 @@ UBSMCharacterSelectedState::UBSMCharacterSelectedState()
 	
 }
 
-void UBSMCharacterSelectedState::InputEventX()
+void UBSMCharacterSelectedState::Init(APlayerFireTeam* SM, float MoveGridSpeed, float Delay)
+{
+	Super::Init(SM);
+	MoveTime = 1 / MoveGridSpeed;
+	DelayToSpeed = Delay;
+}
+
+bool UBSMCharacterSelectedState::InputEventX()
 {
 	//DisableInput(true);
 	StateMachine->TransitionToState(CombatStateE::OPEN_BAG);
+	return true;
 }
 
-void UBSMCharacterSelectedState::InputEventY()
+bool UBSMCharacterSelectedState::InputEventY()
 {
-	
+	return false;
 }
 
-void UBSMCharacterSelectedState::InputEventA()
+bool UBSMCharacterSelectedState::InputEventA()
 {
-	FTile SelectedTile = BattleManager->GetCurrentTile();
+	FTile SelectedTile = BattleManager->GetSelectedTile();
 
 	if (SelectedTile.IsObstacle)
 	{
-		return;
+		return false;
 	}
 
 	if (!SelectedTile.Character &&
 		!SelectedTile.Pickable &&
-		!BattleManager->CurrentCharacter->TileInRange(SelectedTile))
+		!StateMachine->CurrentCharacter->TileInRange(SelectedTile))
 	{
-		return;
+		return false;
 	}
 
 	StateMachine->TransitionToState(CombatStateE::CHARACTER_INFO);
-
+	return true;
 }
 
-void UBSMCharacterSelectedState::InputEventB()
+bool UBSMCharacterSelectedState::InputEventB()
 {
 	BattleManager->GameMode->BattleUI->HideCharacterBar();
-	BattleManager->CurrentCharacter->ShowPerimeter(false);
-	BattleManager->CurrentCharacter->ShowShortestPath(false);
+	StateMachine->CurrentCharacter->ShowPerimeter(false);
+	StateMachine->CurrentCharacter->ShowShortestPath(false);
 
 	// Look at character position
-	FTile CharacterTile = Grid->GetTile(BattleManager->CurrentCharacter->CurrentTileIndex);
+	FTile CharacterTile = Grid->GetTile(StateMachine->CurrentCharacter->CurrentTileIndex);
 	BattleManager->GameMode->Camera->LookAtPosition(CharacterTile.TileCenter);
 
-	BattleManager->SelectedTile = BattleManager->CurrentCharacter->CurrentTileIndex;
-	Grid->SetCursorToTile(BattleManager->SelectedTile);
-	BattleManager->CurrentCharacter = nullptr;
+	StateMachine->SelectedTile = StateMachine->CurrentCharacter->CurrentTileIndex;
+	Grid->SetCursorToTile(StateMachine->SelectedTile);
+	StateMachine->CurrentCharacter = nullptr;
 	StateMachine->TransitionToState(CombatStateE::DESELECTED_STATE);
+	return true;
 }
 
 
-void UBSMCharacterSelectedState::InputEventLAxis()
+bool UBSMCharacterSelectedState::InputEventLAxis()
 {
 	// Move the cursor
 	if (!Input->HardAxis.IsZero())
@@ -75,25 +84,34 @@ void UBSMCharacterSelectedState::InputEventLAxis()
 
 			if (AxisReleased)
 			{
-				time = 0.25;
+				time = DelayToSpeed;
 			}
 
 			AxisReleased = false;
 
-			FTileIndex Index(Input->HardAxis);
-			FTile CurrentTile = BattleManager->GetCurrentTile();
+			FVector2D Direction;
+
+			if (FMath::Abs(Input->Axis.X) >= FMath::Abs(Input->Axis.Y))
+			{
+				Direction = FVector2D(FMath::RoundToInt(Input->Axis.X), 0);
+			}
+			else
+			{
+				Direction = FVector2D(0, FMath::RoundToInt(Input->Axis.Y));
+			}
+
+			FTileIndex Index(Direction);
+			FTile CurrentTile = BattleManager->GetSelectedTile();
 
 			if (CurrentTile.Direction2Neighbours.Contains(Index))
 			{
-				ATacticalGameMode* GameMode = Cast<ATacticalGameMode>(GetWorld()->GetAuthGameMode());
+				StateMachine->SelectedTile = CurrentTile.Direction2Neighbours[Index].Key->Index;
 
-				BattleManager->SelectedTile = CurrentTile.Direction2Neighbours[Index].Key->Index;
+				StateMachine->CurrentCharacter->DrawShortestPath(StateMachine->SelectedTile);
+				StateMachine->CurrentCharacter->ShowShortestPath(true);
 
-				BattleManager->CurrentCharacter->DrawShortestPath(BattleManager->SelectedTile);
-				BattleManager->CurrentCharacter->ShowShortestPath(true);
-
-				Grid->SetCursorToTile(BattleManager->SelectedTile);
-				GameMode->Camera->LookAtPosition(BattleManager->GetCurrentTile().TileCenter);
+				Grid->SetCursorToTile(StateMachine->SelectedTile);
+				BattleManager->GameMode->Camera->LookAtPosition(BattleManager->GetSelectedTile().TileCenter);
 
 				if (World)
 				{
@@ -101,23 +119,28 @@ void UBSMCharacterSelectedState::InputEventLAxis()
 				}
 
 				CooldownMovementGrid = true;
+				return true;
 			}
 		}
 	}
 	else
 	{
 		AxisReleased = true;
+		return false;
 	}
+
+	return false;
 }
 
-void UBSMCharacterSelectedState::InputEventR2()
+
+bool UBSMCharacterSelectedState::InputEventR2()
 {
-	BattleManager->CurrentCharacter->ReverseAction();
+	return StateMachine->CurrentCharacter->RevertAction();
 }
 
 
 void UBSMCharacterSelectedState::ResetCooldownMovementGrid()
 {
 	CooldownMovementGrid = false;
-	time = 0.1;
+	time = MoveTime;
 }
