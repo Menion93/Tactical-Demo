@@ -85,7 +85,10 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void TransferCharacterToTile(FTileIndex From, FTileIndex To);
 
+	UFUNCTION(BlueprintCallable)
 	void SetCursorToTile(FTileIndex TileIndex);
+
+	UFUNCTION(BlueprintCallable)
 	void ShowCursor(bool show);
 
 	UFUNCTION(BlueprintCallable)

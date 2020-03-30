@@ -35,7 +35,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	GameModeE CurrentMode;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	ATopViewCamera* Camera;
 
 	UPROPERTY(BlueprintReadWrite)

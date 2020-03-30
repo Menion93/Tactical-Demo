@@ -74,6 +74,21 @@ public:
 	bool R1_DOWN;
 
 	UPROPERTY(BlueprintReadWrite)
+	bool R2;
+	UPROPERTY(BlueprintReadWrite)
+	bool R2_DOWN;
+
+	UPROPERTY(BlueprintReadWrite)
+	bool L1;
+	UPROPERTY(BlueprintReadWrite)
+	bool L1_DOWN;
+
+	UPROPERTY(BlueprintReadWrite)
+	bool L2;
+	UPROPERTY(BlueprintReadWrite)
+	bool L2_DOWN;
+
+	UPROPERTY(BlueprintReadWrite)
 	bool Start;
 	UPROPERTY(BlueprintReadWrite)
 	bool Start_DOWN;
@@ -106,6 +121,9 @@ private:
 	void InputStart(float Value);
 	void InputPause(float Value);
 	void InputR1(float Value);
+	void InputR2(float Value);
+	void InputL1(float Value);
+	void InputL2(float Value);
 
 	void HandleActionInput(bool& down, bool& button, float value);
 

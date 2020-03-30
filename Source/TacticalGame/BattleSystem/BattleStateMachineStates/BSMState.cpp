@@ -27,41 +27,16 @@ void UBSMState::Init(APlayerFireTeam* SM)
 
 void UBSMState::PlayState()
 {
-	if (Input->X_DOWN)
-	{
-		InputEventX();
-	}
-
-	if (Input->Y_DOWN)
-	{
-		InputEventY();
-	}
-
-	if (Input->A_DOWN)
-	{
-		InputEventA();
-	}
-
-	if (Input->B_DOWN)
-	{
-		InputEventB();
-	}
-
-	if (Input->Start_DOWN)
-	{
-		InputEventStart();
-	}
-
-	if (Input->Pause_DOWN)
-	{
-		InputEventPause();
-	}
-
-	if (Input->R1_DOWN)
-	{
-		InputEventR1();
-	}
-
+	(Input->X_DOWN && InputEventX()) ||
+	(Input->Y_DOWN && InputEventY()) ||
+	(Input->A_DOWN && InputEventA()) ||
+	(Input->B_DOWN && InputEventB()) ||
+	(Input->Start_DOWN && InputEventStart()) ||
+	(Input->Pause_DOWN && InputEventPause()) ||
+	(Input->R1_DOWN && InputEventR1()) ||
+	(Input->R2_DOWN && InputEventR2()) ||
+	(Input->L1_DOWN && InputEventL1()) ||
+	(Input->L2_DOWN && InputEventL2()) ||
 	InputEventLAxis();
 }
 
@@ -85,74 +60,74 @@ void UBSMState::DisableInput(bool DisInput)
 	InputDisabled = DisInput;
 }
 
-void UBSMState::InputEventX()
+bool UBSMState::InputEventX()
 {
-
+	return false;
 }
 
-void UBSMState::InputEventY()
+bool UBSMState::InputEventY()
 {
-
+	return false;
 }
 
-void UBSMState::InputEventA()
+bool UBSMState::InputEventA()
 {
-
+	return false;
 }
 
-void UBSMState::InputEventB()
+bool UBSMState::InputEventB()
 {
-
+	return false;
 }
 
-void UBSMState::InputEventStart()
+bool UBSMState::InputEventStart()
 {
-
+	return false;
 }
 
-void UBSMState::InputEventPause()
+bool UBSMState::InputEventPause()
 {
-
+	return false;
 }
 
-void UBSMState::InputEventR1()
+bool UBSMState::InputEventR1()
 {
-
+	return false;
 }
 
-void UBSMState::InputEventR2()
+bool UBSMState::InputEventR2()
 {
-
+	return false;
 }
 
-void UBSMState::InputEventL1()
+bool UBSMState::InputEventL1()
 {
-
+	return false;
 }
 
-void UBSMState::InputEventL2()
+bool UBSMState::InputEventL2()
 {
-
+	return false;
 }
 
-void UBSMState::InputEventLAxis()
+bool UBSMState::InputEventLAxis()
 {
-
+	return false;
 }
 
-void UBSMState::InputEventRAxis()
+bool UBSMState::InputEventRAxis()
 {
-
+	return false;
 }
 
-void UBSMState::InputEventPadUpDown()
+bool UBSMState::InputEventPadUpDown()
 {
-
+	return false;
 }
 
-void UBSMState::InputEventPadLeftRight()
+bool UBSMState::InputEventPadLeftRight()
 {
-
+	return false;
 }
 
 void UBSMState::OnEnter()

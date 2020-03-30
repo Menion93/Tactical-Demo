@@ -16,10 +16,11 @@ void UBSMCharacterInfoState::OnEnter()
 	BattleManager->GameMode->BattleUI->OpenActionMenu(ActionList);
 }
 
-void UBSMCharacterInfoState::InputEventB()
+bool UBSMCharacterInfoState::InputEventB()
 {
 	BattleManager->GameMode->BattleUI->CloseActionMenu();
 	StateMachine->TransitionToState(StateMachine->PrevState);
+	return true;
 }
 
 TArray<UAction*> UBSMCharacterInfoState::GetActionEntryList()

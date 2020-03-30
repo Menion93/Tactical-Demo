@@ -2,6 +2,7 @@
 
 #include "BattleManager.h"
 #include "Utils/GridUtils.h"
+#include "PlayerFireTeam.h"
 #include "Globals/TacticalGameMode.h"
 
 
@@ -91,12 +92,18 @@ void ABattleManager::SetAction(UAction* Action)
 }
 
 
-FTile ABattleManager::GetCurrentTile()
+FTile ABattleManager::GetSelectedTile()
 {
-	return Grid->GetTile(SelectedTile);
+	return Grid->GetTile(Teams[TeamIndex]->SelectedTile);
 }
 
-AFireTeam* ABattleManager::GetPlayerFireTeam()
+AGCharacter* ABattleManager::GetCurrentCharacter()
 {
-	return Teams[0];
+	return Teams[TeamIndex]->CurrentCharacter;
+}
+
+APlayerFireTeam* ABattleManager::GetPlayerFireTeam()
+{
+	APlayerFireTeam* PlayerFT = Cast<APlayerFireTeam>(Teams[0]);
+	return PlayerFT ? PlayerFT : nullptr;
 }

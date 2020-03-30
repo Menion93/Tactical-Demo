@@ -123,13 +123,12 @@ public:
 	void HandleInput();
 
 	UFUNCTION(BlueprintCallable)
-	void ReverseAction();
-
-	UFUNCTION(BlueprintCallable)
 	void Selected();
 
 	UFUNCTION(BlueprintCallable)
 	void Init();
 
+	UFUNCTION(BlueprintCallable)
+	bool RevertAction();
 
 };

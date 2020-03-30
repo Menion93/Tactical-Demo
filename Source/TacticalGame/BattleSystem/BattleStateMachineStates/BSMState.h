@@ -43,25 +43,25 @@ public:
 	void BindState();
 	void UnbindState();
 
-	virtual void InputEventX();
-	virtual void InputEventY();
-	virtual void InputEventA();
-	virtual void InputEventB();
+	virtual bool InputEventX();
+	virtual bool InputEventY();
+	virtual bool InputEventA();
+	virtual bool InputEventB();
 
-	virtual void InputEventStart();
-	virtual void InputEventPause();
+	virtual bool InputEventStart();
+	virtual bool InputEventPause();
 
-	virtual void InputEventR1();
-	virtual void InputEventR2();
+	virtual bool InputEventR1();
+	virtual bool InputEventR2();
 
-	virtual void InputEventL1();
-	virtual void InputEventL2();
+	virtual bool InputEventL1();
+	virtual bool InputEventL2();
 
-	virtual void InputEventLAxis();
-	virtual void InputEventRAxis();
+	virtual bool InputEventLAxis();
+	virtual bool InputEventRAxis();
 
-	virtual void InputEventPadUpDown();
-	virtual void InputEventPadLeftRight();
+	virtual bool InputEventPadUpDown();
+	virtual bool InputEventPadLeftRight();
 
 	virtual void OnEnter();
 

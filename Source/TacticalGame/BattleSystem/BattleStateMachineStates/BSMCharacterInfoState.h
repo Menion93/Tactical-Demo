@@ -20,7 +20,7 @@ public:
 	UBSMCharacterInfoState();
 
 public:
-	void InputEventB() override;
+	bool InputEventB() override;
 	void OnEnter() override;
 	TArray<UAction*> GetActionEntryList();
 

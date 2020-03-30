@@ -166,7 +166,10 @@ void AGCharacter::ShowPerimeter(bool Show)
 
 void AGCharacter::ShowShortestPath(bool Show)
 {
-	PathActor->SetActorHiddenInGame(!Show);
+	if (PathActor)
+	{
+		PathActor->SetActorHiddenInGame(!Show);
+	}
 }
 
 void AGCharacter::DrawShortestPath(FTileIndex TileIndex)
@@ -188,15 +191,7 @@ void AGCharacter::DrawShortestPath(FTileIndex TileIndex)
 
 bool AGCharacter::TileInRange(FTile Tile)
 {
-	for (auto& pair : ShortestPaths)
-	{
-		if (Tile.Index == pair.Value.TileIndex)
-		{
-			return pair.Value.Distance < State->MovementSpeed;
-		}
-	}
-
-	return false;
+	return int(ShortestPaths[Tile.Index].Distance) <= State->MovementSpeed;
 }
 
 void AGCharacter::HandleInput()
@@ -213,14 +208,17 @@ void AGCharacter::HandleInput()
 	}
 }
 
-void AGCharacter::ReverseAction()
+bool AGCharacter::RevertAction()
 {
 	if (ActionsBuffer.Num() > 0)
 	{
 		int Index = ActionsBuffer.Num() - 1;
-		ActionsBuffer[Index]->ReverseAction();
+		ActionsBuffer[Index]->RevertAction();
 		ActionsBuffer.RemoveAt(Index);
+		return true;
 	}
+
+	return false;
 }
 
 void AGCharacter::Selected()

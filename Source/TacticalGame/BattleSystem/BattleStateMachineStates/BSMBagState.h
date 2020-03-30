@@ -18,7 +18,7 @@ public:
 	UBSMBagState();
 
 public:
-	void InputEventB() override;
+	bool InputEventB() override;
 
 	void OnEnter() override;
 };

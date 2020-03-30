@@ -81,7 +81,7 @@ void ATacticalGameMode::Tick(float DeltaSeconds)
 		Camera->Tick(DeltaSeconds);
 	}
 
-	if (Input->R1_DOWN)
+	if (Input->L2_DOWN)
 	{
 		if (CurrentMode == GameModeE::GSE_Battle)
 		{
