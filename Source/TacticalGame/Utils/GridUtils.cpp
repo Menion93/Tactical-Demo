@@ -123,7 +123,10 @@ TArray<FVectorArray> UGridUtils::GetPerimeterPoints(
 					else if(Segments[AIndex].Num() == 2)
 					{
 						AIndex = AIndex + CycleMarker;
-						Segments.Emplace(AIndex, TArray<FTileIndex>());
+						if (!Segments.Contains(AIndex))
+						{
+							Segments.Emplace(AIndex, TArray<FTileIndex>());
+						}
 					}
 
 					if (!Segments.Contains(BIndex))
@@ -133,7 +136,11 @@ TArray<FVectorArray> UGridUtils::GetPerimeterPoints(
 					else if (Segments[BIndex].Num() == 2)
 					{
 						BIndex = BIndex + CycleMarker;
-						Segments.Emplace(BIndex, TArray<FTileIndex>());
+
+						if (!Segments.Contains(BIndex))
+						{
+							Segments.Emplace(BIndex, TArray<FTileIndex>());
+						}
 					}
 
 					Segments[AIndex].Emplace(BIndex);
@@ -293,13 +300,14 @@ void UGridUtils::BuildGrid(AActor* Map,
 			{
 				for (auto OutHit : OutHits)
 				{
+					FTileIndex Index(CurrRow, CurrCol);
+
+					MyTile.Index = Index;
+					MyTile.TileCenter = OutHit.ImpactPoint;
+					MyTile.SurfaceNormal = OutHit.ImpactNormal;
+
 					if (OutHit.bBlockingHit)
 					{
-						FTileIndex Index(CurrRow, CurrCol);
-
-						MyTile.Index = Index;
-						MyTile.TileCenter = OutHit.ImpactPoint;
-						MyTile.SurfaceNormal = OutHit.ImpactNormal;
 
 						TilesMap.Add(Index, MyTile);
 
@@ -322,6 +330,9 @@ void UGridUtils::BuildGrid(AActor* Map,
 					}
 					else
 					{
+						MyTile.IsObstacle = true;
+						TilesMap.Add(Index, MyTile);
+
 						break;
 					}
 				}

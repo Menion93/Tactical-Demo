@@ -51,7 +51,7 @@ public:
 	bool PlayAction();
 
 	UFUNCTION(BlueprintNativeEvent)
-	void RevertAction();
+	bool RevertAction();
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	bool CanExecuteAction();

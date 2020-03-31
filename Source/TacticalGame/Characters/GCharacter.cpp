@@ -213,9 +213,12 @@ bool AGCharacter::RevertAction()
 	if (ActionsBuffer.Num() > 0)
 	{
 		int Index = ActionsBuffer.Num() - 1;
-		ActionsBuffer[Index]->RevertAction();
-		ActionsBuffer.RemoveAt(Index);
-		return true;
+		if (ActionsBuffer[Index]->RevertAction())
+		{
+			ActionsBuffer.RemoveAt(Index);
+			return true;
+		}
+		
 	}
 
 	return false;

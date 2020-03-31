@@ -42,9 +42,9 @@ void UAction::OnEnd_Implementation()
 }
 
 
-void UAction::RevertAction_Implementation()
+bool UAction::RevertAction_Implementation()
 {
-
+	return false;
 }
 
 
