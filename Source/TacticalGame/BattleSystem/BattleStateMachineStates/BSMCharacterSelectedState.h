@@ -29,21 +29,24 @@ public:
 	float MoveTime;
 	float DelayToSpeed;
 
+	bool CoolDownYawRotation;
+
 public:
-	bool InputEventX() override;
-	bool InputEventY() override;
-	bool InputEventA() override;
-	bool InputEventB() override;
+	bool InputEventX(float DeltaTime) override;
+	bool InputEventY(float DeltaTime) override;
+	bool InputEventA(float DeltaTime) override;
+	bool InputEventB(float DeltaTime) override;
 
-	bool InputEventR2() override;
+	bool InputEventR2(float DeltaTime) override;
 
-	bool InputEventLAxis() override;
+	bool InputEventLAxis(float DeltaTime) override;
+	bool InputEventRAxis(float DeltaTime) override;
 
-	void Init(APlayerFireTeam* SM, float MoveGridSpeed, float Delay);
+	void InitState(APlayerFireTeam* SM, float MoveGridSpeed, float Delay);
 
 	
 private:
 	void ResetCooldownMovementGrid();
-
+	FVector2D MapInput(FVector2D OriginalInput);
 
 };

@@ -69,7 +69,7 @@ void ATacticalGameMode::Tick(float DeltaSeconds)
 
 	if (CurrentMode == GameModeE::GSE_Battle)
 	{
-		BattleManager->PlayTurn();
+		BattleManager->PlayTurn(DeltaSeconds);
 	}
 	else if (CurrentMode == GameModeE::GSE_None)
 	{
@@ -99,8 +99,7 @@ void ATacticalGameMode::SwitchToBattleMode(bool IsPlayerTurn, bool ForceEngage)
 	// Here put Dynamic Grid Creation
 	CurrentMode = GameModeE::GSE_Battle;
 	Grid->GridCursor->SetVisibility(true);
-	Camera->DetachFromActor();
-	BattleManager->InitBattleState(IsPlayerTurn, ForceEngage);
+	BattleManager->InitBattleState();
 }
 
 void ATacticalGameMode::SwitchToFreeMode()
@@ -108,7 +107,6 @@ void ATacticalGameMode::SwitchToFreeMode()
 	// Here put Dynamic Grid Creation
 	CurrentMode = GameModeE::GSE_None;
 	Grid->GridCursor->SetVisibility(false);
-	Camera->AttachToActor(Party->GetCurrentLeader()->ActorCharacter);
 }
 
 void ATacticalGameMode::SetGrid()

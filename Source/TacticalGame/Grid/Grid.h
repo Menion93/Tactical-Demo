@@ -20,22 +20,22 @@ public:
 	AGrid();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TileSettings")
-		bool IsSquare;
+	bool IsSquare;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TileSettings")
-		int Columns;
+	int Columns;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TileSettings")
-		int Rows;
+	int Rows;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TileSettings")
-		float CellSize;
+	float CellSize;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TileSettings")
-		float PerimeterVOffset;
+	float PerimeterVOffset;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TileSettings")
-		float VerticalHeight;
+	float VerticalHeight;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "EditorSetting")
 		bool DrawLinesInEditor;

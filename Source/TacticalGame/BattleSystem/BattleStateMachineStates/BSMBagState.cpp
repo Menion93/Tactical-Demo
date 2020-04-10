@@ -10,7 +10,7 @@ UBSMBagState::UBSMBagState()
 
 }
 
-bool UBSMBagState::InputEventB()
+bool UBSMBagState::InputEventB(float DeltaTime)
 {
 	BattleManager->GameMode->BattleUI->CloseBag();
 	StateMachine->TransitionToState(CombatStateE::CHARACTER_SELECTED);

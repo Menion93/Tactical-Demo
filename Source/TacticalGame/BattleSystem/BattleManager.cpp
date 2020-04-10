@@ -2,7 +2,7 @@
 
 #include "BattleManager.h"
 #include "Utils/GridUtils.h"
-#include "PlayerFireTeam.h"
+#include "FireTeam.h"
 #include "Globals/TacticalGameMode.h"
 
 
@@ -18,16 +18,16 @@ void ABattleManager::Init()
 }
 
 
-void ABattleManager::PlayTurn()
+void ABattleManager::PlayTurn(float DeltaTime)
 {
 	// if we already chose an action
 	if (GlobalAction)
 	{
-		GlobalAction = CurrentAction->PlayAction() ? CurrentAction : nullptr;
+		GlobalAction = CurrentAction->PlayAction(DeltaTime) ? CurrentAction : nullptr;
 	}
 	else if (CurrentAction)
 	{
-		bool HasActionEnded = CurrentAction->PlayAction();
+		bool HasActionEnded = CurrentAction->PlayAction(DeltaTime);
 
 		if (HasActionEnded)
 		{
@@ -56,17 +56,26 @@ void ABattleManager::PlayTurn()
 			Teams[TeamIndex]->OnTurnStart();
 		}
 
-		Teams[TeamIndex]->PlayTurn();
+		Teams[TeamIndex]->PlayTurn(DeltaTime);
 	}
 
 }
 
-void ABattleManager::InitBattleState(bool IsPlayerTurn, bool ForceEngage)
+void ABattleManager::InitBattleState()
 {
 	for (auto& Team : Teams)
 	{
 		Team->Init(this);
 		Team->SpawnTeam();
+	}
+
+	for (auto& Team : Teams)
+	{
+		for (auto& Character : Team->Characters)
+		{
+			Character->ComputeShortestPaths();
+			Character->ComputePerimeterPoints();
+		}
 	}
 }
 
@@ -102,8 +111,33 @@ AGCharacter* ABattleManager::GetCurrentCharacter()
 	return Teams[TeamIndex]->CurrentCharacter;
 }
 
-APlayerFireTeam* ABattleManager::GetPlayerFireTeam()
+AFireTeam* ABattleManager::GetCurrentFireTeam()
 {
-	APlayerFireTeam* PlayerFT = Cast<APlayerFireTeam>(Teams[0]);
-	return PlayerFT ? PlayerFT : nullptr;
+	return Teams[TeamIndex];
+}
+
+TArray<AFireTeam*> ABattleManager::GetHostileFireTeams(AFireTeam* FireTeam)
+{
+	TArray<AFireTeam*> Result;
+
+	for (auto& FT : Teams)
+	{
+		if (FT != FireTeam)
+		{
+			bool foundAlliance;
+			for (auto& Alliance : Alliances)
+			{
+				if (Alliance.Array.Contains(FT))
+				{
+					foundAlliance = true;
+				} 
+			}
+			if (!foundAlliance)
+			{
+				Result.Add(FT);
+			}
+		}
+	}
+
+	return Result;
 }

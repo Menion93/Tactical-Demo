@@ -7,7 +7,12 @@
 #include "Kismet/GameplayStatics.h"
 
 
-void UGridUtils::GetShortestPaths(AGrid* Grid, DijkstraOutput &output, FTileIndex CurrentTile, int PathLenght)
+void UGridUtils::GetShortestPaths(
+	AGrid* Grid,
+	DijkstraOutput &output,
+	FTileIndex CurrentTile,
+	int PathLenght,
+	bool IgnoreCharacter)
 {
 	TArray<FDijkstraNode> Q;
 
@@ -25,6 +30,10 @@ void UGridUtils::GetShortestPaths(AGrid* Grid, DijkstraOutput &output, FTileInde
 		FTile Tile = Grid->GetTile(node.TileIndex);
 		for (auto& pair : Tile.Direction2Neighbours)
 		{
+			if (pair.Value.Key->IsObstacle) continue;
+
+			if (!IgnoreCharacter && pair.Value.Key->Character != nullptr) continue;
+
 			TPair<FTile*, float> tile2weight = pair.Value;
 
 			if (node.Distance + tile2weight.Value > PathLenght) continue;
@@ -88,18 +97,23 @@ TArray<FVectorArray> UGridUtils::GetPerimeterPoints(
 	{
 		if (FMath::FloorToInt(Node->Distance) <= Distance)
 		{
-
 			for (auto Direction : Directions)
 			{
 				// if we find a wall, save the perimeter segment (2 points)
 				FTile Tile = Grid->GetTile(Node->TileIndex);
-				if (!Tile.Direction2Neighbours.Contains(Direction) ||
+				auto Neighbours = Tile.Direction2Neighbours;
+
+
+				if (!Neighbours.Contains(Direction) || 
+					Neighbours[Direction].Key->IsObstacle || 
 					FMath::FloorToInt(output[Node->TileIndex + Direction].Distance) > Distance)
 				{
+					//FVector WallMidPoint = Tile.TileCenter + Direction.ToVector() * HalfCellSize;
 					FVector WallMidPoint = Tile.TileCenter + Direction.ToVector() * HalfCellSize;
 
 					FVector A;
 					FVector B;
+
 					FTileIndex CycleMarker(1, 1);
 
 					if (FMath::Abs(Direction.X) > 0)
@@ -145,8 +159,9 @@ TArray<FVectorArray> UGridUtils::GetPerimeterPoints(
 
 					Segments[AIndex].Emplace(BIndex);
 					Segments[BIndex].Emplace(AIndex);
-					Index2Vec.Emplace(AIndex, A);
-					Index2Vec.Emplace(BIndex, B);
+
+					Index2Vec.Add(AIndex, !Index2Vec.Contains(AIndex) || Index2Vec[AIndex].Z > A.Z ? A : Index2Vec[AIndex]);
+					Index2Vec.Add(BIndex, !Index2Vec.Contains(BIndex) || Index2Vec[BIndex].Z > B.Z ? B : Index2Vec[BIndex]);
 				}
 			}
 		}
@@ -167,8 +182,7 @@ bool UGridUtils::AddPerimeterBlock(
 	TArray<FVectorArray>& Result,
 	TMap<FTileIndex, TArray<FTileIndex>> &Segments,
 	TMap<FTileIndex, FVector>& Index2Vec,
-	TArray<FTileIndex>& Visited
-)
+	TArray<FTileIndex>& Visited)
 {
 	bool NewBlockFound = false;
 	FTileIndex PerimeterPointIndex;
@@ -283,11 +297,9 @@ void UGridUtils::BuildGrid(AActor* Map,
 			FTile MyTile;
 			MyTile.TileCenter = WTileCenter;
 
-			FHitResult OutHit;
 			FCollisionQueryParams CollisionParams;
 
 			TArray<FHitResult> OutHits;
-
 
 			bool hit = Map->GetWorld()->LineTraceMultiByChannel(
 				OutHits,
@@ -308,7 +320,6 @@ void UGridUtils::BuildGrid(AActor* Map,
 
 					if (OutHit.bBlockingHit)
 					{
-
 						TilesMap.Add(Index, MyTile);
 
 						#if WITH_EDITOR

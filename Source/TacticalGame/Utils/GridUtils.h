@@ -46,7 +46,8 @@ public:
 		static void GetShortestPaths(AGrid* Grid,
 			DijkstraOutput &output,
 			FTileIndex CurrentTile,
-			int PathLenght);
+			int PathLenght,
+			bool IgnoreCharacter);
 
 		static TArray<FVectorArray> GetPerimeterPoints(AGrid* Grid,
 			DijkstraOutput &output,

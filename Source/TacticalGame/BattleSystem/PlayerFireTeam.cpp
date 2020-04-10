@@ -22,8 +22,8 @@ void APlayerFireTeam::Init_Implementation(ABattleManager* BM)
 	SelectEnemyState = NewObject<UBSMSelectEnemyState>(this, TEXT("SelectEnemyState"));
 	SelectAttackState = NewObject<UBSMSelectAttackState>(this, TEXT("SelectAttackState"));
 
-	DeselectedState->Init(this, MoveGridSpeed, DelayToSpeed);
-	CharacterSelectedState->Init(this, MoveGridSpeed, DelayToSpeed);
+	DeselectedState->InitState(this, MoveGridSpeed, DelayToSpeed);
+	CharacterSelectedState->InitState(this, MoveGridSpeed, DelayToSpeed);
 	CharacterInfoState->Init(this);
 	BagState->Init(this);
 	SelectEnemyState->Init(this);
@@ -37,11 +37,11 @@ void APlayerFireTeam::Init_Implementation(ABattleManager* BM)
 	StateMachine.Emplace(CombatStateE::SELECT_ENEMY, SelectEnemyState);
 }
 
-void APlayerFireTeam::PlayTurn_Implementation()
+void APlayerFireTeam::PlayTurn_Implementation(float DeltaTime)
 {
 	if (!StateMachine[CurrentState]->IsInputDisabled())
 	{
-		StateMachine[CurrentState]->PlayState();
+		StateMachine[CurrentState]->PlayState(DeltaTime);
 	}
 }
 
@@ -115,11 +115,8 @@ void APlayerFireTeam::SpawnTeam()
 		UCharacterState* CharacterState = NewObject<UCharacterState>(
 			this, Character->StateClass->GetFName(), RF_NoFlags, Character->StateClass.GetDefaultObject());
 
-		Character->Init();
+		Character->Init(this);
 		Character->State = CharacterState;
-
-		Character->ComputeShortestPaths();
-		Character->ComputePerimeterPoints();
 	}
 
 	int PointIndex = 0;
@@ -137,16 +134,13 @@ void APlayerFireTeam::SpawnTeam()
 				SpawnPoint->GetActorLocation(),
 				FRotator::ZeroRotator);
 
-			Character->Init();
+			Character->Init(this);
 			Team[PointIndex]->ActorCharacter = Character;
 			Character->State = Team[PointIndex];
 
 			FTile* Tile = BattleManager->Grid->SnapToGrid(Character);
 
 			Characters.Add(Character);
-
-			Character->ComputeShortestPaths();
-			Character->ComputePerimeterPoints();
 		}
 	}
 }

@@ -16,7 +16,7 @@ void UBSMCharacterInfoState::OnEnter()
 	BattleManager->GameMode->BattleUI->OpenActionMenu(ActionList);
 }
 
-bool UBSMCharacterInfoState::InputEventB()
+bool UBSMCharacterInfoState::InputEventB(float DeltaTime)
 {
 	BattleManager->GameMode->BattleUI->CloseActionMenu();
 	StateMachine->TransitionToState(StateMachine->PrevState);

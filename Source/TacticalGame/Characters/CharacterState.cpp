@@ -14,5 +14,12 @@ void UCharacterState::ResetActionPoints()
 
 void UCharacterState::LoadState()
 {
+	// Load from file method
+}
+
+void UCharacterState::LoadDefaultState()
+{
+	Equipment = NewObject<UEquipment>(this, EquipmentClass);
+	Equipment->LoadDefaultEquipment();
 
 }

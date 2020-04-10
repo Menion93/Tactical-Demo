@@ -25,30 +25,22 @@ void UBSMState::Init(APlayerFireTeam* SM)
 
 }
 
-void UBSMState::PlayState()
+void UBSMState::PlayState(float DeltaTime)
 {
-	(Input->X_DOWN && InputEventX()) ||
-	(Input->Y_DOWN && InputEventY()) ||
-	(Input->A_DOWN && InputEventA()) ||
-	(Input->B_DOWN && InputEventB()) ||
-	(Input->Start_DOWN && InputEventStart()) ||
-	(Input->Pause_DOWN && InputEventPause()) ||
-	(Input->R1_DOWN && InputEventR1()) ||
-	(Input->R2_DOWN && InputEventR2()) ||
-	(Input->L1_DOWN && InputEventL1()) ||
-	(Input->L2_DOWN && InputEventL2()) ||
-	InputEventLAxis();
+	InputEventRAxis(DeltaTime) ||
+	InputEventLAxis(DeltaTime) ||
+	(Input->X_DOWN && InputEventX(DeltaTime)) ||
+	(Input->Y_DOWN && InputEventY(DeltaTime)) ||
+	(Input->A_DOWN && InputEventA(DeltaTime)) ||
+	(Input->B_DOWN && InputEventB(DeltaTime)) ||
+	(Input->Start_DOWN && InputEventStart(DeltaTime)) ||
+	(Input->Pause_DOWN && InputEventPause(DeltaTime)) ||
+	(Input->R1_DOWN && InputEventR1(DeltaTime)) ||
+	(Input->R2_DOWN && InputEventR2(DeltaTime)) ||
+	(Input->L1_DOWN && InputEventL1(DeltaTime)) ||
+	(Input->L2_DOWN && InputEventL2(DeltaTime));
 }
 
-void UBSMState::BindState()
-{
-
-}
-
-void UBSMState::UnbindState()
-{
-
-}
 
 bool UBSMState::IsInputDisabled()
 {
@@ -60,72 +52,72 @@ void UBSMState::DisableInput(bool DisInput)
 	InputDisabled = DisInput;
 }
 
-bool UBSMState::InputEventX()
+bool UBSMState::InputEventX(float DeltaTime)
 {
 	return false;
 }
 
-bool UBSMState::InputEventY()
+bool UBSMState::InputEventY(float DeltaTime)
 {
 	return false;
 }
 
-bool UBSMState::InputEventA()
+bool UBSMState::InputEventA(float DeltaTime)
 {
 	return false;
 }
 
-bool UBSMState::InputEventB()
+bool UBSMState::InputEventB(float DeltaTime)
 {
 	return false;
 }
 
-bool UBSMState::InputEventStart()
+bool UBSMState::InputEventStart(float DeltaTime)
 {
 	return false;
 }
 
-bool UBSMState::InputEventPause()
+bool UBSMState::InputEventPause(float DeltaTime)
 {
 	return false;
 }
 
-bool UBSMState::InputEventR1()
+bool UBSMState::InputEventR1(float DeltaTime)
 {
 	return false;
 }
 
-bool UBSMState::InputEventR2()
+bool UBSMState::InputEventR2(float DeltaTime)
 {
 	return false;
 }
 
-bool UBSMState::InputEventL1()
+bool UBSMState::InputEventL1(float DeltaTime)
 {
 	return false;
 }
 
-bool UBSMState::InputEventL2()
+bool UBSMState::InputEventL2(float DeltaTime)
 {
 	return false;
 }
 
-bool UBSMState::InputEventLAxis()
+bool UBSMState::InputEventLAxis(float DeltaTime)
 {
 	return false;
 }
 
-bool UBSMState::InputEventRAxis()
+bool UBSMState::InputEventRAxis(float DeltaTime)
 {
 	return false;
 }
 
-bool UBSMState::InputEventPadUpDown()
+bool UBSMState::InputEventPadUpDown(float DeltaTime)
 {
 	return false;
 }
 
-bool UBSMState::InputEventPadLeftRight()
+bool UBSMState::InputEventPadLeftRight(float DeltaTime)
 {
 	return false;
 }

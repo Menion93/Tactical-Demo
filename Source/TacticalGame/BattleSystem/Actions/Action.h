@@ -48,7 +48,7 @@ public:
 	void Init(ABattleManager* BM);
 
 	UFUNCTION(BlueprintNativeEvent)
-	bool PlayAction();
+	bool PlayAction(float DeltaTime);
 
 	UFUNCTION(BlueprintNativeEvent)
 	bool RevertAction();
@@ -63,45 +63,45 @@ public:
 	void OnEnd();
 
 	UFUNCTION(BlueprintNativeEvent)
-	bool InputEventX();
+	bool InputEventX(float DeltaTime);
 
 	UFUNCTION(BlueprintNativeEvent)
-	bool InputEventY();
+	bool InputEventY(float DeltaTime);
 
 	UFUNCTION(BlueprintNativeEvent)
-	bool InputEventA();
+	bool InputEventA(float DeltaTime);
 
 	UFUNCTION(BlueprintNativeEvent)
-	bool InputEventB();
+	bool InputEventB(float DeltaTime);
 
 	UFUNCTION(BlueprintNativeEvent)
-	bool InputEventStart();
+	bool InputEventStart(float DeltaTime);
 
 	UFUNCTION(BlueprintNativeEvent)
-	bool InputEventPause();
+	bool InputEventPause(float DeltaTime);
 
 	UFUNCTION(BlueprintNativeEvent)
-	bool InputEventR1();
+	bool InputEventR1(float DeltaTime);
 
 	UFUNCTION(BlueprintNativeEvent)
-	bool InputEventR2();
+	bool InputEventR2(float DeltaTime);
 
 	UFUNCTION(BlueprintNativeEvent)
-	bool InputEventL1();
+	bool InputEventL1(float DeltaTime);
 
 	UFUNCTION(BlueprintNativeEvent)
-	bool InputEventL2();
+	bool InputEventL2(float DeltaTime);
 
 	UFUNCTION(BlueprintNativeEvent)
-	bool InputEventLAxis();
+	bool InputEventLAxis(float DeltaTime);
 
 	UFUNCTION(BlueprintNativeEvent)
-	bool InputEventRAxis();
+	bool InputEventRAxis(float DeltaTime);
 	
 	UFUNCTION(BlueprintNativeEvent)
-	bool InputEventPadUpDown();
+	bool InputEventPadUpDown(float DeltaTime);
 
 	UFUNCTION(BlueprintNativeEvent)
-	bool InputEventPadLeftRight();
+	bool InputEventPadLeftRight(float DeltaTime);
 
 };

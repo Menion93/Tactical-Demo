@@ -70,7 +70,7 @@ public:
 	void OnTurnStart_Implementation() override;
 	bool IsTurnEnded_Implementation() override;
 	bool IsWinConditionSatisfied_Implementation() override;
-	void PlayTurn_Implementation() override;
+	void PlayTurn_Implementation(float DeltaTime) override;
 
 	UFUNCTION(BlueprintCallable)
 	void TransitionToState(CombatStateE State);

@@ -4,6 +4,7 @@
 #include "BSMDeselectedState.h"
 #include "Globals/TacticalGameMode.h"
 #include "BattleSystem/PlayerFireTeam.h"
+#include "TopViewCamera.h"
 #include "Engine/World.h"
 
 
@@ -12,7 +13,7 @@ UBSMDeselectedState::UBSMDeselectedState()
 
 }
 
-void UBSMDeselectedState::Init(APlayerFireTeam* SM, float MoveGridSpeed, float Delay)
+void UBSMDeselectedState::InitState(APlayerFireTeam* SM, float MoveGridSpeed, float Delay)
 {
 	Super::Init(SM);
 	MoveTime = 1 / MoveGridSpeed;
@@ -20,18 +21,18 @@ void UBSMDeselectedState::Init(APlayerFireTeam* SM, float MoveGridSpeed, float D
 }
 
 
-bool UBSMDeselectedState::InputEventX()
+bool UBSMDeselectedState::InputEventX(float DeltaTime)
 {
 	return false;
 }
 
-bool UBSMDeselectedState::InputEventY()
+bool UBSMDeselectedState::InputEventY(float DeltaTime)
 {
 	return false;
 }
 
 // When selecting a Tile
-bool UBSMDeselectedState::InputEventA()
+bool UBSMDeselectedState::InputEventA(float DeltaTime)
 {
 	AGCharacter* Character = BattleManager->GetSelectedTile().Character;
 
@@ -64,18 +65,47 @@ bool UBSMDeselectedState::InputEventA()
 	return false;
 }
 
-bool UBSMDeselectedState::InputEventB()
+bool UBSMDeselectedState::InputEventB(float DeltaTime)
 {
 	return false;
 }
 
+bool UBSMDeselectedState::InputEventRAxis(float DeltaTime)
+{
+	ATopViewCamera* Camera = BattleManager->GameMode->Camera;
 
-bool UBSMDeselectedState::InputEventLAxis()
+	if (Camera->IsPanLerping) return false;
+	if (Camera->IsYawLerping) return true;
+
+	if (!Input->RAxis.IsZero())
+	{
+		// Compute Pitch Angle
+		float PitchDirection = Input->RAxis.Y;
+
+		if (FMath::Abs(PitchDirection) > 0.5)
+		{
+			Camera->ComputePitchRotation(PitchDirection, DeltaTime);
+			return true;
+		}
+
+		float YawDirection = Input->RAxis.X;
+
+		if (FMath::Abs(YawDirection) > 0.5)
+		{
+			Camera->ComputeYawRotation(YawDirection);
+			return true;
+		}
+	}
+
+	return false;
+}
+
+bool UBSMDeselectedState::InputEventLAxis(float DeltaTime)
 {
 
-	if (!Input->HardAxis.IsZero()) {
+	if (!Input->LHardAxis.IsZero()) {
 
-		if (!CooldownMovementGrid || Input->Axis_DOWN)
+		if (!CooldownMovementGrid)
 		{
 			UWorld* World = GetWorld();
 
@@ -93,14 +123,16 @@ bool UBSMDeselectedState::InputEventLAxis()
 
 			FVector2D Direction;
 
-			if (FMath::Abs(Input->Axis.X) >= FMath::Abs(Input->Axis.Y))
+			if (FMath::Abs(Input->LAxis.X) >= FMath::Abs(Input->LAxis.Y))
 			{
-				Direction = FVector2D(FMath::RoundToInt(Input->Axis.X), 0);
+				Direction = FVector2D(FMath::RoundToInt(Input->LAxis.X), 0);
 			}
 			else
 			{
-				Direction = FVector2D(0, FMath::RoundToInt(Input->Axis.Y));
+				Direction = FVector2D(0, FMath::RoundToInt(Input->LAxis.Y));
 			}
+
+			Direction = MapInput(Direction);
 
 			FTileIndex Index(Direction);
 			FTile CurrentTile = BattleManager->GetSelectedTile();
@@ -109,7 +141,7 @@ bool UBSMDeselectedState::InputEventLAxis()
 			{
 				StateMachine->SelectedTile = CurrentTile.Direction2Neighbours[Index].Key->Index;
 				Grid->SetCursorToTile(StateMachine->SelectedTile);
-				BattleManager->GameMode->Camera->LookAtPosition(BattleManager->GetSelectedTile().TileCenter);
+				BattleManager->GameMode->Camera->LerpToPosition(BattleManager->GetSelectedTile().TileCenter);
 
 				if (World)
 				{
@@ -130,16 +162,31 @@ bool UBSMDeselectedState::InputEventLAxis()
 	return false;
 }
 
-bool UBSMDeselectedState::InputEventR1()
+bool UBSMDeselectedState::InputEventR1(float DeltaTime)
 {
 	TArray<AGCharacter*> AvailableCharacters = StateMachine->Characters.FilterByPredicate([](auto& Char) 
 	{
-		return Char->State->CurrentActionPoints > 0;
+		return Char->State->CurrentActionPoints > 0 && Char->State->CurrentHealth > 0;
 	});
 
-	StateMachine->SelectionIndex = (StateMachine->SelectionIndex + 1) % AvailableCharacters.Num();
+	AGCharacter* Character = nullptr;
+	bool Increment = true;
 
-	AGCharacter* Character = AvailableCharacters[StateMachine->SelectionIndex];
+	while (Increment)
+	{
+		Increment = false;
+		StateMachine->SelectionIndex = (StateMachine->SelectionIndex + 1) % AvailableCharacters.Num();
+
+		Character = AvailableCharacters[StateMachine->SelectionIndex];
+		
+		FTile SelectedTile = BattleManager->Grid->GetTile(StateMachine->SelectedTile);
+		if (SelectedTile.Character == Character)
+		{
+			if (AvailableCharacters.Num() == 1) break;
+
+			Increment = true;
+		}
+	}
 	
 	StateMachine->SelectedTile = Character->CurrentTileIndex;
 	Grid->SetCursorToTile(StateMachine->SelectedTile);
@@ -147,21 +194,38 @@ bool UBSMDeselectedState::InputEventR1()
 	return true;
 }
 
-bool UBSMDeselectedState::InputEventL1()
+bool UBSMDeselectedState::InputEventL1(float DeltaTime)
 {
 	TArray<AGCharacter*> AvailableCharacters = StateMachine->Characters.FilterByPredicate([](auto& Char)
 	{
 		return Char->State->CurrentActionPoints > 0;
 	});
 
-	StateMachine->SelectionIndex = (StateMachine->SelectionIndex - 1) % AvailableCharacters.Num();
-
-	if (StateMachine->SelectionIndex < 0)
+	AGCharacter* Character = nullptr;
+	bool Decrement = true;
+	
+	while (Decrement)
 	{
-		StateMachine->SelectionIndex = AvailableCharacters.Num() - 1;
+		Decrement = false;
+
+		StateMachine->SelectionIndex = (StateMachine->SelectionIndex - 1) % AvailableCharacters.Num();
+
+		if (StateMachine->SelectionIndex < 0)
+		{
+			StateMachine->SelectionIndex = AvailableCharacters.Num() - 1;
+		}
+
+		Character = AvailableCharacters[StateMachine->SelectionIndex];
+
+		FTile SelectedTile = BattleManager->Grid->GetTile(StateMachine->SelectedTile);
+		if (SelectedTile.Character == Character)
+		{
+			if (AvailableCharacters.Num() == 1) break;
+
+			Decrement = true;
+		}
 	}
 
-	AGCharacter* Character = AvailableCharacters[StateMachine->SelectionIndex];
 
 	StateMachine->SelectedTile = Character->CurrentTileIndex;
 	Grid->SetCursorToTile(StateMachine->SelectedTile);
@@ -173,4 +237,19 @@ void UBSMDeselectedState::ResetCooldownMovementGrid()
 {
 	CooldownMovementGrid = false;
 	time = MoveTime;
+}
+
+FVector2D UBSMDeselectedState::MapInput(FVector2D OriginalInput)
+{
+	FVector Input3D(OriginalInput.X, OriginalInput.Y, 0);
+
+	ATopViewCamera* Camera = BattleManager->GameMode->Camera;
+	int Angle = int(Camera->YawAngle);
+
+	float RotationAngle = (Camera->YawIndex * Angle) / (Angle * 2) * Angle * 2;
+	const FRotator YawRotation(0, RotationAngle, 0);
+
+	FVector RotatedInput3D = YawRotation.RotateVector(Input3D);
+
+	return FVector2D(FMath::RoundToInt(RotatedInput3D.X), FMath::RoundToInt(RotatedInput3D.Y));
 }

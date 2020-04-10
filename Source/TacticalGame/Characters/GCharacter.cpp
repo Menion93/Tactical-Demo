@@ -6,6 +6,7 @@
 #include "Globals/TacticalGameMode.h"
 #include "Grid/Grid.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Grid/Cover.h"
 #include "Utils/Structs.h"
 
 
@@ -34,13 +35,13 @@ void AGCharacter::BeginPlay()
 	SpawnDefaultController();
 }
 
-void AGCharacter::Init()
+void AGCharacter::Init(AFireTeam* FT)
 {
-	ATacticalGameMode* GameMode = Cast<ATacticalGameMode>(GetWorld()->GetAuthGameMode());
+	GameMode = Cast<ATacticalGameMode>(GetWorld()->GetAuthGameMode());
 	Grid = GameMode->Grid;
 	Input = Cast<AGPlayerController>(GetWorld()->GetFirstPlayerController());
+	FireTeam = FT;
 }
-
 
 // Called every frame
 void AGCharacter::Tick(float DeltaTime)
@@ -53,31 +54,6 @@ void AGCharacter::Tick(float DeltaTime)
 void AGCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
-
-}
-
-bool AGCharacter::IsInMeleeRange(AGCharacter* Enemy)
-{
-	return false;
-}
-
-bool AGCharacter::IsInLineOfSight(AGCharacter* Enemy)
-{
-	return false;
-}
-
-void AGCharacter::Shoot(AGCharacter* Enemy)
-{
-
-}
-
-void AGCharacter::Melee(AGCharacter* Enemy)
-{
-
-}
-
-void AGCharacter::GetDamage(float Damage)
-{
 
 }
 
@@ -114,7 +90,7 @@ bool AGCharacter::MoveTo(FTileIndex TileIndex)
 	FVector Direction = MovePoints[PathIndex] - FlatLocation;
 	Direction.Normalize();
 
-	AddMovementInput(Direction, Speed);
+	AddMovementInput(Direction);
 	SetActorRotation(FVector(Direction.X, Direction.Y, 0).ToOrientationRotator());
 
 	return false;
@@ -123,12 +99,14 @@ bool AGCharacter::MoveTo(FTileIndex TileIndex)
 void AGCharacter::ComputeShortestPaths()
 {
 	ShortestPaths = TMap<FTileIndex, FDijkstraNode>();
-	UGridUtils::GetShortestPaths(Grid, ShortestPaths, CurrentTileIndex, 9999);
+	UGridUtils::GetShortestPaths(Grid, ShortestPaths, CurrentTileIndex, 9999, false);
 }
-
 
 void AGCharacter::ComputePerimeterPoints()
 {
+	PerimeterBoundaries = TMap<FTileIndex, FDijkstraNode>();
+	UGridUtils::GetShortestPaths(Grid, PerimeterBoundaries, CurrentTileIndex, 9999, true);
+
 	for (auto& Perimeter : Perimeters)
 	{
 		Perimeter->Destroy();
@@ -136,11 +114,9 @@ void AGCharacter::ComputePerimeterPoints()
 
 	Perimeters = TArray<APerimeter*>();
 
-	ATacticalGameMode* GameMode = Cast<ATacticalGameMode>(GetWorld()->GetAuthGameMode());
-
 	TArray<FVectorArray> PerimeterBlocks = UGridUtils::GetPerimeterPoints(
 		Grid,
-		ShortestPaths,
+		PerimeterBoundaries,
 		State->MovementSpeed,
 		GameMode->Grid->CellSize,
 		GameMode->Grid->PerimeterVOffset);
@@ -155,6 +131,84 @@ void AGCharacter::ComputePerimeterPoints()
 		Perimeters.Add(Perimeter);
 	}
 }
+
+void AGCharacter::ComputeLoS()
+{
+	TArray<FDijkstraNode> Nodes;
+	ShortestPaths.GenerateValueArray(Nodes);
+
+	Nodes = Nodes.FilterByPredicate([this](auto& Node) {
+		return Node.Distance <= this->State->MovementSpeed;
+	});
+
+	LoS = TMap<FName, FLineOfSights>();
+
+	TArray<AFireTeam*> FTeams = GameMode->BattleManager->GetHostileFireTeams(FireTeam);
+
+	for (auto& Node : Nodes)
+	{
+		for (auto& FT : FTeams)
+		{
+			for (auto& Character : FT->Characters)
+			{
+				FTile Tile = Grid->GetTile(Node.TileIndex);
+
+				FCollisionQueryParams CollisionParams;
+
+				TArray<FHitResult> OutHits;
+
+				bool hit = GetWorld()->LineTraceMultiByChannel(
+					OutHits,
+					GetActorLocation(),
+					Character->GetActorLocation(),
+					ECollisionChannel::ECC_GameTraceChannel2,
+					CollisionParams);
+
+				CoverTypeE Cover = CoverTypeE::NONE;
+				for (auto& OutHit : OutHits)
+				{
+					if (OutHit.bBlockingHit)
+					{
+						AGCharacter* HitChar = Cast<AGCharacter>(OutHit.Actor);
+
+						// LoS found
+						if (HitChar == Character)
+						{
+							AddLoS(Character, Tile, Cover, OutHit.Distance);
+						}
+					}
+					else
+					{
+						ACover* CoverObj = Cast<ACover>(OutHit.Actor);
+						Cover = CoverObj->GetCoverType();
+					}
+				}
+			}
+		}
+	}
+}
+
+void AGCharacter::AddLoS(
+	AGCharacter* Character,
+	FTile& Tile, 
+	CoverTypeE Cover,
+	float Distance)
+{
+	if (!LoS.Contains(Character->State->Name))
+	{
+		LoS.Add(Character->State->Name, FLineOfSights());
+	}
+
+	FLineOfSights* LinesOfSights = LoS.Find(Character->State->Name);
+
+	LinesOfSights->Tiles.Add(Tile.Index, FLineOfSight(Cover, Distance));
+}
+
+TArray<UObject*> AGCharacter::GetOffensiveOptions()
+{
+	return State->Equipment->GetOffensiveItems();
+}
+
 
 void AGCharacter::ShowPerimeter(bool Show)
 {
@@ -175,6 +229,9 @@ void AGCharacter::ShowShortestPath(bool Show)
 void AGCharacter::DrawShortestPath(FTileIndex TileIndex)
 {
 	TArray<FVector> Points;
+
+	if (!ShortestPaths.Contains(TileIndex)) return;
+
 	UGridUtils::UnravelPath(Grid, ShortestPaths, TileIndex, Points);
 
 	if (!PathActor)
@@ -196,12 +253,12 @@ bool AGCharacter::TileInRange(FTile Tile)
 
 void AGCharacter::HandleInput()
 {
-	if (!Input->Axis.IsZero())
+	if (!Input->LAxis.IsZero())
 	{
-		FVector Direction = FVector(Input->Axis.X, Input->Axis.Y, GetActorLocation().Z);
-		AddMovementInput(Direction, Speed);
+		FVector Direction = FVector(Input->LAxis.X, Input->LAxis.Y, GetActorLocation().Z);
+		AddMovementInput(Direction);
 
-		if (Input->Axis.X != 0 || Input->Axis.Y != 0)
+		if (Input->LAxis.X != 0 || Input->LAxis.Y != 0)
 		{
 			SetActorRotation(FVector(Direction.X, Direction.Y, 0).ToOrientationRotator());
 		}

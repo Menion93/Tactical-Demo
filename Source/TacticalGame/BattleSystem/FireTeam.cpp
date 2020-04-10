@@ -25,7 +25,7 @@ bool AFireTeam::IsWinConditionSatisfied_Implementation()
 	return false;
 }
 
-void AFireTeam::PlayTurn_Implementation()
+void AFireTeam::PlayTurn_Implementation(float DeltaTime)
 {
 
 }
@@ -61,11 +61,8 @@ void AFireTeam::SpawnTeam()
 		UCharacterState* CharacterState = NewObject<UCharacterState>(
 			this, Character->StateClass->GetFName(), RF_NoFlags, Character->StateClass.GetDefaultObject());
 
-		Character->Init();
+		Character->Init(this);
 		Character->State = CharacterState;
-
-		Character->ComputeShortestPaths();
-		Character->ComputePerimeterPoints();
 	}
 
 	int PointIndex = 0;
@@ -83,17 +80,24 @@ void AFireTeam::SpawnTeam()
 				SpawnPoint->GetActorLocation(),
 				FRotator::ZeroRotator);
 
-			Character->Init();
+			Character->Init(this);
 			CharacterState->ActorCharacter = Character;
 			Character->State = CharacterState;
 
 			FTile* Tile = BattleManager->Grid->SnapToGrid(Character);
 
 			Characters.Add(Character);
-
-			Character->ComputeShortestPaths();
-			Character->ComputePerimeterPoints();
 		}
+	}
+}
+
+void AFireTeam::RecomputeAllCharactersMetadata()
+{
+	for (auto& Character : Characters)
+	{
+		Character->ComputeShortestPaths();
+		Character->ComputePerimeterPoints();
+		Character->ComputeLoS();
 	}
 }
 

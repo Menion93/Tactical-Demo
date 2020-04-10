@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
 #include "GCharacter.h"
-#include "Characters/Equipment/Bag.h"
+#include "Characters/Equipment/Equipment.h"
 #include "CharacterState.generated.h"
 
 /**
@@ -19,38 +19,44 @@ class TACTICALGAME_API UCharacterState : public UObject
 public:
 	UCharacterState();
 
-	UPROPERTY(EditAnywhere)
+	// Default Properties
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FName Name;
-
-	UPROPERTY()
-	AGCharacter* ActorCharacter;
-
-	UPROPERTY(BlueprintReadWrite)
-	float CurrentHealth;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float Health;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int ActionPoints;
-
-	UPROPERTY(BlueprintReadWrite)
-	int CurrentActionPoints;
 
 	// Number of tiles per movement action
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int MovementSpeed;
 
-	UPROPERTY(BlueprintReadWrite)
-	UBag* Bag;
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<class AGCharacter> ActorCharacterClass;
 
-	//UArmorDescriptor* armors;
-	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<class UEquipment> EquipmentClass;
+
+public:
+
+	UPROPERTY(BlueprintReadWrite)
+		float CurrentHealth;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float Health;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		int ActionPoints;
+
+	UPROPERTY(BlueprintReadWrite)
+		int CurrentActionPoints;
+
+	UPROPERTY(BlueprintReadWrite)
+		UEquipment* Equipment;
+
+	UPROPERTY(BlueprintReadWrite)
+	AGCharacter* ActorCharacter;
+
 public:
 	void ResetActionPoints();
 	void LoadState();
+
+	void LoadDefaultState();
 
 };

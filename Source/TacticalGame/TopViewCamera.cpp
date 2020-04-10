@@ -20,31 +20,43 @@ void ATopViewCamera::BeginPlay()
 		SetViewTarget();
 	}
 
-	//SetActorRelativeRotation(FRotator(CameraAngle, 0, 0));
+	Input = Cast<AGPlayerController>(GetWorld()->GetFirstPlayerController());
 
-	OffsetVector = - FVector::ForwardVector * CameraVerticalPan;
+	//SetActorRelativeRotation(FRotator(CameraAngle, 0, 0));
+	PitchInterp = (PitchStartAngle - PitchMaxAngle) / (PitchMinAngle - PitchMaxAngle);
 }
 
 void ATopViewCamera::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (FollowedActor)
-	{ 
-		const FRotator PitchRotation(CameraAngle, 0, 0);
-
-		FVector ActorUpVector = PitchRotation.RotateVector(FVector::UpVector * CameraDistanceFromActor) + FollowedActor->GetActorLocation();
-		SetActorLocation(ActorUpVector);
-
-		SetActorRotation((FollowedActor->GetActorLocation() - GetActorLocation()).ToOrientationRotator());
-	}
-	else if (IsLerping)
+	if (IsPanLerping)
 	{
-		if (GetActorLocation() == LerpDestination)
+		if (FVector::Distance(GetActorLocation(), LerpDestination) < LerpPanThreshold)
 		{
-			IsLerping = false;
+			IsPanLerping = false;
 		}
-		SetActorLocation(FMath::Lerp(GetActorLocation(), LerpDestination, DeltaTime));
+
+		SetActorLocation(FMath::Lerp(GetActorLocation(), LerpDestination, DeltaTime * LerpPanSpeed));
+	}
+	else if (IsYawLerping)
+	{
+		if (FMath::IsNearlyEqual(YawInterp, 1.0f))
+		{
+			IsYawLerping = false;
+		}
+
+		YawRotationCurrentSpeed = FMath::Clamp(YawRotationCurrentSpeed * YawRotationDecelFactor,
+			YawMinRotationSpeed,
+			YawMaxRotationSpeed);
+
+		YawInterp = FMath::Clamp(YawInterp + DeltaTime * YawRotationCurrentSpeed, 0.0f, 1.0f);
+
+		const FRotator PitchRotation(GetPitchAngle(), GetYawAngle(), 0);
+		FVector ActorUpVector = PitchRotation.RotateVector(FVector::UpVector * CameraNeutralHeight) + LastPosition;
+
+		SetActorLocation(ActorUpVector);
+		SetActorRotation((LastPosition - GetActorLocation()).ToOrientationRotator());
 	}
 }
 
@@ -62,28 +74,56 @@ void ATopViewCamera::SetViewTarget()
 	}
 }
 
-void ATopViewCamera::LerpToTile(FTile* Tile, float seconds)
+void ATopViewCamera::LerpToPosition(FVector Position)
 {
-	// Lerp to Actor, then update grid position
-	LerpDestination = Tile->TileCenter + OffsetVector;
-	IsLerping = true;
+	LastPosition = Position;
+	const FRotator PitchRotation(GetPitchAngle(), YawAngle * YawIndex, 0);
+	LerpDestination = PitchRotation.RotateVector(FVector::UpVector * CameraNeutralHeight) + Position;
+	IsPanLerping = true;
 }
 
 void ATopViewCamera::LookAtPosition(FVector Position)
 {
-	const FRotator PitchRotation(CameraAngle, 0, 0);
-	FVector ActorUpVector = PitchRotation.RotateVector(FVector::UpVector * CameraDistanceFromActor) + Position;
+	IsPanLerping = false;
+	IsYawLerping = false;
+	LastPosition = Position;
+	const FRotator PitchRotation(GetPitchAngle(), YawAngle * YawIndex, 0);
+	FVector ActorUpVector = PitchRotation.RotateVector(FVector::UpVector * CameraNeutralHeight) + Position;
 	
 	SetActorLocation(ActorUpVector);
 	SetActorRotation((Position - GetActorLocation()).ToOrientationRotator());
 }
 
-void ATopViewCamera::AttachToActor(AActor* Actor)
+void ATopViewCamera::ComputePitchRotation(float PitchDirection, float DeltaTime)
 {
-	FollowedActor = Actor;
+	PitchInterp = FMath::Clamp(PitchInterp + PitchDirection * PitchSpeed * DeltaTime, 0.0f, 1.0f);
+	LookAtPosition(LastPosition);
 }
 
-void ATopViewCamera::DetachFromActor()
+void ATopViewCamera::ComputeYawRotation(float YawDirection)
 {
-	FollowedActor = nullptr;
+	if (!IsYawLerping)
+	{
+		YawRotationCurrentSpeed = YawMaxRotationSpeed;
+		YawStartAngle = YawIndex * YawAngle;
+		YawIndex = YawDirection > 0 ? ++YawIndex : --YawIndex;
+		YawTargetAngle = YawIndex * YawAngle;
+		YawInterp = 0;
+		IsYawLerping = true;
+	}
+}
+
+float ATopViewCamera::GetYawAngle()
+{
+	return FMath::Lerp(YawStartAngle, YawTargetAngle, YawInterp);
+}
+
+float ATopViewCamera::GetPitchAngle()
+{
+	return FMath::Lerp(PitchMinAngle, PitchMaxAngle, PitchInterp);
+}
+
+void ATopViewCamera::EnableCameraInput(bool Enable)
+{
+	InputActive = Enable;
 }

@@ -16,19 +16,20 @@ void UAction::Init_Implementation(ABattleManager* BM)
 }
 
 
-bool UAction::PlayAction_Implementation()
+bool UAction::PlayAction_Implementation(float DeltaTime)
 {
-	return (Input->X_DOWN && InputEventX()) ||
-		(Input->Y_DOWN && InputEventY()) ||
-		(Input->A_DOWN && InputEventA()) ||
-		(Input->B_DOWN && InputEventB()) ||
-		(Input->Start_DOWN && InputEventStart()) ||
-		(Input->Pause_DOWN && InputEventPause()) ||
-		(Input->R1_DOWN & InputEventR1()) ||
-		(Input->R2_DOWN && InputEventR2()) ||
-		(Input->L1_DOWN && InputEventL1()) ||
-		(Input->L2_DOWN && InputEventL2()) ||
-		InputEventLAxis();
+	return InputEventRAxis(DeltaTime) || 
+		InputEventLAxis(DeltaTime) ||
+		(Input->X_DOWN && InputEventX(DeltaTime)) ||
+		(Input->Y_DOWN && InputEventY(DeltaTime)) ||
+		(Input->A_DOWN && InputEventA(DeltaTime)) ||
+		(Input->B_DOWN && InputEventB(DeltaTime)) ||
+		(Input->Start_DOWN && InputEventStart(DeltaTime)) ||
+		(Input->Pause_DOWN && InputEventPause(DeltaTime)) ||
+		(Input->R1_DOWN & InputEventR1(DeltaTime)) ||
+		(Input->R2_DOWN && InputEventR2(DeltaTime)) ||
+		(Input->L1_DOWN && InputEventL1(DeltaTime)) ||
+		(Input->L2_DOWN && InputEventL2(DeltaTime));
 }
 
 void UAction::OnEnter_Implementation()
@@ -48,77 +49,77 @@ bool UAction::RevertAction_Implementation()
 }
 
 
-bool UAction::CanExecuteAction_Implementation() 
+bool UAction::CanExecuteAction_Implementation()
 {
 	return false;
 }
 
-bool UAction::InputEventX_Implementation()
+bool UAction::InputEventX_Implementation(float DeltaTime)
 {
 	return false;
 }
 
-bool UAction::InputEventY_Implementation()
+bool UAction::InputEventY_Implementation(float DeltaTime)
 {
 	return false;
 }
 
-bool UAction::InputEventA_Implementation()
+bool UAction::InputEventA_Implementation(float DeltaTime)
 {
 	return false;
 }
 
-bool UAction::InputEventB_Implementation()
+bool UAction::InputEventB_Implementation(float DeltaTime)
 {
 	return false;
 }
 
-bool UAction::InputEventStart_Implementation()
+bool UAction::InputEventStart_Implementation(float DeltaTime)
 {
 	return false;
 }
 
-bool UAction::InputEventPause_Implementation()
+bool UAction::InputEventPause_Implementation(float DeltaTime)
 {
 	return false;
 }
 
-bool UAction::InputEventR1_Implementation()
+bool UAction::InputEventR1_Implementation(float DeltaTime)
 {
 	return false;
 }
 
-bool UAction::InputEventR2_Implementation()
+bool UAction::InputEventR2_Implementation(float DeltaTime)
 {
 	return false;
 }
 
-bool UAction::InputEventL1_Implementation()
+bool UAction::InputEventL1_Implementation(float DeltaTime)
 {
 	return false;
 }
 
-bool UAction::InputEventL2_Implementation()
+bool UAction::InputEventL2_Implementation(float DeltaTime)
 {
 	return false;
 }
 
-bool UAction::InputEventLAxis_Implementation()
+bool UAction::InputEventLAxis_Implementation(float DeltaTime)
 {
 	return false;
 }
 
-bool UAction::InputEventRAxis_Implementation()
+bool UAction::InputEventRAxis_Implementation(float DeltaTime)
 {
 	return false;
 }
 
-bool UAction::InputEventPadUpDown_Implementation()
+bool UAction::InputEventPadUpDown_Implementation(float DeltaTime)
 {
 	return false;
 }
 
-bool UAction::InputEventPadLeftRight_Implementation()
+bool UAction::InputEventPadLeftRight_Implementation(float DeltaTime)
 {
 	return false;
 }

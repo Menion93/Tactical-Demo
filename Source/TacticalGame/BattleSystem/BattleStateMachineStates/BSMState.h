@@ -38,30 +38,27 @@ public:
 
 	bool IsInputDisabled();
 	void DisableInput(bool DisInput);
-	virtual void PlayState();
+	virtual void PlayState(float DeltaTime);
 
-	void BindState();
-	void UnbindState();
+	virtual bool InputEventX(float DeltaTime);
+	virtual bool InputEventY(float DeltaTime);
+	virtual bool InputEventA(float DeltaTime);
+	virtual bool InputEventB(float DeltaTime);
 
-	virtual bool InputEventX();
-	virtual bool InputEventY();
-	virtual bool InputEventA();
-	virtual bool InputEventB();
+	virtual bool InputEventStart(float DeltaTime);
+	virtual bool InputEventPause(float DeltaTime);
 
-	virtual bool InputEventStart();
-	virtual bool InputEventPause();
+	virtual bool InputEventR1(float DeltaTime);
+	virtual bool InputEventR2(float DeltaTime);
 
-	virtual bool InputEventR1();
-	virtual bool InputEventR2();
+	virtual bool InputEventL1(float DeltaTime);
+	virtual bool InputEventL2(float DeltaTime);
 
-	virtual bool InputEventL1();
-	virtual bool InputEventL2();
+	virtual bool InputEventLAxis(float DeltaTime);
+	virtual bool InputEventRAxis(float DeltaTime);
 
-	virtual bool InputEventLAxis();
-	virtual bool InputEventRAxis();
-
-	virtual bool InputEventPadUpDown();
-	virtual bool InputEventPadLeftRight();
+	virtual bool InputEventPadUpDown(float DeltaTime);
+	virtual bool InputEventPadLeftRight(float DeltaTime);
 
 	virtual void OnEnter();
 

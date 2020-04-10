@@ -22,8 +22,10 @@ void AGPlayerController::SetupInputComponent()
 	// set up gameplay key bindings
 	Super::SetupInputComponent();
 
-	InputComponent->BindAxis("StickAxisX", this, &AGPlayerController::AxisX);
-	InputComponent->BindAxis("StickAxisY", this, &AGPlayerController::AxisY);
+	InputComponent->BindAxis("LStickAxisX", this, &AGPlayerController::LAxisX);
+	InputComponent->BindAxis("LStickAxisY", this, &AGPlayerController::LAxisY);
+	InputComponent->BindAxis("RStickAxisX", this, &AGPlayerController::RAxisX);
+	InputComponent->BindAxis("RStickAxisY", this, &AGPlayerController::RAxisY);
 	InputComponent->BindAxis("A", this, &AGPlayerController::InputA);
 	InputComponent->BindAxis("B", this, &AGPlayerController::InputB);
 	InputComponent->BindAxis("X", this, &AGPlayerController::InputX);
@@ -43,40 +45,76 @@ void AGPlayerController::HandleActionInput(bool& button, bool& down, float value
 }
 
 
-void AGPlayerController::AxisX(float Value)
+void AGPlayerController::LAxisX(float Value)
 {
-	if (second)
+	if (LSecond)
 	{
-		Axis_DOWN = !FMath::RoundToInt(StickUp) && FMath::RoundToInt(Value) || Axis_DOWN;
-		second = false;
+		LAxis_DOWN = !FMath::RoundToInt(LStickUp) && FMath::RoundToInt(Value) || LAxis_DOWN;
+		LSecond = false;
 	}
 	else
 	{
-		Axis_DOWN = !FMath::RoundToInt(StickUp) && FMath::RoundToInt(Value);
-		second = true;
+		LAxis_DOWN = !FMath::RoundToInt(LStickUp) && FMath::RoundToInt(Value);
+		LSecond = true;
 	}
 
-	StickUp = Value;
-	HardAxis = FVector2D(FMath::RoundToInt(StickUp), FMath::RoundToInt(StickRight));
-	Axis = FVector2D(StickUp, StickRight);
+	LStickUp = Value;
+	LHardAxis = FVector2D(FMath::RoundToInt(LStickUp), FMath::RoundToInt(LStickRight));
+	LAxis = FVector2D(LStickUp, LStickRight);
 }
 
-void AGPlayerController::AxisY(float Value)
+void AGPlayerController::LAxisY(float Value)
 {
-	if (second)
+	if (LSecond)
 	{
-		Axis_DOWN = !FMath::RoundToInt(StickRight) && FMath::RoundToInt(Value) || Axis_DOWN;
-		second = false;
+		LAxis_DOWN = !FMath::RoundToInt(LStickRight) && FMath::RoundToInt(Value) || LAxis_DOWN;
+		LSecond = false;
 	}
 	else
 	{
-		Axis_DOWN = !FMath::RoundToInt(StickRight) && FMath::RoundToInt(Value);
-		second = true;
+		LAxis_DOWN = !FMath::RoundToInt(LStickRight) && FMath::RoundToInt(Value);
+		LSecond = true;
 	}
 
-	StickRight = Value;
-	HardAxis = FVector2D(FMath::RoundToInt(StickUp), FMath::RoundToInt(StickRight));
-	Axis = FVector2D(StickUp, StickRight);
+	LStickRight = Value;
+	LHardAxis = FVector2D(FMath::RoundToInt(LStickUp), FMath::RoundToInt(LStickRight));
+	LAxis = FVector2D(LStickUp, LStickRight);
+}
+
+void AGPlayerController::RAxisX(float Value)
+{
+	if (RSecond)
+	{
+		RAxis_DOWN = !FMath::RoundToInt(RStickUp) && FMath::RoundToInt(Value) || RAxis_DOWN;
+		RSecond = false;
+	}
+	else
+	{
+		RAxis_DOWN = !FMath::RoundToInt(RStickUp) && FMath::RoundToInt(Value);
+		RSecond = true;
+	}
+
+	RStickUp = Value;
+	RHardAxis = FVector2D(FMath::RoundToInt(RStickUp), FMath::RoundToInt(RStickRight));
+	RAxis = FVector2D(RStickUp, RStickRight);
+}
+
+void AGPlayerController::RAxisY(float Value)
+{
+	if (RSecond)
+	{
+		RAxis_DOWN = !FMath::RoundToInt(RStickRight) && FMath::RoundToInt(Value) || RAxis_DOWN;
+		RSecond = false;
+	}
+	else
+	{
+		RAxis_DOWN = !FMath::RoundToInt(RStickRight) && FMath::RoundToInt(Value);
+		RSecond = true;
+	}
+
+	RStickRight = Value;
+	RHardAxis = FVector2D(FMath::RoundToInt(RStickUp), FMath::RoundToInt(RStickRight));
+	RAxis = FVector2D(RStickUp, RStickRight);
 }
 
 void AGPlayerController::PadX(float Value)

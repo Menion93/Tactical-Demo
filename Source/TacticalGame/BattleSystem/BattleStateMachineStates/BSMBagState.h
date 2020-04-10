@@ -18,7 +18,7 @@ public:
 	UBSMBagState();
 
 public:
-	bool InputEventB() override;
+	bool InputEventB(float DeltaTime) override;
 
 	void OnEnter() override;
 };

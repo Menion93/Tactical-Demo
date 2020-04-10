@@ -72,8 +72,8 @@ public:
 	virtual bool IsWinConditionSatisfied_Implementation();
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
-	void PlayTurn();
-	virtual void PlayTurn_Implementation();
+	void PlayTurn(float DeltaTime);
+	virtual void PlayTurn_Implementation(float DeltaTime);
 
 	UFUNCTION(BlueprintCallable)
 	bool InFireTeam(AGCharacter* Character);
@@ -83,5 +83,8 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	virtual void SpawnTeam();
+
+	UFUNCTION(BlueprintCallable)
+	void RecomputeAllCharactersMetadata();
 	
 };

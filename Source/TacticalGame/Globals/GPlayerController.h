@@ -19,13 +19,22 @@ public:
 	AGPlayerController();
 
 	UPROPERTY(BlueprintReadWrite)
-	FVector2D HardAxis;
+	FVector2D LHardAxis;
 
 	UPROPERTY(BlueprintReadWrite)
-	FVector2D Axis;
+	FVector2D LAxis;
 
 	UPROPERTY(BlueprintReadWrite)
-	bool Axis_DOWN;
+	FVector2D RHardAxis;
+
+	UPROPERTY(BlueprintReadWrite)
+	FVector2D RAxis;
+
+	UPROPERTY(BlueprintReadWrite)
+	bool LAxis_DOWN;
+
+	UPROPERTY(BlueprintReadWrite)
+	bool RAxis_DOWN;
 
 	UPROPERTY(BlueprintReadWrite)
 	bool PAD_UP;
@@ -99,18 +108,24 @@ public:
 	bool Pause_DOWN;
 
 private:
-	float StickUp;
-	float StickRight;
+	float LStickUp;
+	float LStickRight;
+	float LSecond;
 
-	float second;
+	float RStickUp;
+	float RStickRight;
+	float RSecond;
 
 public:
 	virtual void PlayerTick(float DeltaTime) override;
 	virtual void SetupInputComponent() override;
 
 private:
-	void AxisX(float Value);
-	void AxisY(float Value);
+	void LAxisX(float Value);
+	void LAxisY(float Value);
+
+	void RAxisX(float Value);
+	void RAxisY(float Value);
 
 	void PadX(float Value);
 	void PadY(float Value);

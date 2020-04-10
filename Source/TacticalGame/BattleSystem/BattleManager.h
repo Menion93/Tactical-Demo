@@ -13,7 +13,7 @@
 #include "BattleManager.generated.h"
 
 class ATacticalGameMode;
-class APlayerFireTeam;
+class AFireTeam;
 
 /**
  * 
@@ -25,8 +25,6 @@ class TACTICALGAME_API ABattleManager : public AActor
 
 public:
 	ABattleManager();
-
-	bool PlayerTurn;
 
 	UPROPERTY(BlueprintReadWrite)
 	ATacticalGameMode* GameMode;
@@ -47,13 +45,16 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<AFireTeam*> Teams;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<FFTAlliances> Alliances;
+
 	int TeamIndex;
 	int PrevTeamIndex = -1;
 
 public:
-	void PlayTurn();
+	void PlayTurn(float DeltaTime);
 	void Init();
-	void InitBattleState(bool PlayerTurn, bool ForceEngage);
+	void InitBattleState();
 	void EndTurn();
 	void EndBattle();
 
@@ -67,5 +68,9 @@ public:
 	AGCharacter* GetCurrentCharacter();
 
 	UFUNCTION(BlueprintCallable)
-	APlayerFireTeam* GetPlayerFireTeam();
+	AFireTeam* GetCurrentFireTeam();
+
+	UFUNCTION(BlueprintCallable)
+	TArray<AFireTeam*> GetHostileFireTeams(AFireTeam* FireTeam);
+
 };
