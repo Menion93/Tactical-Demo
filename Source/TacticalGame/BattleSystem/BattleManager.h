@@ -73,4 +73,8 @@ public:
 	UFUNCTION(BlueprintCallable)
 	TArray<AFireTeam*> GetHostileFireTeams(AFireTeam* FireTeam);
 
+	UFUNCTION(BlueprintCallable)
+	bool IsHostile(AFireTeam* FireTeam, AGCharacter* Character);
+
+
 };

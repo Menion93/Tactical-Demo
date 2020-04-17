@@ -11,20 +11,31 @@ UEquipment::UEquipment()
 
 void UEquipment::LoadDefaultEquipment()
 {
-	UPROPERTY(EditAnywere, BlueprintReadWrite)
-	PrimaryWeapon = NewObject<UWeaponCore>(this, PrimaryWeaponClass);
+	if (PrimaryWeaponClass)
+	{
+		PrimaryWeapon = NewObject<UWeaponCore>(this, PrimaryWeaponClass);
+	}
 
-	UPROPERTY(EditAnywere, BlueprintReadWrite)
-	SecondaryWeapon = NewObject<UWeaponCore>(this, SecondaryWeaponClass);
+	if (SecondaryWeaponClass)
+	{
+		SecondaryWeapon = NewObject<UWeaponCore>(this, SecondaryWeaponClass);
+	}
 
-	UPROPERTY(EditAnywere, BlueprintReadWrite);
-	Bag = NewObject<UBag>(this, BagClass);
+	if (BagClass)
+	{
+		Bag = NewObject<UBag>(this, BagClass);
+	}
 
-	UPROPERTY(EditAnywere, BlueprintReadWrite);
-	Armor = NewObject<UArmor>(this, ArmorClass);
+	if (ArmorClass)
+	{
+		Armor = NewObject<UArmor>(this, ArmorClass);
+	}
 
-	UPROPERTY(EditAnywere, BlueprintReadWrite);
-	Shield = NewObject<UShield>(this, ShieldClass);
+	if (ShieldClass)
+	{
+		Shield = NewObject<UShield>(this, ShieldClass);
+	}
+
 }
 
 TArray<UObject*> UEquipment::GetOffensiveItems()
@@ -50,7 +61,7 @@ TArray<UObject*> UEquipment::GetOffensiveItems()
 
 UObject* UEquipment::TryGetOffensiveObject(UItem* Item)
 {
-	IOffensiveOption* OffensiveItem = Cast<IOffensiveOption>(SecondaryWeapon);
+	IOffensiveOption* OffensiveItem = Cast<IOffensiveOption>(Item);
 
 	if (OffensiveItem)
 	{

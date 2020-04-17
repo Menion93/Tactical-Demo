@@ -20,6 +20,7 @@ void APlayerFireTeam::Init_Implementation(ABattleManager* BM)
 	CharacterInfoState = NewObject<UBSMCharacterInfoState>(this, TEXT("CharacterInfoState"));
 	BagState = NewObject<UBSMBagState>(this, TEXT("BagState"));
 	SelectEnemyState = NewObject<UBSMSelectEnemyState>(this, TEXT("SelectEnemyState"));
+	SelectEnemyFromTileState = NewObject<UBSMSelectEnemyFromTileState>(this, TEXT("SelectEnemyFromTileState"));
 	SelectAttackState = NewObject<UBSMSelectAttackState>(this, TEXT("SelectAttackState"));
 
 	DeselectedState->InitState(this, MoveGridSpeed, DelayToSpeed);
@@ -27,6 +28,7 @@ void APlayerFireTeam::Init_Implementation(ABattleManager* BM)
 	CharacterInfoState->Init(this);
 	BagState->Init(this);
 	SelectEnemyState->Init(this);
+	SelectEnemyFromTileState->Init(this);
 	SelectAttackState->Init(this);
 
 	StateMachine.Emplace(CombatStateE::DESELECTED_STATE, DeselectedState);
@@ -35,6 +37,7 @@ void APlayerFireTeam::Init_Implementation(ABattleManager* BM)
 	StateMachine.Emplace(CombatStateE::OPEN_BAG, BagState);
 	StateMachine.Emplace(CombatStateE::SELECT_ATTACK, SelectAttackState);
 	StateMachine.Emplace(CombatStateE::SELECT_ENEMY, SelectEnemyState);
+	StateMachine.Emplace(CombatStateE::SELECT_ENEMY_FROM_TILE, SelectEnemyFromTileState);
 }
 
 void APlayerFireTeam::PlayTurn_Implementation(float DeltaTime)
@@ -56,16 +59,9 @@ void APlayerFireTeam::OnActionEnd_Implementation()
 		CurrentCharacter->ActionsBuffer.Empty();
 	}
 
-	if (CurrentCharacter)
+	if (CurrentCharacter && CurrentCharacter->State->CurrentActionPoints < 0)
 	{
-		if (CurrentCharacter->State->CurrentActionPoints > 0)
-		{
-			CurrentState = CombatStateE::CHARACTER_SELECTED;
-		}
-		else
-		{
-			CurrentState = CombatStateE::DESELECTED_STATE;
-		}
+		CurrentState = CombatStateE::DESELECTED_STATE;
 	}
 }
 
@@ -101,9 +97,20 @@ bool APlayerFireTeam::IsTurnEnded_Implementation()
 
 void APlayerFireTeam::TransitionToState(CombatStateE State)
 {
-	PrevState = CurrentState;
+	StatesHistory.Add(CurrentState);
 	CurrentState = State;
 	StateMachine[CurrentState]->OnEnter();
+}
+
+void APlayerFireTeam::TransitionToPrevState()
+{
+	if (StatesHistory.Num() < 1)
+	{
+		return;
+	}
+
+	CurrentState = StatesHistory.Pop();
+	StateMachine[CurrentState]->OnRestore();
 }
 
 void APlayerFireTeam::SpawnTeam()
@@ -116,6 +123,7 @@ void APlayerFireTeam::SpawnTeam()
 			this, Character->StateClass->GetFName(), RF_NoFlags, Character->StateClass.GetDefaultObject());
 
 		Character->Init(this);
+		CharacterState->LoadState();
 		Character->State = CharacterState;
 	}
 
@@ -135,6 +143,7 @@ void APlayerFireTeam::SpawnTeam()
 				FRotator::ZeroRotator);
 
 			Character->Init(this);
+			Team[PointIndex]->LoadState();
 			Team[PointIndex]->ActorCharacter = Character;
 			Character->State = Team[PointIndex];
 

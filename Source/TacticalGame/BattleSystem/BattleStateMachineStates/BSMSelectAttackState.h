@@ -16,4 +16,8 @@ class TACTICALGAME_API UBSMSelectAttackState : public UBSMState
 
 public:
 	UBSMSelectAttackState();
+
+public:
+	bool InputEventB(float DeltaTime) override;
+	void OnEnter() override;
 };

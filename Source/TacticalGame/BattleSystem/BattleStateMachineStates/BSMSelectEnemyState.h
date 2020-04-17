@@ -16,4 +16,20 @@ class TACTICALGAME_API UBSMSelectEnemyState : public UBSMState
 
 public:
 	UBSMSelectEnemyState();
+
+	int EnemyIndex;
+
+private:
+	AGCharacter* PrevTargetChar;
+
+public:
+
+	bool InputEventA(float DeltaTime) override;
+	bool InputEventB(float DeltaTime) override;
+
+	bool InputEventLAxis(float DeltaTime) override;
+
+	void OnEnter() override;
+
+
 };

@@ -19,18 +19,18 @@ UMeleeWeapon::UMeleeWeapon()
 	Directions.Add(OffSetL);
 }
 
-bool UMeleeWeapon::IsInRange(AGCharacter* MyCharacter, AGCharacter* Target)
+bool UMeleeWeapon::IsInRange_Implementation(AGCharacter* MyCharacter, AGCharacter* Target)
 {
 	TArray<FDijkstraNode> Nodes;
 	MyCharacter->ShortestPaths.GenerateValueArray(Nodes);
 
 	Nodes = Nodes.FilterByPredicate([MyCharacter](auto& Node) {
-		return Node.Distance <= MyCharacter->State->MovementSpeed;
+		return int(Node.Distance) <= MyCharacter->State->MovementSpeed;
 	});
 
 	for (auto& Node : Nodes)
 	{
-		if (IsInRangeFromTile(MyCharacter->Grid->GetTile(Node.TileIndex), Target))
+		if (IsInRangeFromTile_Implementation(MyCharacter->Grid->GetTile(Node.TileIndex), MyCharacter, Target))
 		{
 			return true;
 		}
@@ -39,13 +39,7 @@ bool UMeleeWeapon::IsInRange(AGCharacter* MyCharacter, AGCharacter* Target)
 	return false;
 }
 
-bool UMeleeWeapon::IsInRangeFromCurrentPosition(AGCharacter* MyCharacter, AGCharacter* Target)
-{
-	FTile Tile = MyCharacter->Grid->GetTile(MyCharacter->CurrentTileIndex);
-	return IsInRangeFromTile(Tile, Target);
-}
-
-bool UMeleeWeapon::IsInRangeFromTile(FTile Tile, AGCharacter* Target)
+bool UMeleeWeapon::IsInRangeFromTile_Implementation(FTile Tile, AGCharacter* MyCharacter, AGCharacter* Target)
 {
 	bool InRange = false;
 	for (auto& Direction : Directions)
@@ -59,18 +53,13 @@ bool UMeleeWeapon::IsInRangeFromTile(FTile Tile, AGCharacter* Target)
 	return InRange;
 }
 
-bool UMeleeWeapon::CanAttackEnemy_Implementation(AGCharacter* Character, AGCharacter* Target)
-{
-	return IsInRange(Character, Target);
-}
 
-
-void UMeleeWeapon::SimulateAttack(AGCharacter* Character, AGCharacter* Target)
+void UMeleeWeapon::SimulateAttack_Implementation(AGCharacter* Character, AGCharacter* Target)
 {
 
 }
 
-void UMeleeWeapon::ApplyAttack(AGCharacter* Character)
+void UMeleeWeapon::ApplyAttack_Implementation(AGCharacter* Character)
 {
 
 }

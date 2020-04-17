@@ -7,6 +7,8 @@
 #include "Grid/Grid.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Grid/Cover.h"
+#include "Components/SkeletalMeshComponent.h"
+#include "Components/CapsuleComponent.h"
 #include "Utils/Structs.h"
 
 
@@ -26,6 +28,10 @@ AGCharacter::AGCharacter()
 	GetCharacterMovement()->RotationRate = FRotator(0.f, 640.f, 0.f);
 	GetCharacterMovement()->bConstrainToPlane = true;
 	GetCharacterMovement()->bSnapToPlaneAtStart = true;
+
+	UCapsuleComponent* caps = GetCapsuleComponent();
+	caps->SetCollisionResponseToChannel(ECollisionChannel::ECC_GameTraceChannel2, ECollisionResponse::ECR_Overlap);
+	GetMesh()->SetCollisionResponseToChannel(ECollisionChannel::ECC_GameTraceChannel2, ECollisionResponse::ECR_Overlap);
 }
 
 // Called when the game starts or when spawned
@@ -159,7 +165,7 @@ void AGCharacter::ComputeLoS()
 
 				bool hit = GetWorld()->LineTraceMultiByChannel(
 					OutHits,
-					GetActorLocation(),
+					Tile.TileCenter + FVector::UpVector * GetDefaultHalfHeight(),
 					Character->GetActorLocation(),
 					ECollisionChannel::ECC_GameTraceChannel2,
 					CollisionParams);
@@ -167,20 +173,32 @@ void AGCharacter::ComputeLoS()
 				CoverTypeE Cover = CoverTypeE::NONE;
 				for (auto& OutHit : OutHits)
 				{
-					if (OutHit.bBlockingHit)
+					if (!OutHit.bBlockingHit)
 					{
 						AGCharacter* HitChar = Cast<AGCharacter>(OutHit.Actor);
 
 						// LoS found
-						if (HitChar == Character)
+						if (HitChar != this && HitChar != Character)
+						{
+							ACover* CoverObj = Cast<ACover>(OutHit.Actor);
+
+							if (CoverObj)
+							{
+								Cover = CoverObj->GetCoverType();
+							}
+							else 
+							{
+								break;
+							}
+						}
+						else if (HitChar == Character)
 						{
 							AddLoS(Character, Tile, Cover, OutHit.Distance);
 						}
-					}
-					else
-					{
-						ACover* CoverObj = Cast<ACover>(OutHit.Actor);
-						Cover = CoverObj->GetCoverType();
+						else if (HitChar == this)
+						{
+							continue;
+						}
 					}
 				}
 			}

@@ -16,6 +16,7 @@ public:
 	// Sets default values for this actor's properties
 	AWeapon();
 
+	UPROPERTY(BlueprintReadWrite)
 	UWeaponCore* WeaponCore;
 
 protected:

@@ -22,6 +22,9 @@ public:
 
 	// WEAPON MAIN PROPERTIES
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
+	TSubclassOf<class AWeapon> WeaponActorClass;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
 	FString WeaponName;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
@@ -78,13 +81,13 @@ public:
 	FSimulationOutput Simulation;
 
 public:
-	virtual bool IsInRange(AGCharacter* MyCharacter, AGCharacter* Target);
-	virtual bool IsInRangeFromCurrentPosition(AGCharacter* MyCharacter, AGCharacter* Target);
+	virtual FString GetName_Implementation() override;
 
-	virtual void SimulateAttack(AGCharacter* Character, AGCharacter* Target);
-	virtual void ApplyAttack(AGCharacter* Target);
-	virtual void Attack(AGCharacter* Character, AGCharacter* Target);
+	virtual bool IsInRange_Implementation(AGCharacter* MyCharacter, AGCharacter* Target);
+	virtual bool IsInRangeFromTile_Implementation(FTile Tile, AGCharacter* MyCharacter, AGCharacter* Target);
 
-	virtual bool CanAttackEnemy_Implementation(AGCharacter* Character, AGCharacter* Target) override;
+	virtual void SimulateAttack_Implementation(AGCharacter* Character, AGCharacter* Target);
+	virtual void ApplyAttack_Implementation(AGCharacter* Target);
+	virtual void Attack_Implementation(AGCharacter* Character, AGCharacter* Target);
 
 };

@@ -45,6 +45,9 @@ public:
 	AGCharacter* TargetCharacter;
 
 	UPROPERTY(BlueprintReadWrite)
+	TArray<AGCharacter*> Enemies;
+
+	UPROPERTY(BlueprintReadWrite)
 	FTileIndex SelectedTile;
 
 

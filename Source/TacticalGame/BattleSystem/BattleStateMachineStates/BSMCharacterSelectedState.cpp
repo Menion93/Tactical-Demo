@@ -34,18 +34,18 @@ bool UBSMCharacterSelectedState::InputEventA(float DeltaTime)
 {
 	FTile SelectedTile = BattleManager->GetSelectedTile();
 
-	if (SelectedTile.IsObstacle)
+	if (SelectedTile.IsObstacle || 
+		!(
+			SelectedTile.Character || 
+		    SelectedTile.Pickable ||
+		    StateMachine->CurrentCharacter->TileInRange(SelectedTile)
+		 )
+		)
 	{
 		return false;
 	}
 
-	if (!SelectedTile.Character &&
-		!SelectedTile.Pickable &&
-		!StateMachine->CurrentCharacter->TileInRange(SelectedTile))
-	{
-		return false;
-	}
-
+	StateMachine->TargetCharacter = SelectedTile.Character;
 	StateMachine->TransitionToState(CombatStateE::CHARACTER_INFO);
 	return true;
 }

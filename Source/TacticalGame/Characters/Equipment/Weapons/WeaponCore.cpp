@@ -10,34 +10,33 @@ UWeaponCore::UWeaponCore()
 
 }
 
-bool UWeaponCore::IsInRange(AGCharacter* MyCharacter, AGCharacter* Target)
+bool UWeaponCore::IsInRange_Implementation(AGCharacter* MyCharacter, AGCharacter* Target)
 {
 	return false;
 }
 
-bool UWeaponCore::IsInRangeFromCurrentPosition(AGCharacter* MyCharacter, AGCharacter* Target)
+bool UWeaponCore::IsInRangeFromTile_Implementation(FTile Tile, AGCharacter* MyCharacter, AGCharacter* Target)
 {
 	return false;
 }
 
-void UWeaponCore::SimulateAttack(AGCharacter* Character, AGCharacter* Target)
+void UWeaponCore::SimulateAttack_Implementation(AGCharacter* Character, AGCharacter* Target)
 {
 
 }
 
-void UWeaponCore::ApplyAttack(AGCharacter* Target)
+void UWeaponCore::ApplyAttack_Implementation(AGCharacter* Target)
 {
 
 }
 
-void UWeaponCore::Attack(AGCharacter* Character, AGCharacter* Target)
+void UWeaponCore::Attack_Implementation(AGCharacter* Character, AGCharacter* Target)
 {
 	SimulateAttack(Character, Target);
 	ApplyAttack(Target);
 }
 
-bool UWeaponCore::CanAttackEnemy_Implementation(AGCharacter* Character, AGCharacter* Target)
+FString UWeaponCore::GetName_Implementation()
 {
-	return false;
+	return WeaponName;
 }
-

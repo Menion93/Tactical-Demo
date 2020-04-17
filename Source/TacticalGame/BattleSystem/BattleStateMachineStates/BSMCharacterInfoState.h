@@ -19,9 +19,15 @@ class TACTICALGAME_API UBSMCharacterInfoState : public UBSMState
 public:
 	UBSMCharacterInfoState();
 
+private:
+	AGCharacter* Target;
+	FTile Tile;
 public:
 	bool InputEventB(float DeltaTime) override;
+
 	void OnEnter() override;
+	void OnRestore() override;
+
 	TArray<UAction*> GetActionEntryList();
 
 };

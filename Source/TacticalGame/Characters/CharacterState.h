@@ -33,6 +33,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<class UEquipment> EquipmentClass;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool UseDefaults;
 public:
 
 	UPROPERTY(BlueprintReadWrite)

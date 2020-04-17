@@ -26,5 +26,20 @@ class TACTICALGAME_API IOffensiveOption
 public:
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Offensive Option")
-	bool CanAttackEnemy(AGCharacter* Character, AGCharacter* Target);
+	FString GetName();
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Offensive Option")
+	bool IsInRange(AGCharacter* MyCharacter, AGCharacter* Target);
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Offensive Option")
+	bool IsInRangeFromTile(FTile Tile, AGCharacter* MyCharacter, AGCharacter* Target);
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Offensive Option")
+	void SimulateAttack(AGCharacter* Character, AGCharacter* Target);
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Offensive Option")
+	void ApplyAttack(AGCharacter* Target);
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Offensive Option")
+	void Attack(AGCharacter* Character, AGCharacter* Target);
 };

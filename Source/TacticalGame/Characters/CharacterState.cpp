@@ -14,6 +14,8 @@ void UCharacterState::ResetActionPoints()
 
 void UCharacterState::LoadState()
 {
+	// Use defaults for first time or force, or else load from file
+	LoadDefaultState();
 	// Load from file method
 }
 
@@ -21,5 +23,4 @@ void UCharacterState::LoadDefaultState()
 {
 	Equipment = NewObject<UEquipment>(this, EquipmentClass);
 	Equipment->LoadDefaultEquipment();
-
 }

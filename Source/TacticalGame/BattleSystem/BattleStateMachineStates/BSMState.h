@@ -38,6 +38,7 @@ public:
 
 	bool IsInputDisabled();
 	void DisableInput(bool DisInput);
+
 	virtual void PlayState(float DeltaTime);
 
 	virtual bool InputEventX(float DeltaTime);
@@ -61,9 +62,6 @@ public:
 	virtual bool InputEventPadLeftRight(float DeltaTime);
 
 	virtual void OnEnter();
-
-
-
-
+	virtual void OnRestore();
 
 };

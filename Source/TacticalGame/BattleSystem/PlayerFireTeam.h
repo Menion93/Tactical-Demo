@@ -11,6 +11,7 @@
 #include "./BattleStateMachineStates/BSMDeselectedState.h"
 #include "./BattleStateMachineStates/BSMSelectAttackState.h"
 #include "./BattleStateMachineStates/BSMSelectEnemyState.h"
+#include "./BattleStateMachineStates/BSMSelectEnemyFromTileState.h"
 #include "./BattleStateMachineStates/BSMBagState.h"
 #include "PlayerFireTeam.generated.h"
 
@@ -24,7 +25,9 @@ enum class CombatStateE : uint8
 	OPEN_BAG UMETA(DisplayName = "Open Bag"),
 	SELECT_ATTACK UMETA(DisplayName = "Select Attack"),
 	SELECT_ENEMY UMETA(DisplayName = "Select Enemy"),
+	SELECT_ENEMY_FROM_TILE UMETA(DisplayName = "Select Enemy From Tile"),
 };
+
 /**
  * 
  */
@@ -47,6 +50,8 @@ public:
 	UPROPERTY()
 	UBSMSelectEnemyState* SelectEnemyState;
 	UPROPERTY()
+	UBSMSelectEnemyFromTileState* SelectEnemyFromTileState;
+	UPROPERTY()
 	UBSMSelectAttackState* SelectAttackState;
 
 	int SelectionIndex;
@@ -54,8 +59,10 @@ public:
 	UPROPERTY()
 	TMap<CombatStateE, UBSMState*> StateMachine;
 
+	UPROPERTY(BlueprintReadWrite)
+	TArray<UObject*> OffensiveOptions;
+
 	CombatStateE CurrentState;
-	CombatStateE PrevState;
 
 	UPROPERTY(EditAnywhere)
 	float MoveGridSpeed = 10;
@@ -63,6 +70,8 @@ public:
 	UPROPERTY(EditAnywhere)
 	float DelayToSpeed = 0.25;
 
+private:
+	TArray<CombatStateE> StatesHistory;
 
 public:
 	void Init_Implementation(ABattleManager* BM) override;
@@ -74,6 +83,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void TransitionToState(CombatStateE State);
+
+	UFUNCTION(BlueprintCallable)
+	void TransitionToPrevState();
 
 	virtual void SpawnTeam() override;
 	

@@ -71,11 +71,7 @@ void ABattleManager::InitBattleState()
 
 	for (auto& Team : Teams)
 	{
-		for (auto& Character : Team->Characters)
-		{
-			Character->ComputeShortestPaths();
-			Character->ComputePerimeterPoints();
-		}
+		Team->RecomputeAllCharactersMetadata();
 	}
 }
 
@@ -124,7 +120,7 @@ TArray<AFireTeam*> ABattleManager::GetHostileFireTeams(AFireTeam* FireTeam)
 	{
 		if (FT != FireTeam)
 		{
-			bool foundAlliance;
+			bool foundAlliance = false;
 			for (auto& Alliance : Alliances)
 			{
 				if (Alliance.Array.Contains(FT))
@@ -140,4 +136,22 @@ TArray<AFireTeam*> ABattleManager::GetHostileFireTeams(AFireTeam* FireTeam)
 	}
 
 	return Result;
+}
+
+bool ABattleManager::IsHostile(AFireTeam* FireTeam, AGCharacter* Character)
+{
+	TArray<AFireTeam*> HostileFTs = GetHostileFireTeams(FireTeam);
+
+	for (auto& FT : HostileFTs)
+	{
+		for (auto& Char : FT->Characters)
+		{
+			if (Char == Character)
+			{
+				return true;
+			}
+		}
+	}
+
+	return false;
 }

@@ -9,11 +9,11 @@ URangedWeapon::URangedWeapon()
 
 }
 
-bool URangedWeapon::IsInRange(AGCharacter* MyCharacter, AGCharacter* Target)
+bool URangedWeapon::IsInRange_Implementation(AGCharacter* MyCharacter, AGCharacter* Target)
 {
 	if (!MyCharacter->LoS.Contains(Target->State->Name)) return false;
 
-	for (auto& Pair : Target->LoS[Target->State->Name].Tiles)
+	for (auto& Pair : MyCharacter->LoS[Target->State->Name].Tiles)
 	{
 		if (Pair.Value.Distance < GetRange())
 		{
@@ -24,32 +24,26 @@ bool URangedWeapon::IsInRange(AGCharacter* MyCharacter, AGCharacter* Target)
 	return false;
 }
 
-bool URangedWeapon::IsInRangeFromCurrentPosition(AGCharacter* MyCharacter, AGCharacter* Target)
+bool URangedWeapon::IsInRangeFromTile_Implementation(FTile Tile, AGCharacter* MyCharacter, AGCharacter* Target)
 {
 	if (!MyCharacter->LoS.Contains(Target->State->Name)) return false;
 
-	if(!Target->LoS[Target->State->Name].Tiles.Contains(MyCharacter->CurrentTileIndex)) return false;
+	if(!MyCharacter->LoS[Target->State->Name].Tiles.Contains(Tile.Index)) return false;
 
-	return Target->LoS[Target->State->Name].Tiles[MyCharacter->CurrentTileIndex].Distance < GetRange();
+	return MyCharacter->LoS[Target->State->Name].Tiles[Tile.Index].Distance < GetRange();
 }
 
-bool URangedWeapon::CanAttackEnemy_Implementation(AGCharacter* Character, AGCharacter* Target)
-{
-	return IsInRange(Character, Target);
-}
-
-void URangedWeapon::SimulateAttack(AGCharacter* Character, AGCharacter* Target)
+void URangedWeapon::SimulateAttack_Implementation(AGCharacter* Character, AGCharacter* Target)
 {
 
 }
 
-void URangedWeapon::ApplyAttack(AGCharacter* Character)
+void URangedWeapon::ApplyAttack_Implementation(AGCharacter* Character)
 {
 
 }
 
 float URangedWeapon::GetRange()
 {
-	return 0;
+	return Range + BaseRange;
 }
-

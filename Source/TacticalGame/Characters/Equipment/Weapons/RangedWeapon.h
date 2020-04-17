@@ -28,10 +28,10 @@ public:
 		int BaseBulletDamage;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Bullet Damage")
-		float BulletDamageMult;
+		float BulletDamage;
 
 	UPROPERTY(BlueprintReadWrite, Category = "Bullet Damage")
-		float BulletDamageRollMult;
+		float BulletDamageRoll;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Bullet Damage")
 		float MinBulletDamage;
@@ -40,10 +40,10 @@ public:
 		float MaxBulletDamage;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Bullet Damage")
-		float MinRollBulletDamageMult;
+		float MinRollBulletDamage;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Bullet Damage")
-		float MaxRollBulletDamageMult;
+		float MaxRollBulletDamage;
 
 	// WEAPON ROUNDS PROPERTIES
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rounds Stats")
@@ -71,10 +71,10 @@ public:
 		int BaseRange;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Range")
-		int RangeMult;
+		int Range;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Range")
-		int RangeRollMult;
+		int RangeRoll;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Range")
 		int MinRange;
@@ -84,15 +84,11 @@ public:
 
 
 public:
+	virtual bool IsInRange_Implementation(AGCharacter* MyCharacter, AGCharacter* Target) override;
+	virtual bool IsInRangeFromTile_Implementation(FTile Tile, AGCharacter* MyCharacter, AGCharacter* Target) override;
 
-	virtual bool IsInRange(AGCharacter* MyCharacter, AGCharacter* Target) override;
-	virtual bool IsInRangeFromCurrentPosition(AGCharacter* MyCharacter, AGCharacter* Target) override;
-
-	virtual void SimulateAttack(AGCharacter* Character, AGCharacter* Target) override;
-	virtual void ApplyAttack(AGCharacter* Target) override;
+	virtual void SimulateAttack_Implementation(AGCharacter* Character, AGCharacter* Target) override;
+	virtual void ApplyAttack_Implementation(AGCharacter* Target) override;
 
 	float GetRange();
-
-	bool CanAttackEnemy_Implementation(AGCharacter* Character, AGCharacter* Target) override;
-
 };

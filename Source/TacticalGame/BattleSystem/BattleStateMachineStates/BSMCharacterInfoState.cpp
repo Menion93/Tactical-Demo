@@ -12,6 +12,8 @@ UBSMCharacterInfoState::UBSMCharacterInfoState()
 
 void UBSMCharacterInfoState::OnEnter()
 {
+	Target = StateMachine->TargetCharacter;
+	Tile = BattleManager->GetSelectedTile();
 	TArray<UAction*> ActionList = GetActionEntryList();
 	BattleManager->GameMode->BattleUI->OpenActionMenu(ActionList);
 }
@@ -19,8 +21,17 @@ void UBSMCharacterInfoState::OnEnter()
 bool UBSMCharacterInfoState::InputEventB(float DeltaTime)
 {
 	BattleManager->GameMode->BattleUI->CloseActionMenu();
-	StateMachine->TransitionToState(StateMachine->PrevState);
+	StateMachine->TargetCharacter = nullptr;
+	StateMachine->TransitionToPrevState();
 	return true;
+}
+
+void UBSMCharacterInfoState::OnRestore()
+{
+	StateMachine->TargetCharacter = Target;
+	BattleManager->GameMode->Camera->LerpToPosition(Tile.TileCenter);
+	TArray<UAction*> ActionList = GetActionEntryList();
+	BattleManager->GameMode->BattleUI->OpenActionMenu(ActionList);
 }
 
 TArray<UAction*> UBSMCharacterInfoState::GetActionEntryList()
@@ -31,11 +42,6 @@ TArray<UAction*> UBSMCharacterInfoState::GetActionEntryList()
 
 	for (auto& ActionMenuClass : ActionList)
 	{
-		//UAction* Action = NewObject<UAction>(
-		//	this,
-		//	ActionMenuClass,
-		//	RF_NoFlags,
-		//	ActionMenuClass.GetDefaultObject());
 
 		UAction* Action = NewObject<UAction>(
 			this,

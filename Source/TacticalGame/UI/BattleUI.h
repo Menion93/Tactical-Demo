@@ -42,5 +42,12 @@ public:
 
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 	void CloseActionMenu();
+
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
+	void OpenAttackMenu(const TArray<UObject*>& OffensiveOptions);
+
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
+	void CloseAttackMenu();
+	
 	
 };

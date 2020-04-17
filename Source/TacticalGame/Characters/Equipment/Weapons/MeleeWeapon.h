@@ -42,14 +42,10 @@ public:
 	TArray<FTileIndex> Directions;
 
 public:
-	virtual bool IsInRange(AGCharacter* MyCharacter, AGCharacter* Target) override;
-	virtual bool IsInRangeFromCurrentPosition(AGCharacter* MyCharacter, AGCharacter* Target);
+	virtual bool IsInRange_Implementation(AGCharacter* MyCharacter, AGCharacter* Target) override;
+	virtual bool IsInRangeFromTile_Implementation(FTile Tile, AGCharacter* MyCharacter, AGCharacter* Target) override;
 
-	virtual void SimulateAttack(AGCharacter* Character, AGCharacter* Target) override;
-	virtual void ApplyAttack(AGCharacter* Target) override;
+	virtual void SimulateAttack_Implementation(AGCharacter* Character, AGCharacter* Target) override;
+	virtual void ApplyAttack_Implementation(AGCharacter* Target) override;
 
-private:
-	bool IsInRangeFromTile(FTile Tile, AGCharacter* Target);
-
-	bool CanAttackEnemy_Implementation(AGCharacter* Character, AGCharacter* Target) override;
 };
