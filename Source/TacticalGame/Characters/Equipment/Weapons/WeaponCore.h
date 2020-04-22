@@ -6,13 +6,13 @@
 #include "Items/Item.h"
 #include "Characters/GCharacter.h"
 #include "Utils/Structs.h"
-#include "Interfaces/OffensiveOption.h"
+#include "BattleSystem/Actions/Actionable.h"
 #include "WeaponCore.generated.h"
 
 
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
-class TACTICALGAME_API UWeaponCore : public UItem, public IOffensiveOption
+class TACTICALGAME_API UWeaponCore : public UItem, public IActionable
 {
 	GENERATED_BODY()
 
@@ -81,13 +81,17 @@ public:
 	FSimulationOutput Simulation;
 
 public:
-	virtual FString GetName_Implementation() override;
+	virtual FString GetMenuDisplayName_Implementation() override;
 
 	virtual bool IsInRange_Implementation(AGCharacter* MyCharacter, AGCharacter* Target);
 	virtual bool IsInRangeFromTile_Implementation(FTile Tile, AGCharacter* MyCharacter, AGCharacter* Target);
 
-	virtual void SimulateAttack_Implementation(AGCharacter* Character, AGCharacter* Target);
-	virtual void ApplyAttack_Implementation(AGCharacter* Target);
-	virtual void Attack_Implementation(AGCharacter* Character, AGCharacter* Target);
+	virtual void SimulateAction_Implementation(AGCharacter* Character, AGCharacter* Target);
+	virtual void ApplyAction_Implementation(AGCharacter* Target);
+
+	virtual UAction* GetAction_Implementation();
+
+	virtual ActionType GetActionType_Implementation();
+
 
 };

@@ -123,7 +123,7 @@ TArray<AFireTeam*> ABattleManager::GetHostileFireTeams(AFireTeam* FireTeam)
 			bool foundAlliance = false;
 			for (auto& Alliance : Alliances)
 			{
-				if (Alliance.Array.Contains(FT))
+				if (Alliance.Array.Contains(FT) && Alliance.Array.Contains(FireTeam))
 				{
 					foundAlliance = true;
 				} 
@@ -138,11 +138,56 @@ TArray<AFireTeam*> ABattleManager::GetHostileFireTeams(AFireTeam* FireTeam)
 	return Result;
 }
 
+TArray<AFireTeam*> ABattleManager::GetAlliedFireTeams(AFireTeam* FireTeam)
+{
+	TArray<AFireTeam*> Result;
+
+	for (auto& FT : Teams)
+	{
+		if (FT != FireTeam)
+		{
+			bool foundAlliance = false;
+			for (auto& Alliance : Alliances)
+			{
+				if (Alliance.Array.Contains(FT) && Alliance.Array.Contains(FireTeam))
+				{
+					foundAlliance = true;
+				}
+			}
+			if (foundAlliance)
+			{
+				Result.Add(FT);
+			}
+		}
+	}
+
+	return Result;
+}
+
 bool ABattleManager::IsHostile(AFireTeam* FireTeam, AGCharacter* Character)
 {
 	TArray<AFireTeam*> HostileFTs = GetHostileFireTeams(FireTeam);
 
 	for (auto& FT : HostileFTs)
+	{
+		for (auto& Char : FT->Characters)
+		{
+			if (Char == Character)
+			{
+				return true;
+			}
+		}
+	}
+
+	return false;
+}
+
+bool ABattleManager::IsAlly(AFireTeam* FireTeam, AGCharacter* Character)
+{
+	TArray<AFireTeam*> AlliedFTs = GetAlliedFireTeams(FireTeam);
+	AlliedFTs.Add(FireTeam);
+
+	for (auto& FT : AlliedFTs)
 	{
 		for (auto& Char : FT->Characters)
 		{

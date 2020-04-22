@@ -2,7 +2,7 @@
 
 
 #include "Equipment.h"
-#include "Interfaces/OffensiveOption.h"
+
 
 UEquipment::UEquipment()
 {
@@ -38,18 +38,39 @@ void UEquipment::LoadDefaultEquipment()
 
 }
 
+TArray<UObject*> UEquipment::GetSupportItems()
+{
+	TArray<UObject*> SupportItems = Bag->GetSupportItems();
+
+	UObject* SupportWeapon = TryGetObjectByType(Cast<UItem>(PrimaryWeapon), ActionType::SUPPORT);
+
+	if (SupportWeapon)
+	{
+		SupportItems.Add(SupportWeapon);
+	}
+
+	SupportWeapon = TryGetObjectByType(Cast<UItem>(SecondaryWeapon), ActionType::SUPPORT);
+
+	if (SupportWeapon)
+	{
+		SupportItems.Add(SupportWeapon);
+	}
+
+	return SupportItems;
+}
+
 TArray<UObject*> UEquipment::GetOffensiveItems()
 {
 	TArray<UObject*> OffensiveItems = Bag->GetOffensiveItems();
 
-	UObject* OffensiveWeapon = TryGetOffensiveObject(Cast<UItem>(PrimaryWeapon));
+	UObject* OffensiveWeapon = TryGetObjectByType(Cast<UItem>(PrimaryWeapon), ActionType::OFFENSIVE);
 
 	if (OffensiveWeapon)
 	{
 		OffensiveItems.Add(OffensiveWeapon);
 	}
 
-	OffensiveWeapon = TryGetOffensiveObject(Cast<UItem>(SecondaryWeapon));
+	OffensiveWeapon = TryGetObjectByType(Cast<UItem>(SecondaryWeapon), ActionType::OFFENSIVE);
 
 	if (OffensiveWeapon)
 	{
@@ -59,16 +80,17 @@ TArray<UObject*> UEquipment::GetOffensiveItems()
 	return OffensiveItems;
 }
 
-UObject* UEquipment::TryGetOffensiveObject(UItem* Item)
+UObject* UEquipment::TryGetObjectByType(UItem* Item, ActionType Type)
 {
-	IOffensiveOption* OffensiveItem = Cast<IOffensiveOption>(Item);
+	IActionable* ActionabeItem = Cast<IActionable>(Item);
 
-	if (OffensiveItem)
+	if (ActionabeItem)
 	{
-		return Cast<UObject>(OffensiveItem);
+		if(ActionabeItem->Execute_GetActionType(Item) == Type)
+		{
+			return Cast<UObject>(ActionabeItem);
+		}
 	}
 
 	return nullptr;
 }
-
-

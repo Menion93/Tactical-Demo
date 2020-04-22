@@ -26,7 +26,7 @@ public:
 	UParty* Party;
 
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
-	void OpenActionMenu(const TArray<UAction*>& ActionList);
+	void OpenActionMenu(const TArray<UBattleMenuItem*>& MenuItems);
 
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 	void OpenBag();
@@ -48,6 +48,11 @@ public:
 
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 	void CloseAttackMenu();
-	
-	
+
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
+	void OpenSupportOptionMenu(const TArray<UObject*>& SupportOptions);
+
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
+	void CloseSupportOptionMenu();
+		
 };

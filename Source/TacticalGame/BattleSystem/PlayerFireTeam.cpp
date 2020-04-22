@@ -22,6 +22,9 @@ void APlayerFireTeam::Init_Implementation(ABattleManager* BM)
 	SelectEnemyState = NewObject<UBSMSelectEnemyState>(this, TEXT("SelectEnemyState"));
 	SelectEnemyFromTileState = NewObject<UBSMSelectEnemyFromTileState>(this, TEXT("SelectEnemyFromTileState"));
 	SelectAttackState = NewObject<UBSMSelectAttackState>(this, TEXT("SelectAttackState"));
+	SelectSupportActionState = NewObject<UBSMSelectSupportActionState>(this, TEXT("SelectSupportAction"));
+	SelectAllyState = NewObject<UBSMSelectAllyState>(this, TEXT("SelectAllyState"));
+	SelectAllyFromTileState = NewObject<UBSMSelectAllyFromTileState>(this, TEXT("SelectAllyFromTileState"));
 
 	DeselectedState->InitState(this, MoveGridSpeed, DelayToSpeed);
 	CharacterSelectedState->InitState(this, MoveGridSpeed, DelayToSpeed);
@@ -30,6 +33,9 @@ void APlayerFireTeam::Init_Implementation(ABattleManager* BM)
 	SelectEnemyState->Init(this);
 	SelectEnemyFromTileState->Init(this);
 	SelectAttackState->Init(this);
+	SelectSupportActionState->Init(this);
+	SelectAllyState->Init(this);
+	SelectAllyFromTileState->Init(this);
 
 	StateMachine.Emplace(CombatStateE::DESELECTED_STATE, DeselectedState);
 	StateMachine.Emplace(CombatStateE::CHARACTER_SELECTED, CharacterSelectedState);
@@ -38,6 +44,9 @@ void APlayerFireTeam::Init_Implementation(ABattleManager* BM)
 	StateMachine.Emplace(CombatStateE::SELECT_ATTACK, SelectAttackState);
 	StateMachine.Emplace(CombatStateE::SELECT_ENEMY, SelectEnemyState);
 	StateMachine.Emplace(CombatStateE::SELECT_ENEMY_FROM_TILE, SelectEnemyFromTileState);
+	StateMachine.Emplace(CombatStateE::SELECT_SUPPORT_ACTION, SelectSupportActionState);
+	StateMachine.Emplace(CombatStateE::SELECT_ALLY, SelectAllyState);
+	StateMachine.Emplace(CombatStateE::SELECT_ALLY_FROM_TILE, SelectAllyFromTileState);
 }
 
 void APlayerFireTeam::PlayTurn_Implementation(float DeltaTime)

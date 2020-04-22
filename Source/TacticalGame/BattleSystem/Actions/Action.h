@@ -44,13 +44,13 @@ public:
 
 public:
 
-	UFUNCTION(BlueprintNativeEvent)
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	void Init(ABattleManager* BM);
 
-	UFUNCTION(BlueprintNativeEvent)
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	bool PlayAction(float DeltaTime);
 
-	UFUNCTION(BlueprintNativeEvent)
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	bool RevertAction();
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)

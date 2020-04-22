@@ -2,7 +2,8 @@
 
 
 #include "Bag.h"
-#include "Interfaces/OffensiveOption.h"
+#include "BattleSystem/Actions/Actionable.h"
+
 
 // Sets default values for this component's properties
 UBag::UBag()
@@ -23,13 +24,30 @@ TArray<UObject*> UBag::GetOffensiveItems()
 
 	for (auto& Item : Items)
 	{
-		IOffensiveOption* OffensiveItem = Cast<IOffensiveOption>(Item);
+		IActionable* ActionableItem = Cast<IActionable>(Item);
 
-		if (OffensiveItem)
+		if (ActionableItem->Execute_GetActionType(Item) == ActionType::OFFENSIVE)
 		{
-			OffensiveItems.Add(Cast<UObject>(OffensiveItem));
+			OffensiveItems.Add(Cast<UObject>(ActionableItem));
 		}
 	}
 
 	return OffensiveItems;
+}
+
+TArray<UObject*> UBag::GetSupportItems()
+{
+	TArray<UObject*> SupportItems;
+
+	for (auto& Item : Items)
+	{
+		IActionable* ActionableItem = Cast<IActionable>(Item);
+
+		if (ActionableItem->Execute_GetActionType(Item) == ActionType::SUPPORT)
+		{
+			SupportItems.Add(Cast<UObject>(ActionableItem));
+		}
+	}
+
+	return SupportItems;
 }

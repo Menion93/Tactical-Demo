@@ -53,13 +53,17 @@ bool UMeleeWeapon::IsInRangeFromTile_Implementation(FTile Tile, AGCharacter* MyC
 	return InRange;
 }
 
+UAction* UMeleeWeapon::GetAction_Implementation()
+{
+	return nullptr;
+}
 
-void UMeleeWeapon::SimulateAttack_Implementation(AGCharacter* Character, AGCharacter* Target)
+void UMeleeWeapon::SimulateAction_Implementation(AGCharacter* Character, AGCharacter* Target)
 {
 
 }
 
-void UMeleeWeapon::ApplyAttack_Implementation(AGCharacter* Character)
+void UMeleeWeapon::ApplyAction_Implementation(AGCharacter* Character)
 {
 
 }

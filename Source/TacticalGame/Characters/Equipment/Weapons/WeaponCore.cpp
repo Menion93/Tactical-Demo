@@ -20,23 +20,27 @@ bool UWeaponCore::IsInRangeFromTile_Implementation(FTile Tile, AGCharacter* MyCh
 	return false;
 }
 
-void UWeaponCore::SimulateAttack_Implementation(AGCharacter* Character, AGCharacter* Target)
+void UWeaponCore::SimulateAction_Implementation(AGCharacter* Character, AGCharacter* Target)
 {
 
 }
 
-void UWeaponCore::ApplyAttack_Implementation(AGCharacter* Target)
+void UWeaponCore::ApplyAction_Implementation(AGCharacter* Target)
 {
 
 }
 
-void UWeaponCore::Attack_Implementation(AGCharacter* Character, AGCharacter* Target)
+UAction* UWeaponCore::GetAction_Implementation()
 {
-	SimulateAttack(Character, Target);
-	ApplyAttack(Target);
+	return nullptr;
 }
 
-FString UWeaponCore::GetName_Implementation()
+FString UWeaponCore::GetMenuDisplayName_Implementation()
 {
 	return WeaponName;
+}
+
+ActionType UWeaponCore::GetActionType_Implementation()
+{
+	return ActionType::OFFENSIVE;
 }

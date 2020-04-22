@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
 #include "Characters/Equipment/Weapons/WeaponCore.h"
+#include "BattleSystem/Actions/Actionable.h"
 #include "Characters/Equipment/Bag.h"
 #include "Characters/Equipment/Armor.h"
 #include "Characters/Equipment/Shield.h"
@@ -62,7 +63,11 @@ public:
 	UFUNCTION(BlueprintCallable)
 	TArray<UObject*> GetOffensiveItems();
 
+	UFUNCTION(BlueprintCallable)
+	TArray<UObject*> GetSupportItems();
+
 private:
-	UObject* TryGetOffensiveObject(UItem* Item);
+	UObject* TryGetObjectByType(UItem* Item, ActionType Type);
+
 
 };

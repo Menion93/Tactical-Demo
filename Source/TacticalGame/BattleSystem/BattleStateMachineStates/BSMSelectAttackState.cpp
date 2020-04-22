@@ -8,7 +8,6 @@
 
 UBSMSelectAttackState::UBSMSelectAttackState()
 {
-	//BattleManager->GameMode->BattleUI->OpenActionMenu(ActionList);
 
 }
 

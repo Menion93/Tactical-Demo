@@ -21,16 +21,16 @@ void UBSMSelectEnemyState::OnEnter()
 	PrevTargetChar = StateMachine->TargetCharacter;
 
 	AGrid* MyGrid = Grid;
-	StateMachine->Enemies.Sort([CharPosition, MyGrid](auto& A, auto& B)
+	StateMachine->Targets.Sort([CharPosition, MyGrid](auto& A, auto& B)
 	{
 		return FVector::Distance(CharPosition, MyGrid->GetTile(A.CurrentTileIndex).TileCenter) <
 			FVector::Distance(CharPosition, MyGrid->GetTile(B.CurrentTileIndex).TileCenter);
 	});
 
 	EnemyIndex = 0;
-	FTile EnemyTile = Grid->GetTile(StateMachine->Enemies[EnemyIndex]->CurrentTileIndex);
+	FTile EnemyTile = Grid->GetTile(StateMachine->Targets[EnemyIndex]->CurrentTileIndex);
 	BattleManager->GameMode->Camera->LerpToPosition(EnemyTile.TileCenter);
-	StateMachine->TargetCharacter = StateMachine->Enemies[EnemyIndex];
+	StateMachine->TargetCharacter = StateMachine->Targets[EnemyIndex];
 }
 
 
@@ -39,13 +39,13 @@ bool UBSMSelectEnemyState::InputEventLAxis(float DeltaTime)
 	if (Input->LAxis_DOWN && Input->LHardAxis.X != 0)
 	{
 		EnemyIndex = int(EnemyIndex + Input->LHardAxis.X);
-		EnemyIndex = EnemyIndex < 0 ? StateMachine->Enemies.Num() - 1 : EnemyIndex;
-		EnemyIndex = EnemyIndex == StateMachine->Enemies.Num() ? 0 : EnemyIndex;
+		EnemyIndex = EnemyIndex < 0 ? StateMachine->Targets.Num() - 1 : EnemyIndex;
+		EnemyIndex = EnemyIndex == StateMachine->Targets.Num() ? 0 : EnemyIndex;
 
-		FTile Tile = Grid->GetTile(StateMachine->Enemies[EnemyIndex]->CurrentTileIndex);
+		FTile Tile = Grid->GetTile(StateMachine->Targets[EnemyIndex]->CurrentTileIndex);
 		BattleManager->GameMode->Camera->LerpToPosition(Tile.TileCenter);
 
-		StateMachine->TargetCharacter = StateMachine->Enemies[EnemyIndex];
+		StateMachine->TargetCharacter = StateMachine->Targets[EnemyIndex];
 		return true;
 	}
 
@@ -58,7 +58,7 @@ bool UBSMSelectEnemyState::InputEventA(float DeltaTime)
 
 	StateMachine->OffensiveOptions = OffensiveOptions
 		.FilterByPredicate([this](auto& Object) {
-			IOffensiveOption* OffensiveOption = Cast<IOffensiveOption>(Object);
+			IActionable* OffensiveOption = Cast<IActionable>(Object);
 			return OffensiveOption->Execute_IsInRange(Object, this->StateMachine->CurrentCharacter, this->StateMachine->TargetCharacter);
 		}
 	);

@@ -8,11 +8,6 @@ UCondition::UCondition()
 
 }
 
-bool UCondition::IsSatisfied()
-{
-
-}
-
 bool UCondition::IsSatisfied_Implementation()
 {
 	return false;

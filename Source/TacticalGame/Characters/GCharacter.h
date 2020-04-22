@@ -7,7 +7,7 @@
 #include "Utils/GridUtils.h"
 #include "Grid/Perimeter.h"
 #include "Grid/Path.h"
-#include "Interfaces/OffensiveOption.h"
+#include "BattleSystem/Actions/Actionable.h"
 #include "Utils/Structs.h"
 #include "Globals/GPlayerController.h"
 #include "GCharacter.generated.h"
@@ -131,6 +131,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	TArray<UObject*> GetOffensiveOptions();
+
+	UFUNCTION(BlueprintCallable)
+	TArray<UObject*> GetSupportOptions();
 
 
 private:

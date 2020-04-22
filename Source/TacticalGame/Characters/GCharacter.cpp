@@ -227,6 +227,11 @@ TArray<UObject*> AGCharacter::GetOffensiveOptions()
 	return State->Equipment->GetOffensiveItems();
 }
 
+TArray<UObject*> AGCharacter::GetSupportOptions()
+{
+	return State->Equipment->GetSupportItems();
+}
+
 
 void AGCharacter::ShowPerimeter(bool Show)
 {

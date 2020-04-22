@@ -14,8 +14,8 @@ void UBSMCharacterInfoState::OnEnter()
 {
 	Target = StateMachine->TargetCharacter;
 	Tile = BattleManager->GetSelectedTile();
-	TArray<UAction*> ActionList = GetActionEntryList();
-	BattleManager->GameMode->BattleUI->OpenActionMenu(ActionList);
+	TArray<UBattleMenuItem*> MenuItemList = GetMenuItemsEntryList();
+	BattleManager->GameMode->BattleUI->OpenActionMenu(MenuItemList);
 }
 
 bool UBSMCharacterInfoState::InputEventB(float DeltaTime)
@@ -30,31 +30,31 @@ void UBSMCharacterInfoState::OnRestore()
 {
 	StateMachine->TargetCharacter = Target;
 	BattleManager->GameMode->Camera->LerpToPosition(Tile.TileCenter);
-	TArray<UAction*> ActionList = GetActionEntryList();
-	BattleManager->GameMode->BattleUI->OpenActionMenu(ActionList);
+	TArray<UBattleMenuItem*> MenuItemList = GetMenuItemsEntryList();
+	BattleManager->GameMode->BattleUI->OpenActionMenu(MenuItemList);
 }
 
-TArray<UAction*> UBSMCharacterInfoState::GetActionEntryList()
+TArray<UBattleMenuItem*> UBSMCharacterInfoState::GetMenuItemsEntryList()
 {
-	TArray<TSubclassOf<class UAction>> ActionList = BattleManager->GameMode->BattleUI->ActionMenu->MenuActions;
+	TArray<TSubclassOf<class UBattleMenuItem>> MenuItemList = BattleManager->GameMode->BattleUI->ActionMenu->MenuItemList;
 
-	TArray<UAction*> ActionMenuEntries;
+	TArray<UBattleMenuItem*> MenuItemsEntries;
 
-	for (auto& ActionMenuClass : ActionList)
+	for (auto& MenuItemClass : MenuItemList)
 	{
 
-		UAction* Action = NewObject<UAction>(
+		UBattleMenuItem* MenuItem = NewObject<UBattleMenuItem>(
 			this,
-			ActionMenuClass);
+			MenuItemClass);
 
-		Action->Init(BattleManager);
+		MenuItem->Init(BattleManager);
 
-		if (Action->CanExecuteAction())
+		if (MenuItem->ShowMenuOption())
 		{
-			ActionMenuEntries.Add(Action);
+			MenuItemsEntries.Add(MenuItem);
 		}
 	}
 
-	return ActionMenuEntries;
+	return MenuItemsEntries;
 }
 

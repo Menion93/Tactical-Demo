@@ -18,7 +18,7 @@ class TACTICALGAME_API UActionMenuUI : public UBaseListView
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TArray<TSubclassOf<class UAction>> MenuActions;
+	TArray<TSubclassOf<class UBattleMenuItem>> MenuItemList;
 	
 
 };

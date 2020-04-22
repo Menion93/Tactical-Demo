@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Items/Item.h"
+#include "BattleSystem/Actions/Actionable.h"
 #include "Bag.generated.h"
 
 
@@ -23,5 +24,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	TArray<UItem*> GetItems();
 
+	UFUNCTION(BlueprintCallable)
 	TArray<UObject*> GetOffensiveItems();
+
+	UFUNCTION(BlueprintCallable)
+	TArray<UObject*> GetSupportItems();
 };

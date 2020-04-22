@@ -33,15 +33,21 @@ bool URangedWeapon::IsInRangeFromTile_Implementation(FTile Tile, AGCharacter* My
 	return MyCharacter->LoS[Target->State->Name].Tiles[Tile.Index].Distance < GetRange();
 }
 
-void URangedWeapon::SimulateAttack_Implementation(AGCharacter* Character, AGCharacter* Target)
+void URangedWeapon::SimulateAction_Implementation(AGCharacter* Character, AGCharacter* Target)
 {
 
 }
 
-void URangedWeapon::ApplyAttack_Implementation(AGCharacter* Character)
+void URangedWeapon::ApplyAction_Implementation(AGCharacter* Character)
 {
 
 }
+
+UAction* URangedWeapon::GetAction_Implementation()
+{
+	return nullptr;
+}
+
 
 float URangedWeapon::GetRange()
 {

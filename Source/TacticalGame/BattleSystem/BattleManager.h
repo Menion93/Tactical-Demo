@@ -74,7 +74,13 @@ public:
 	TArray<AFireTeam*> GetHostileFireTeams(AFireTeam* FireTeam);
 
 	UFUNCTION(BlueprintCallable)
+	TArray<AFireTeam*> GetAlliedFireTeams(AFireTeam* FireTeam);
+
+	UFUNCTION(BlueprintCallable)
 	bool IsHostile(AFireTeam* FireTeam, AGCharacter* Character);
+
+	UFUNCTION(BlueprintCallable)
+	bool IsAlly(AFireTeam* FireTeam, AGCharacter* Character);
 
 
 };

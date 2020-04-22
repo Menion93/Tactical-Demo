@@ -9,9 +9,18 @@
 /**
  * 
  */
-UCLASS()
+UCLASS(Blueprintable)
 class TACTICALGAME_API UCondition : public UObject
 {
 	GENERATED_BODY()
+
+public:
+	UCondition();
+
+public: 
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	bool IsSatisfied();
+
+
 	
 };

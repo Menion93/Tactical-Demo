@@ -25,7 +25,11 @@ void UBaseListView::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 	Super::Tick(MyGeometry, InDeltaTime);
 
 	AxisInput();
-	AInput();
+	if (Input && Input->A_DOWN)
+	{
+		AInput();
+		Input->A_DOWN = false;
+	}
 }
 
 void UBaseListView::AxisInput_Implementation()

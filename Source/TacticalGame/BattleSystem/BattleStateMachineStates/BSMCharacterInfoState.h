@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "BSMState.h"
 #include "BattleSystem/Actions/Action.h"
+#include "UI/BattleMenuItem.h"
 #include "BSMCharacterInfoState.generated.h"
 
 
@@ -28,6 +29,6 @@ public:
 	void OnEnter() override;
 	void OnRestore() override;
 
-	TArray<UAction*> GetActionEntryList();
+	TArray<UBattleMenuItem*> GetMenuItemsEntryList();
 
 };

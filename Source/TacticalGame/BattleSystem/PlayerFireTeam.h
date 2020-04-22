@@ -11,6 +11,9 @@
 #include "./BattleStateMachineStates/BSMDeselectedState.h"
 #include "./BattleStateMachineStates/BSMSelectAttackState.h"
 #include "./BattleStateMachineStates/BSMSelectEnemyState.h"
+#include "./BattleStateMachineStates/BSMSelectAllyState.h"
+#include "./BattleStateMachineStates/BSMSelectAllyFromTileState.h"
+#include "./BattleStateMachineStates/BSMSelectSupportActionState.h"
 #include "./BattleStateMachineStates/BSMSelectEnemyFromTileState.h"
 #include "./BattleStateMachineStates/BSMBagState.h"
 #include "PlayerFireTeam.generated.h"
@@ -26,6 +29,9 @@ enum class CombatStateE : uint8
 	SELECT_ATTACK UMETA(DisplayName = "Select Attack"),
 	SELECT_ENEMY UMETA(DisplayName = "Select Enemy"),
 	SELECT_ENEMY_FROM_TILE UMETA(DisplayName = "Select Enemy From Tile"),
+	SELECT_ALLY UMETA(DisplayName = "Select Ally"),
+	SELECT_ALLY_FROM_TILE UMETA(DisplayName = "Select Ally From Tile"),
+	SELECT_SUPPORT_ACTION UMETA(DisplayName = "Select Support Option"),
 };
 
 /**
@@ -53,6 +59,12 @@ public:
 	UBSMSelectEnemyFromTileState* SelectEnemyFromTileState;
 	UPROPERTY()
 	UBSMSelectAttackState* SelectAttackState;
+	UPROPERTY()
+	UBSMSelectSupportActionState* SelectSupportActionState;
+	UPROPERTY()
+	UBSMSelectAllyState* SelectAllyState;
+	UPROPERTY()
+	UBSMSelectAllyFromTileState* SelectAllyFromTileState;
 
 	int SelectionIndex;
 
@@ -61,6 +73,9 @@ public:
 
 	UPROPERTY(BlueprintReadWrite)
 	TArray<UObject*> OffensiveOptions;
+
+	UPROPERTY(BlueprintReadWrite)
+	TArray<UObject*> SupportOptions;
 
 	CombatStateE CurrentState;
 
