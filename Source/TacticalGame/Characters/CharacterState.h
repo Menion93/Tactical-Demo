@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
 #include "GCharacter.h"
-#include "Characters/Equipment/Equipment.h"
+#include "Items/Equipment/Equipment.h"
 #include "CharacterState.generated.h"
 
 /**

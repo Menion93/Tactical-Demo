@@ -82,5 +82,4 @@ public:
 	UFUNCTION(BlueprintCallable)
 	bool IsAlly(AFireTeam* FireTeam, AGCharacter* Character);
 
-
 };

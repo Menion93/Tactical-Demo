@@ -13,7 +13,7 @@ UBSMSelectSupportActionState::UBSMSelectSupportActionState()
 
 void UBSMSelectSupportActionState::OnEnter()
 {
-	BattleManager->GameMode->BattleUI->OpenSupportOptionMenu(StateMachine->SupportOptions);
+	BattleManager->GameMode->BattleUI->OpenSupportOptionMenu(StateMachine->Actionables);
 
 	FTile Tile = Grid->GetTile(StateMachine->TargetCharacter->CurrentTileIndex);
 	BattleManager->GameMode->Camera->LerpToPosition(Tile.TileCenter);

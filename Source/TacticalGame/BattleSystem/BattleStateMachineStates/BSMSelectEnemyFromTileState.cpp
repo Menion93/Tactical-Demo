@@ -11,7 +11,7 @@ bool UBSMSelectEnemyFromTileState::InputEventA(float DeltaTime)
 {
 	TArray<UObject*> OffensiveOptions = StateMachine->CurrentCharacter->GetOffensiveOptions();
 
-	StateMachine->OffensiveOptions = OffensiveOptions
+	StateMachine->Actionables = OffensiveOptions
 		.FilterByPredicate([this](auto& Object) {
 		IActionable* OffensiveOption = Cast<IActionable>(Object);
 		return OffensiveOption->Execute_IsInRangeFromTile(

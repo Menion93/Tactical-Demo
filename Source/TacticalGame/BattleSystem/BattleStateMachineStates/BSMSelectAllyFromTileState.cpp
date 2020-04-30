@@ -9,7 +9,7 @@ bool UBSMSelectAllyFromTileState::InputEventA(float DeltaTime)
 {
 	TArray<UObject*> SupportOptions = StateMachine->CurrentCharacter->GetSupportOptions();
 
-	StateMachine->SupportOptions = SupportOptions
+	StateMachine->Actionables = SupportOptions
 		.FilterByPredicate([this](auto& Object) {
 		IActionable* SupportOption = Cast<IActionable>(Object);
 		return SupportOption->Execute_IsInRangeFromTile(

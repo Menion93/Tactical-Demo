@@ -140,7 +140,8 @@ TArray<AFireTeam*> ABattleManager::GetHostileFireTeams(AFireTeam* FireTeam)
 
 TArray<AFireTeam*> ABattleManager::GetAlliedFireTeams(AFireTeam* FireTeam)
 {
-	TArray<AFireTeam*> Result;
+	TArray<AFireTeam*> AlliedFTs;
+	AlliedFTs.Add(FireTeam);
 
 	for (auto& FT : Teams)
 	{
@@ -156,12 +157,12 @@ TArray<AFireTeam*> ABattleManager::GetAlliedFireTeams(AFireTeam* FireTeam)
 			}
 			if (foundAlliance)
 			{
-				Result.Add(FT);
+				AlliedFTs.Add(FT);
 			}
 		}
 	}
 
-	return Result;
+	return AlliedFTs;
 }
 
 bool ABattleManager::IsHostile(AFireTeam* FireTeam, AGCharacter* Character)

@@ -13,7 +13,7 @@ UBSMSelectAttackState::UBSMSelectAttackState()
 
 void UBSMSelectAttackState::OnEnter()
 {
-	BattleManager->GameMode->BattleUI->OpenAttackMenu(StateMachine->OffensiveOptions);
+	BattleManager->GameMode->BattleUI->OpenAttackMenu(StateMachine->Actionables);
 
 	FTile Tile = Grid->GetTile(StateMachine->TargetCharacter->CurrentTileIndex);
 	BattleManager->GameMode->Camera->LerpToPosition(Tile.TileCenter);

@@ -56,7 +56,7 @@ bool UBSMSelectEnemyState::InputEventA(float DeltaTime)
 {
 	TArray<UObject*> OffensiveOptions = StateMachine->CurrentCharacter->GetOffensiveOptions();
 
-	StateMachine->OffensiveOptions = OffensiveOptions
+	StateMachine->Actionables = OffensiveOptions
 		.FilterByPredicate([this](auto& Object) {
 			IActionable* OffensiveOption = Cast<IActionable>(Object);
 			return OffensiveOption->Execute_IsInRange(Object, this->StateMachine->CurrentCharacter, this->StateMachine->TargetCharacter);

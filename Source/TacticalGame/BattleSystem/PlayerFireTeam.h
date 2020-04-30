@@ -72,10 +72,7 @@ public:
 	TMap<CombatStateE, UBSMState*> StateMachine;
 
 	UPROPERTY(BlueprintReadWrite)
-	TArray<UObject*> OffensiveOptions;
-
-	UPROPERTY(BlueprintReadWrite)
-	TArray<UObject*> SupportOptions;
+	TArray<UObject*> Actionables;
 
 	CombatStateE CurrentState;
 

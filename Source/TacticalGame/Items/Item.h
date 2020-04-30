@@ -30,6 +30,5 @@ public:
 
 public:
 
-	UFUNCTION(BlueprintImplementableEvent)
-	void UseItem();
+
 };
