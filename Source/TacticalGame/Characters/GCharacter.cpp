@@ -144,7 +144,7 @@ void AGCharacter::ComputeLoS()
 	ShortestPaths.GenerateValueArray(Nodes);
 
 	Nodes = Nodes.FilterByPredicate([this](auto& Node) {
-		return Node.Distance <= this->State->MovementSpeed;
+		return int(Node.Distance) <= this->State->MovementSpeed;
 	});
 
 	LoS = TMap<FName, FLineOfSights>();
