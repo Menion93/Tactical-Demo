@@ -51,7 +51,7 @@ public:
 	void ApplyAction(AGCharacter* Target);
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Actionable")
-	UAction* GetAction();
+	UAction* GetAction(AGCharacter* Subject, AGCharacter* Target, FTileIndex FromTile);
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Actionable")
 	ActionType GetActionType();
