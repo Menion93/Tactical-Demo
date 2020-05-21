@@ -62,7 +62,7 @@ void AFireTeam::SpawnTeam()
 			this, Character->StateClass->GetFName(), RF_NoFlags, Character->StateClass.GetDefaultObject());
 
 		Character->Init(this);
-		CharacterState->LoadState();
+		CharacterState->LoadDefaultState();
 		Character->State = CharacterState;
 	}
 
@@ -82,7 +82,7 @@ void AFireTeam::SpawnTeam()
 				FRotator::ZeroRotator);
 
 			Character->Init(this);
-			CharacterState->LoadState();
+			CharacterState->LoadDefaultState();
 			CharacterState->ActorCharacter = Character;
 			Character->State = CharacterState;
 
