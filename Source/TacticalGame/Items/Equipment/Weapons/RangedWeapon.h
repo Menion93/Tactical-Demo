@@ -4,11 +4,18 @@
 
 #include "CoreMinimal.h"
 #include "Items/Equipment/Weapons/WeaponCore.h"
+#include "BattleSystem/Actions/RangedAttackAction.h"
+#include "Projectile.h"
+#include "Utils/SimStructs.h"
 #include "RangedWeapon.generated.h"
 
 /**
  * 
  */
+
+class ARangedWeaponActor;
+
+
 UCLASS()
 class TACTICALGAME_API URangedWeapon : public UWeaponCore
 {
@@ -17,11 +24,22 @@ class TACTICALGAME_API URangedWeapon : public UWeaponCore
 public:
 	URangedWeapon();
 
+	UPROPERTY(BlueprintReadWrite)
+	ARangedWeaponActor* RangedWeaponActor;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<AProjectile> ProjectileClass;
+
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
 		int ReloadCost;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
+		int MagazineSize;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
 		int Magazine;
+
 
 	// BULLET DAMAGE PROPERTIES
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Bullet Damage")
@@ -82,7 +100,23 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Range")
 		int MaxRange;
 
+	// TEMPORARY STATS
+	UPROPERTY(BlueprintReadWrite, Category = "Temp")
+	int CurrentAmmo;
 
+	UPROPERTY(BlueprintReadWrite, Category = "Temp")
+	int CurrentMagazine;
+
+public:
+	float GetRange();
+
+	float GetBulletDamage();
+	float GetAccuracyByRange(float Distance);
+
+	UPROPERTY(BlueprintReadWrite)
+	FRangedWeaponSim AttackSimulation;
+
+// Actionable Interface
 public:
 	virtual bool IsInRange_Implementation(AGCharacter* MyCharacter, AGCharacter* Target) override;
 	virtual bool IsInRangeFromTile_Implementation(FTile Tile, AGCharacter* MyCharacter, AGCharacter* Target) override;
@@ -90,7 +124,10 @@ public:
 	virtual void SimulateAction_Implementation(AGCharacter* Character, AGCharacter* Target) override;
 	virtual void ApplyAction_Implementation(AGCharacter* Target) override;
 
-	virtual UAction* GetAction_Implementation() override;
+	virtual UAction* GetAction_Implementation(AGCharacter* Subject, AGCharacter* Target, FTileIndex FromTile) override;
 
-	float GetRange();
+// Ranged Wepon methods
+public:
+	virtual void InitWeapon() override;
+
 };
