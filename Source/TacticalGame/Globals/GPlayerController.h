@@ -38,6 +38,7 @@ public:
 
 	UPROPERTY(BlueprintReadWrite)
 	bool PAD_UP;
+
 	UPROPERTY(BlueprintReadWrite)
 	bool PAD_UP_DOWN;
 
@@ -99,11 +100,13 @@ public:
 
 	UPROPERTY(BlueprintReadWrite)
 	bool Start;
+
 	UPROPERTY(BlueprintReadWrite)
 	bool Start_DOWN;
 
 	UPROPERTY(BlueprintReadWrite)
 	bool MyPause;
+
 	UPROPERTY(BlueprintReadWrite)
 	bool Pause_DOWN;
 

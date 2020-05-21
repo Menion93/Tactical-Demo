@@ -25,7 +25,7 @@ public:
 	virtual void SimulateAction_Implementation(AGCharacter* Character, AGCharacter* Target);
 	virtual void ApplyAction_Implementation(AGCharacter* Target);
 
-	virtual UAction* GetAction_Implementation();
+	virtual UAction* GetAction_Implementation(AGCharacter* Subject, AGCharacter* Target, FTileIndex FromTile);
 
 	virtual ActionType GetActionType_Implementation();
 };

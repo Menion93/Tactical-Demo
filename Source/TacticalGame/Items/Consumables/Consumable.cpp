@@ -29,7 +29,7 @@ void UConsumable::ApplyAction_Implementation(AGCharacter* Target)
 
 }
 
-UAction* UConsumable::GetAction_Implementation()
+UAction* UConsumable::GetAction_Implementation(AGCharacter* Subject, AGCharacter* Target, FTileIndex FromTile)
 {
 	return nullptr;
 }

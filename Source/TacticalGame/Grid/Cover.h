@@ -12,7 +12,6 @@ enum class CoverTypeE : uint8
 	PARTIAL UMETA(DisplayName = "Partial Cover"),
 	TOTAL UMETA(DisplayName = "Full Cover"),
 	NONE UMETA(DisplayName = "No Cover")
-
 };
 
 UCLASS(Blueprintable)

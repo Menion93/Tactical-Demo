@@ -38,10 +38,10 @@ public:
 	float VerticalHeight;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "EditorSetting")
-		bool DrawLinesInEditor;
+	bool DrawLinesInEditor;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "EditorSetting")
-		float LineLength;
+	float LineLength;
 
 	UPROPERTY()
 	APlayerCameraManager* CameraManager;
@@ -62,7 +62,7 @@ public:
 	float Width;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TileSettings")
-		class UBoxComponent* BoxComponent;
+	class UBoxComponent* BoxComponent;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TileSettings")
 	TMap<FTileIndex, FTile> TilesMap;

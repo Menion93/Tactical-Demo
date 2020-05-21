@@ -13,10 +13,10 @@ struct FTileIndex
 	GENERATED_BODY()
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		int X;
+	int X;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		int Y;
+	int Y;
 
 	FTileIndex() : X(0), Y(0) {}
 	FTileIndex(int x, int y) : X(x), Y(y) {}
@@ -61,16 +61,16 @@ struct FTile
 	GENERATED_BODY()
 
 	UPROPERTY(BlueprintReadWrite)
-		bool IsObstacle = false;
+	bool IsObstacle = false;
 
 	UPROPERTY(BlueprintReadWrite)
-		FTileIndex Index;
+	FTileIndex Index;
 		
 	UPROPERTY(BlueprintReadWrite)
-		FVector TileCenter = FVector(0, 0, 0);
+	FVector TileCenter = FVector(0, 0, 0);
 	
 	UPROPERTY(BlueprintReadWrite)
-		FVector SurfaceNormal = FVector(0, 0, 0);
+	FVector SurfaceNormal = FVector(0, 0, 0);
 
 	UPROPERTY(BlueprintReadWrite)
 	AGCharacter* Character = nullptr;

@@ -10,7 +10,7 @@
 bool UBattleRangeUtils::IsInMeleeRange(AGCharacter* MyCharacter, AGCharacter* Target)
 {
 	TArray<FDijkstraNode> Nodes;
-	MyCharacter->ShortestPaths.GenerateValueArray(Nodes);
+	MyCharacter->PathfindingComponent->ShortestPaths.GenerateValueArray(Nodes);
 
 	Nodes = Nodes.FilterByPredicate([MyCharacter](auto& Node) {
 		return int(Node.Distance) <= MyCharacter->State->MovementSpeed;
