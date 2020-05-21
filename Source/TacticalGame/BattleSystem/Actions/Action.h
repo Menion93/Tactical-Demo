@@ -24,7 +24,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FString ActionName;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	AGPlayerController* Input;
 
 	UPROPERTY(BlueprintReadWrite)
@@ -37,7 +37,7 @@ public:
 	AGCharacter* Target;
 
 	UPROPERTY(BlueprintReadWrite)
-	FTileIndex FocusedTile;
+	FTileIndex FromTileIndex;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool ReversibleAction;
@@ -52,9 +52,6 @@ public:
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	bool RevertAction();
-
-	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
-	bool CanExecuteAction();
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	void OnEnter();

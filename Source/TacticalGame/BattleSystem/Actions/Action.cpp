@@ -49,11 +49,6 @@ bool UAction::RevertAction_Implementation()
 }
 
 
-bool UAction::CanExecuteAction_Implementation()
-{
-	return false;
-}
-
 bool UAction::InputEventX_Implementation(float DeltaTime)
 {
 	return false;
