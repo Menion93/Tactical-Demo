@@ -30,7 +30,7 @@ void UWeaponCore::ApplyAction_Implementation(AGCharacter* Target)
 
 }
 
-UAction* UWeaponCore::GetAction_Implementation()
+UAction* UWeaponCore::GetAction_Implementation(AGCharacter* Subject, AGCharacter* Target, FTileIndex FromTile)
 {
 	return nullptr;
 }
@@ -43,4 +43,19 @@ FString UWeaponCore::GetMenuDisplayName_Implementation()
 ActionType UWeaponCore::GetActionType_Implementation()
 {
 	return ActionType::OFFENSIVE;
+}
+
+float UWeaponCore::GetCriticalDamage()
+{
+	return BaseCriticalDamage + CriticalDamage + CriticalDamageRoll;
+}
+
+float UWeaponCore::GetCriticalChance()
+{
+	return BaseCriticalChance + CriticalChance + CriticalChanceRoll;
+}
+
+void UWeaponCore::InitWeapon()
+{
+
 }

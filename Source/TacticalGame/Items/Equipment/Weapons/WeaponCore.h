@@ -7,6 +7,9 @@
 #include "Characters/GCharacter.h"
 #include "Utils/Structs.h"
 #include "BattleSystem/Actions/Actionable.h"
+#include "BattleSystem/Actions/Action.h"
+#include "Weapon.h"
+#include "BattleSystem/Actions/Action.h"
 #include "WeaponCore.generated.h"
 
 
@@ -23,6 +26,12 @@ public:
 	// WEAPON MAIN PROPERTIES
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
 	TSubclassOf<class AWeapon> WeaponActorClass;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<class UAction> ActionClass;
+
+	UPROPERTY(BlueprintReadWrite)
+	AWeapon* WeaponActor;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
 	FString WeaponName;
@@ -77,8 +86,12 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Critical Chance")
 	float MaxRollCriticalChance;
 
+
 public:
 	FSimulationOutput Simulation;
+
+	float GetCriticalDamage();
+	float GetCriticalChance();
 
 public:
 	virtual FString GetMenuDisplayName_Implementation() override;
@@ -89,9 +102,11 @@ public:
 	virtual void SimulateAction_Implementation(AGCharacter* Character, AGCharacter* Target);
 	virtual void ApplyAction_Implementation(AGCharacter* Target);
 
-	virtual UAction* GetAction_Implementation();
+	virtual UAction* GetAction_Implementation(AGCharacter* Subject, AGCharacter* Target, FTileIndex FromTile);
 
 	virtual ActionType GetActionType_Implementation();
+
+	virtual void InitWeapon();
 
 
 };
