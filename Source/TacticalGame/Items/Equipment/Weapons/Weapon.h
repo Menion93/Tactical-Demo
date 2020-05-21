@@ -4,8 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "Items/Equipment/Weapons/WeaponCore.h"
 #include "Weapon.generated.h"
+
+class UWeaponCore;
 
 UCLASS()
 class TACTICALGAME_API AWeapon : public AActor
