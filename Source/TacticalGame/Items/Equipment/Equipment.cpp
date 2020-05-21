@@ -14,11 +14,13 @@ void UEquipment::LoadDefaultEquipment()
 	if (PrimaryWeaponClass)
 	{
 		PrimaryWeapon = NewObject<UWeaponCore>(this, PrimaryWeaponClass);
+		PrimaryWeapon->InitWeapon();
 	}
 
 	if (SecondaryWeaponClass)
 	{
 		SecondaryWeapon = NewObject<UWeaponCore>(this, SecondaryWeaponClass);
+		SecondaryWeapon->InitWeapon();
 	}
 
 	if (BagClass)
