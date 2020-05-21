@@ -53,8 +53,8 @@ bool UBSMCharacterSelectedState::InputEventA(float DeltaTime)
 bool UBSMCharacterSelectedState::InputEventB(float DeltaTime)
 {
 	BattleManager->GameMode->BattleUI->HideCharacterBar();
-	StateMachine->CurrentCharacter->ShowPerimeter(false);
-	StateMachine->CurrentCharacter->ShowShortestPath(false);
+	StateMachine->CurrentCharacter->PerimeterComponent->ShowPerimeter(false);
+	StateMachine->CurrentCharacter->PathfindingComponent->ShowShortestPath(false);
 
 	// Look at character position
 	FTile CharacterTile = Grid->GetTile(StateMachine->CurrentCharacter->CurrentTileIndex);
@@ -138,8 +138,8 @@ bool UBSMCharacterSelectedState::InputEventLAxis(float DeltaTime)
 			{
 				StateMachine->SelectedTile = CurrentTile.Direction2Neighbours[Index].Key->Index;
 
-				StateMachine->CurrentCharacter->DrawShortestPath(StateMachine->SelectedTile);
-				StateMachine->CurrentCharacter->ShowShortestPath(true);
+				StateMachine->CurrentCharacter->PathfindingComponent->DrawShortestPath(StateMachine->SelectedTile);
+				StateMachine->CurrentCharacter->PathfindingComponent->ShowShortestPath(true);
 
 				Grid->SetCursorToTile(StateMachine->SelectedTile);
 				BattleManager->GameMode->Camera->LerpToPosition(BattleManager->GetSelectedTile().TileCenter);

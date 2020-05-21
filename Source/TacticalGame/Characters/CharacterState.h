@@ -35,22 +35,23 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool UseDefaults;
+
 public:
 
 	UPROPERTY(BlueprintReadWrite)
-		float CurrentHealth;
+	float CurrentHealth;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float Health;
+	float Health;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		int ActionPoints;
+	int ActionPoints;
 
 	UPROPERTY(BlueprintReadWrite)
-		int CurrentActionPoints;
+	int CurrentActionPoints;
 
 	UPROPERTY(BlueprintReadWrite)
-		UEquipment* Equipment;
+	UEquipment* Equipment;
 
 	UPROPERTY(BlueprintReadWrite)
 	AGCharacter* ActorCharacter;

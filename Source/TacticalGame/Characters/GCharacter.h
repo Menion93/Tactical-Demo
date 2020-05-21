@@ -10,6 +10,12 @@
 #include "BattleSystem/Actions/Actionable.h"
 #include "Utils/Structs.h"
 #include "Globals/GPlayerController.h"
+#include "PerimeterComponent.h"
+#include "PathfindingComponent.h"
+#include "LoSComponent.h"
+#include "GameFramework/SpringArmComponent.h"
+#include "Camera/CameraComponent.h"
+#include "Utils/SimStructs.h"
 #include "GCharacter.generated.h"
 
 class UCharacterState;
@@ -34,6 +40,7 @@ public:
 	UPROPERTY(BlueprintReadWrite)
 	FTileIndex CurrentTileIndex;
 
+public:
 	UPROPERTY(BlueprintReadWrite)
 	AGrid* Grid;
 
@@ -41,42 +48,33 @@ public:
 	ATacticalGameMode* GameMode;
 
 	UPROPERTY(BlueprintReadWrite)
-	AFireTeam* FireTeam;
-
-	///////////////////// Perimeters and Path
-	TArray<APerimeter*> Perimeters;
-
-	UPROPERTY()
-	APath* PathActor;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TSubclassOf<APath> PathClass;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TSubclassOf<APerimeter> PerimeterClass;
-
-	///////////////// PATHFINDING
-	// Used for steering to next point during pathfinding
-	UPROPERTY(BlueprintReadWrite)
-	TMap<FTileIndex, FDijkstraNode> ShortestPaths;
-
-	UPROPERTY(BlueprintReadWrite)
-	TMap<FTileIndex, FDijkstraNode> PerimeterBoundaries;
-
-	UPROPERTY(EditAnywhere)
-	float ToleranceBetweetCkpts = 1;
-
-	// Used for pathfinding
-	TArray<FVector> MovePoints;
-	int PathIndex = -1;
-
 	AGPlayerController* Input;
 
+	UPROPERTY(BlueprintReadWrite)
+	AFireTeam* FireTeam;
+
+
+public:
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	UPathfindingComponent* PathfindingComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	UPerimeterComponent* PerimeterComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	ULoSComponent* LoSComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	USpringArmComponent* OurCameraSpringArm;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	UCameraComponent* OurCamera;
+
+public:
 	// List of reversible actions done in the current turn
+	UPROPERTY(BlueprintReadWrite)
 	TArray<UAction*> ActionsBuffer;
 
-	// Line of Sights Computations
-	TMap<FName, FLineOfSights> LoS;
 
 protected:
 	// Called when the game starts or when spawned
@@ -89,33 +87,18 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	UFUNCTION(BlueprintCallable)
-	bool MoveTo(FTileIndex TileIndex);
 
 	UFUNCTION(BlueprintCallable)
-	bool TileInRange(FTile Tile);
-
-	// Grid Path Methods
-	UFUNCTION(BlueprintCallable)
-	void ComputeShortestPaths();
+	TArray<UAction*> GetAdditionalActions();
 
 	UFUNCTION(BlueprintCallable)
 	void ComputePerimeterPoints();
 
 	UFUNCTION(BlueprintCallable)
+	void ComputeShortestPaths();
+
+	UFUNCTION(BlueprintCallable)
 	void ComputeLoS();
-
-	UFUNCTION(BlueprintCallable)
-	void ShowPerimeter(bool Show);
-
-	UFUNCTION(BlueprintCallable)
-	void ShowShortestPath(bool Show);
-
-	UFUNCTION(BlueprintCallable)
-	void DrawShortestPath(FTileIndex TileIndex);
-
-	UFUNCTION(BlueprintCallable)
-	TArray<UAction*> GetAdditionalActions();
 
 	UFUNCTION(BlueprintCallable)
 	void HandleInput();
@@ -135,12 +118,11 @@ public:
 	UFUNCTION(BlueprintCallable)
 	TArray<UObject*> GetSupportOptions();
 
+	UFUNCTION(BlueprintCallable)
+	void TakeRangedWeaponDamage(TArray<FBulletSim> BulletsFired);
 
-private:
-	void AddLoS(
-		AGCharacter* Character,
-		FTile& Tile,
-		CoverTypeE Cover,
-		float Distance);
+	UFUNCTION(BlueprintCallable)
+	bool TileInRange(FTile Tile);
+
 
 };

@@ -32,12 +32,27 @@ AGCharacter::AGCharacter()
 	UCapsuleComponent* caps = GetCapsuleComponent();
 	caps->SetCollisionResponseToChannel(ECollisionChannel::ECC_GameTraceChannel2, ECollisionResponse::ECR_Overlap);
 	GetMesh()->SetCollisionResponseToChannel(ECollisionChannel::ECC_GameTraceChannel2, ECollisionResponse::ECR_Overlap);
+
+	PathfindingComponent = CreateDefaultSubobject<UPathfindingComponent>(TEXT("Pathfinding Component"));
+	PerimeterComponent = CreateDefaultSubobject<UPerimeterComponent>(TEXT("Perimeter Component"));
+	LoSComponent = CreateDefaultSubobject<ULoSComponent>(TEXT("LoS Component"));
+
+	// Camera setup
+	OurCameraSpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraSpringArm"));
+	OurCameraSpringArm->SetupAttachment(RootComponent);
+	OurCameraSpringArm->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, 50.0f), FRotator(-10.0f, -10.0f, 0.0f));
+	OurCameraSpringArm->TargetArmLength = 150;
+	OurCameraSpringArm->bEnableCameraLag = true;
+	OurCameraSpringArm->CameraLagSpeed = 3.0f;
+	OurCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("GameCamera"));
+	OurCamera->SetupAttachment(OurCameraSpringArm, USpringArmComponent::SocketName);
+
 }
 
 // Called when the game starts or when spawned
 void AGCharacter::BeginPlay()
 {
-	Super::BeginPlay();	
+	Super::BeginPlay();
 	SpawnDefaultController();
 }
 
@@ -47,179 +62,40 @@ void AGCharacter::Init(AFireTeam* FT)
 	Grid = GameMode->Grid;
 	Input = Cast<AGPlayerController>(GetWorld()->GetFirstPlayerController());
 	FireTeam = FT;
+
+	PathfindingComponent->Init(this);
+	PerimeterComponent->Init(Grid);
 }
 
-// Called every frame
 void AGCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
-// Called to bind functionality to input
 void AGCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
+}
 
+void AGCharacter::ComputeShortestPaths()
+{
+	PathfindingComponent->ComputeShortestPaths(CurrentTileIndex, 9999);
+}
+
+void AGCharacter::ComputePerimeterPoints()
+{
+	PerimeterComponent->ComputePerimeterPoints(CurrentTileIndex, State->MovementSpeed);
+}
+
+void AGCharacter::ComputeLoS()
+{
+	LoSComponent->ComputeLoS(PathfindingComponent->ShortestPaths, this);
 }
 
 TArray<UAction*> AGCharacter::GetAdditionalActions()
 {
 	TArray<UAction*> AdditionalActions;
 	return AdditionalActions;
-}
-
-bool AGCharacter::MoveTo(FTileIndex TileIndex)
-{
-	bool IsMoving = PathIndex != -1;
-
-	if (!IsMoving)
-	{
-		MovePoints = TArray<FVector>();
-		UGridUtils::UnravelPath(Grid, ShortestPaths, TileIndex, MovePoints);
-		PathIndex = 1;
-	}
-
-	FVector FlatLocation = FVector(GetActorLocation().X, GetActorLocation().Y, GetActorLocation().Z - GetDefaultHalfHeight());
-	float DistanceFromCheckpoint = FVector::Distance(FlatLocation, MovePoints[PathIndex]);
-	if (DistanceFromCheckpoint < ToleranceBetweetCkpts)
-	{
-		if (PathIndex == MovePoints.Num() - 1)
-		{
-			PathIndex = -1;
-			return true;
-		}
-
-		PathIndex = (PathIndex + 1) % MovePoints.Num();
-	}
-	
-	FVector Direction = MovePoints[PathIndex] - FlatLocation;
-	Direction.Normalize();
-
-	AddMovementInput(Direction);
-	SetActorRotation(FVector(Direction.X, Direction.Y, 0).ToOrientationRotator());
-
-	return false;
-}
-
-void AGCharacter::ComputeShortestPaths()
-{
-	ShortestPaths = TMap<FTileIndex, FDijkstraNode>();
-	UGridUtils::GetShortestPaths(Grid, ShortestPaths, CurrentTileIndex, 9999, false);
-}
-
-void AGCharacter::ComputePerimeterPoints()
-{
-	PerimeterBoundaries = TMap<FTileIndex, FDijkstraNode>();
-	UGridUtils::GetShortestPaths(Grid, PerimeterBoundaries, CurrentTileIndex, 9999, true);
-
-	for (auto& Perimeter : Perimeters)
-	{
-		Perimeter->Destroy();
-	}
-
-	Perimeters = TArray<APerimeter*>();
-
-	TArray<FVectorArray> PerimeterBlocks = UGridUtils::GetPerimeterPoints(
-		Grid,
-		PerimeterBoundaries,
-		State->MovementSpeed,
-		GameMode->Grid->CellSize,
-		GameMode->Grid->PerimeterVOffset);
-
-	for (auto& perimeter : PerimeterBlocks)
-	{
-		APerimeter* Perimeter = GetWorld()->SpawnActor<APerimeter>(
-			PerimeterClass, GetActorLocation(), FRotator::ZeroRotator);
-
-		Perimeter->DrawPerimeter(perimeter.Array);
-		Perimeter->SetActorHiddenInGame(true);
-		Perimeters.Add(Perimeter);
-	}
-}
-
-void AGCharacter::ComputeLoS()
-{
-	TArray<FDijkstraNode> Nodes;
-	ShortestPaths.GenerateValueArray(Nodes);
-
-	Nodes = Nodes.FilterByPredicate([this](auto& Node) {
-		return int(Node.Distance) <= this->State->MovementSpeed;
-	});
-
-	LoS = TMap<FName, FLineOfSights>();
-
-	TArray<AFireTeam*> FTeams = GameMode->BattleManager->GetHostileFireTeams(FireTeam);
-
-	for (auto& Node : Nodes)
-	{
-		for (auto& FT : FTeams)
-		{
-			for (auto& Character : FT->Characters)
-			{
-				FTile Tile = Grid->GetTile(Node.TileIndex);
-
-				FCollisionQueryParams CollisionParams;
-
-				TArray<FHitResult> OutHits;
-
-				bool hit = GetWorld()->LineTraceMultiByChannel(
-					OutHits,
-					Tile.TileCenter + FVector::UpVector * GetDefaultHalfHeight(),
-					Character->GetActorLocation(),
-					ECollisionChannel::ECC_GameTraceChannel2,
-					CollisionParams);
-
-				CoverTypeE Cover = CoverTypeE::NONE;
-				for (auto& OutHit : OutHits)
-				{
-					if (!OutHit.bBlockingHit)
-					{
-						AGCharacter* HitChar = Cast<AGCharacter>(OutHit.Actor);
-
-						// LoS found
-						if (HitChar != this && HitChar != Character)
-						{
-							ACover* CoverObj = Cast<ACover>(OutHit.Actor);
-
-							if (CoverObj)
-							{
-								Cover = CoverObj->GetCoverType();
-							}
-							else 
-							{
-								break;
-							}
-						}
-						else if (HitChar == Character)
-						{
-							AddLoS(Character, Tile, Cover, OutHit.Distance);
-						}
-						else if (HitChar == this)
-						{
-							continue;
-						}
-					}
-				}
-			}
-		}
-	}
-}
-
-void AGCharacter::AddLoS(
-	AGCharacter* Character,
-	FTile& Tile, 
-	CoverTypeE Cover,
-	float Distance)
-{
-	if (!LoS.Contains(Character->State->Name))
-	{
-		LoS.Add(Character->State->Name, FLineOfSights());
-	}
-
-	FLineOfSights* LinesOfSights = LoS.Find(Character->State->Name);
-
-	LinesOfSights->Tiles.Add(Tile.Index, FLineOfSight(Cover, Distance));
 }
 
 TArray<UObject*> AGCharacter::GetOffensiveOptions()
@@ -230,48 +106,6 @@ TArray<UObject*> AGCharacter::GetOffensiveOptions()
 TArray<UObject*> AGCharacter::GetSupportOptions()
 {
 	return State->Equipment->GetSupportItems();
-}
-
-
-void AGCharacter::ShowPerimeter(bool Show)
-{
-	for (auto& p : Perimeters)
-	{
-		p->SetActorHiddenInGame(!Show);
-	}
-}
-
-void AGCharacter::ShowShortestPath(bool Show)
-{
-	if (PathActor)
-	{
-		PathActor->SetActorHiddenInGame(!Show);
-	}
-}
-
-void AGCharacter::DrawShortestPath(FTileIndex TileIndex)
-{
-	TArray<FVector> Points;
-
-	if (!ShortestPaths.Contains(TileIndex)) return;
-
-	UGridUtils::UnravelPath(Grid, ShortestPaths, TileIndex, Points);
-
-	if (!PathActor)
-	{
-		PathActor = GetWorld()->SpawnActor<APath>(
-			PathClass,
-			GetActorLocation(),
-			FRotator::ZeroRotator);
-	}
-
-	PathActor->DrawPath(Points);
-	PathActor->SetActorHiddenInGame(true);
-}
-
-bool AGCharacter::TileInRange(FTile Tile)
-{
-	return int(ShortestPaths[Tile.Index].Distance) <= State->MovementSpeed;
 }
 
 void AGCharacter::HandleInput()
@@ -298,13 +132,21 @@ bool AGCharacter::RevertAction()
 			ActionsBuffer.RemoveAt(Index);
 			return true;
 		}
-		
 	}
-
 	return false;
 }
 
 void AGCharacter::Selected()
 {
 
+}
+
+void AGCharacter::TakeRangedWeaponDamage(TArray<FBulletSim> BulletsFired)
+{
+
+}
+
+bool AGCharacter::TileInRange(FTile Tile)
+{
+	return PathfindingComponent->TileInRange(Tile, State->MovementSpeed);
 }

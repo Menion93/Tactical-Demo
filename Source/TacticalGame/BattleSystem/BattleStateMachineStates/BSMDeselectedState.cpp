@@ -48,7 +48,7 @@ bool UBSMDeselectedState::InputEventA(float DeltaTime)
 
 			BattleManager->GameMode->BattleUI->SetCharacterBar(Character->State);
 			Character->Selected();
-			Character->ShowPerimeter(true);
+			Character->PerimeterComponent->ShowPerimeter(true);
 			StateMachine->CurrentCharacter = Character;
 			StateMachine->TransitionToState(CombatStateE::CHARACTER_SELECTED);
 			return true;
