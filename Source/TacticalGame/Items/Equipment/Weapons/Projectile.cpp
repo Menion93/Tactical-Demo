@@ -2,6 +2,7 @@
 
 
 #include "Projectile.h"
+#include "Characters/GCharacter.h"
 
 // Sets default values
 AProjectile::AProjectile()
@@ -26,8 +27,7 @@ AProjectile::AProjectile()
 	ProjectileMovementComponent->bShouldBounce = true;
 	ProjectileMovementComponent->Bounciness = 0.3f;
 
-
-
+	//OnActorHit.AddDynamic(this, &AProjectile::OnHit);
 }
 
 // Called when the game starts or when spawned
@@ -50,7 +50,20 @@ void AProjectile::FireInDirection(const FVector& ShootDirection)
 	ProjectileMovementComponent->Velocity = ShootDirection * ProjectileMovementComponent->InitialSpeed;
 }
 
-void AProjectile::EnableRegisterDamageEvent(float TotalDamage)
+void AProjectile::EnableRegisterDamageEvent(AGCharacter* MyTarget, TArray<FBulletSim> MyBulletSim)
 {
+	Target = MyTarget;
+	BulletSim = MyBulletSim;
+}
 
+
+void AProjectile::OnHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit)
+{
+	AGCharacter* CharacterHit = Cast<AGCharacter>(OtherActor);
+
+	if (CharacterHit == Target)
+	{
+		// Notify Character Was Hit and Took Damage
+		CharacterHit->TakeRangedWeaponDamage(BulletSim);
+	}
 }

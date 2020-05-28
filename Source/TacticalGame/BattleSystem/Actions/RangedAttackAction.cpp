@@ -55,3 +55,8 @@ float URangedAttackAction::GetRoundDamage(int RoundIndex)
 
 	return TotalDamage;
 }
+
+void URangedAttackAction::RoundFinished()
+{
+	FireWeaponDone = true;
+}

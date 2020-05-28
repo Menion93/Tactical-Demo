@@ -132,8 +132,10 @@ void APlayerFireTeam::SpawnTeam()
 			this, Character->StateClass->GetFName(), RF_NoFlags, Character->StateClass.GetDefaultObject());
 
 		Character->Init(this);
-		CharacterState->LoadState();
+		CharacterState->ActorCharacter = Character;
 		Character->State = CharacterState;
+
+		CharacterState->LoadState();
 	}
 
 	int PointIndex = 0;
@@ -152,9 +154,10 @@ void APlayerFireTeam::SpawnTeam()
 				FRotator::ZeroRotator);
 
 			Character->Init(this);
-			Team[PointIndex]->LoadState();
 			Team[PointIndex]->ActorCharacter = Character;
 			Character->State = Team[PointIndex];
+
+			Team[PointIndex]->LoadState();
 
 			FTile* Tile = BattleManager->Grid->SnapToGrid(Character);
 

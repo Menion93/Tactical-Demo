@@ -55,7 +55,7 @@ float UWeaponCore::GetCriticalChance()
 	return BaseCriticalChance + CriticalChance + CriticalChanceRoll;
 }
 
-void UWeaponCore::InitWeapon()
+void UWeaponCore::InitWeapon(AGCharacter* Character)
 {
 
 }

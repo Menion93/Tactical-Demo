@@ -6,7 +6,10 @@
 #include "GameFramework/Actor.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Components/SphereComponent.h"
+#include "Utils/SimStructs.h"
 #include "Projectile.generated.h"
+
+class AGCharacter;
 
 UCLASS()
 class TACTICALGAME_API AProjectile : public AActor
@@ -23,6 +26,11 @@ public:
 	UPROPERTY(VisibleAnywhere, Category = Movement)
 	UProjectileMovementComponent* ProjectileMovementComponent;
 
+	TArray<FBulletSim> BulletSim;
+
+	UPROPERTY(BlueprintReadWrite)
+	AGCharacter* Target;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -33,6 +41,7 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	void FireInDirection(const FVector& ShootDirection);
-	void EnableRegisterDamageEvent(float TotalDamage);
+	void EnableRegisterDamageEvent(AGCharacter* MyTarget, TArray<FBulletSim> MyBulletSim);
+	void OnHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit);
 
 };

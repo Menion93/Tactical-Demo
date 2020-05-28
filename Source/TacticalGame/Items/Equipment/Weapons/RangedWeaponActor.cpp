@@ -5,24 +5,16 @@
 
 ARangedWeaponActor::ARangedWeaponActor()
 {
-	OnActorHit.AddDynamic(this, &ARangedWeaponActor::OnHit);
 
 }
 
 void ARangedWeaponActor::FireRound(TArray<FBulletSim> MyRound, AGCharacter* MyTarget)
 {
-	URangedWeapon* State = Cast<URangedWeapon>(WeaponCore);
+	State = Cast<URangedWeapon>(WeaponCore);
 	Target = MyTarget;
 	Round = MyRound;
 	IsFiring = true;
 	FirstHit = true;
-	//TotalDamage = 0;
-
-
-	//for (auto& BulletSim : Round)
-	//{
-	//	TotalDamage += BulletSim.Damage;
-	//}
 }
 
 // Called every frame
@@ -51,7 +43,7 @@ void ARangedWeaponActor::Tick(float DeltaTime)
 
 				if (FirstHit)
 				{
-					Projectile->EnableRegisterDamageEvent(TotalDamage);
+					Projectile->EnableRegisterDamageEvent(Target, Round);
 				}
 			}
 			else
@@ -71,19 +63,13 @@ void ARangedWeaponActor::Tick(float DeltaTime)
 		{
 			IsFiring = false;
 			ElapsedTimeBetweenBullets = 0;
+			State->CurrentAction->RoundFinished();
 		}
-		
 	}
 
 }
 
-void ARangedWeaponActor::OnHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit)
+void ARangedWeaponActor::Init(URangedWeapon* MyState)
 {
-	AGCharacter* CharacterHit = Cast<AGCharacter>(OtherActor);
-
-	if (CharacterHit)
-	{
-		// Notify Character Was Hit and Took Damage
-		CharacterHit->TakeRangedWeaponDamage(Round);
-	}
+	State = MyState;
 }

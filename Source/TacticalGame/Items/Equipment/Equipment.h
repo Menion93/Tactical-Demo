@@ -58,7 +58,7 @@ public:
 
 	// This method spawn all the default equipment
 	UFUNCTION(BlueprintCallable)
-	void LoadDefaultEquipment();
+	void LoadDefaultEquipment(AGCharacter* Owner);
 
 	UFUNCTION(BlueprintCallable)
 	TArray<UObject*> GetOffensiveItems();

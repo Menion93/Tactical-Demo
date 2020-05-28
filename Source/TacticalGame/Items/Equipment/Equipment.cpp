@@ -9,18 +9,18 @@ UEquipment::UEquipment()
 
 }
 
-void UEquipment::LoadDefaultEquipment()
+void UEquipment::LoadDefaultEquipment(AGCharacter* Owner)
 {
 	if (PrimaryWeaponClass)
 	{
 		PrimaryWeapon = NewObject<UWeaponCore>(this, PrimaryWeaponClass);
-		PrimaryWeapon->InitWeapon();
+		PrimaryWeapon->InitWeapon(Owner);
 	}
 
 	if (SecondaryWeaponClass)
 	{
 		SecondaryWeapon = NewObject<UWeaponCore>(this, SecondaryWeaponClass);
-		SecondaryWeapon->InitWeapon();
+		SecondaryWeapon->InitWeapon(Owner);
 	}
 
 	if (BagClass)

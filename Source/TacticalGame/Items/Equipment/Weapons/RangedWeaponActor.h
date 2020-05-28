@@ -32,6 +32,7 @@ public:
 	float TimeBetweenBullets = 0.1;
 
 
+
 private:
 	int BulletIndex;
 	int BulletFired;
@@ -41,8 +42,6 @@ private:
 
 	float ElapsedTimeBetweenBullets;
 
-	float TotalDamage = 0;
-
 	TArray<FBulletSim> Round;
 	AGCharacter* Target;
 
@@ -51,8 +50,10 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void FireRound(TArray<FBulletSim> MyRound, AGCharacter* Target);
 
+	UFUNCTION(BlueprintCallable)
+	void Init(URangedWeapon* MyState);
+
 	virtual void Tick(float DeltaTime) override;
-	void OnHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit);
 
 
 };

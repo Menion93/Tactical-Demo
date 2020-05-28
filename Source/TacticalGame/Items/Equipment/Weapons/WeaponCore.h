@@ -106,7 +106,7 @@ public:
 
 	virtual ActionType GetActionType_Implementation();
 
-	virtual void InitWeapon();
+	virtual void InitWeapon(AGCharacter* Character);
 
 
 };

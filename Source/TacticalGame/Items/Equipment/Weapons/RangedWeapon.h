@@ -30,6 +30,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<AProjectile> ProjectileClass;
 
+	UPROPERTY(BlueprintReadWrite)
+	URangedAttackAction* CurrentAction;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
 		int ReloadCost;
@@ -75,30 +77,30 @@ public:
 	FRuntimeFloatCurve AccuracyByRange;
 
 	UPROPERTY(BlueprintReadWrite, Category = "Accuracy")
-		float AccuracyRoll;
+	float AccuracyRoll;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Accuracy")
-		float MinRollAccuracy;
+	float MinRollAccuracy;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Accuracy")
-		float MaxRollAccuracy;
+	float MaxRollAccuracy;
 
 	// RANGE PROPERTIES
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Range")
-		int BaseRange;
+	int BaseRange;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Range")
-		int Range;
+	int Range;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Range")
-		int RangeRoll;
+	int RangeRoll;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Range")
-		int MinRange;
+	int MinRange;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Range")
-		int MaxRange;
+	int MaxRange;
 
 	// TEMPORARY STATS
 	UPROPERTY(BlueprintReadWrite, Category = "Temp")
@@ -128,6 +130,6 @@ public:
 
 // Ranged Wepon methods
 public:
-	virtual void InitWeapon() override;
+	virtual void InitWeapon(AGCharacter* Character) override;
 
 };

@@ -20,6 +20,8 @@ public:
 	UPROPERTY(BlueprintReadWrite)
 	URangedWeapon* Weapon;
 
+	bool FireWeaponDone = false;
+
 public:
 	void Init(
 		ABattleManager* BM,
@@ -33,5 +35,8 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	float GetRoundDamage(int RoundIndex);
+
+	UFUNCTION(BlueprintCallable)
+	void RoundFinished();
 	
 };

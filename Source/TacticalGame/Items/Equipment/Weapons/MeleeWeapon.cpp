@@ -78,3 +78,9 @@ float UMeleeWeapon::GetDamage()
 {
 	return BaseDamage + Damage + DamageRoll;
 }
+
+void UMeleeWeapon::InitWeapon(AGCharacter* Character)
+{
+	//MeleeWeaponActor = NewObject<AMeleeWeaponActor>(this, WeaponActorClass);
+	//MeleeWeaponActor->SnapToActor(Character);
+}

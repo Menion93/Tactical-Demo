@@ -84,4 +84,7 @@ public:
 public:
 	float GetAccuracy();
 	float GetDamage();
+
+	virtual void InitWeapon(AGCharacter* Character) override;
+
 };

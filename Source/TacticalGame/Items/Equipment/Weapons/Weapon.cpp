@@ -3,6 +3,8 @@
 
 #include "Weapon.h"
 #include "Items/Equipment/Weapons/WeaponCore.h"
+#include "Components/SkeletalMeshComponent.h"
+
 
 
 // Sets default values
@@ -24,6 +26,15 @@ void AWeapon::BeginPlay()
 void AWeapon::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+}
+
+void AWeapon::SnapToActor(AGCharacter* Character)
+{
+	//AttachToComponent(
+	//	Character->GetMesh()->GetAttachmentRoot(),
+	//	FAttachmentTransformRules(EAttachmentRule::KeepRelative, EAttachmentRule::KeepRelative, EAttachmentRule::KeepRelative, true),
+	//	"RightHandWeaponSocket");
 
 }
 

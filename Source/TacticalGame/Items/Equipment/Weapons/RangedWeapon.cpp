@@ -12,7 +12,6 @@ URangedWeapon::URangedWeapon()
 }
 
 
-
 bool URangedWeapon::IsInRange_Implementation(AGCharacter* MyCharacter, AGCharacter* Target)
 {
 	if (CurrentAmmo == 0) return false;
@@ -88,10 +87,10 @@ void URangedWeapon::ApplyAction_Implementation(AGCharacter* Character)
 
 UAction* URangedWeapon::GetAction_Implementation(AGCharacter* Subject, AGCharacter* Target, FTileIndex FromTile)
 {
-	URangedAttackAction* Action = NewObject<URangedAttackAction>(this, ActionClass);
+	CurrentAction = NewObject<URangedAttackAction>(this, ActionClass);
 	ATacticalGameMode* GameMode = Cast<ATacticalGameMode>(GetWorld()->GetAuthGameMode());
-	Action->Init(GameMode->BattleManager, this, Subject, Target, FromTile);
-	return Action;
+	CurrentAction->Init(GameMode->BattleManager, this, Subject, Target, FromTile);
+	return CurrentAction;
 }
 
 float URangedWeapon::GetRange()
@@ -113,7 +112,12 @@ float URangedWeapon::GetAccuracyByRange(float Distance)
 	return AccuracyByRange.GetRichCurve()->Eval(Distance / MyMaxRange, 0);
 }
 
-void URangedWeapon::InitWeapon()
+void URangedWeapon::InitWeapon(AGCharacter* Character)
 {
 	CurrentAmmo = MagazineSize;
+
+	//RangedWeaponActor = NewObject<ARangedWeaponActor>(this, WeaponActorClass);
+	RangedWeaponActor = NewObject<ARangedWeaponActor>(this, WeaponActorClass->GetFName(), RF_NoFlags, WeaponActorClass.GetDefaultObject());
+	RangedWeaponActor->Init(this);
+	RangedWeaponActor->SnapToActor(Character);
 }
