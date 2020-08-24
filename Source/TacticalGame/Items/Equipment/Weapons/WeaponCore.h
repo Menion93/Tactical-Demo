@@ -10,6 +10,7 @@
 #include "BattleSystem/Actions/Action.h"
 #include "Weapon.h"
 #include "BattleSystem/Actions/Action.h"
+#include "Engine/Texture2D.h"
 #include "WeaponCore.generated.h"
 
 
@@ -86,6 +87,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Critical Chance")
 	float MaxRollCriticalChance;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UTexture2D* WeaponIcon;
 
 public:
 	FSimulationOutput Simulation;
@@ -98,6 +101,8 @@ public:
 
 	virtual bool IsInRange_Implementation(AGCharacter* MyCharacter, AGCharacter* Target);
 	virtual bool IsInRangeFromTile_Implementation(FTile Tile, AGCharacter* MyCharacter, AGCharacter* Target);
+	virtual int GetActionPoints_Implementation();
+
 
 	virtual void SimulateAction_Implementation(AGCharacter* Character, AGCharacter* Target);
 	virtual void ApplyAction_Implementation(AGCharacter* Target);
@@ -106,7 +111,10 @@ public:
 
 	virtual ActionType GetActionType_Implementation();
 
-	virtual void InitWeapon(AGCharacter* Character);
+public:
+	virtual void InitWeapon();
+	virtual void SpawnWeaponActor(AGCharacter* Character);
+	virtual void DestoryWeaponActor();
 
 
 };

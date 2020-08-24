@@ -22,16 +22,14 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fire Simulation")
 	int FireRate = 0.1;
 
-	UPROPERTY(BlueprintReadWrite)
-	URangedWeapon* State;
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FVector MuzzleLocation;
+	URangedWeapon* State;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float TimeBetweenBullets = 0.1;
 
-
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int BulletsPerRound = 1;
 
 private:
 	int BulletIndex;
@@ -42,18 +40,12 @@ private:
 
 	float ElapsedTimeBetweenBullets;
 
-	TArray<FBulletSim> Round;
-	AGCharacter* Target;
-
 public:
-
-	UFUNCTION(BlueprintCallable)
-	void FireRound(TArray<FBulletSim> MyRound, AGCharacter* Target);
 
 	UFUNCTION(BlueprintCallable)
 	void Init(URangedWeapon* MyState);
 
 	virtual void Tick(float DeltaTime) override;
-
+	virtual void ExecuteAttack() override;
 
 };

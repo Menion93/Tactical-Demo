@@ -2,20 +2,14 @@
 
 
 #include "RangedWeaponActor.h"
+#include "Components/SkeletalMeshComponent.h"
+
 
 ARangedWeaponActor::ARangedWeaponActor()
 {
 
 }
 
-void ARangedWeaponActor::FireRound(TArray<FBulletSim> MyRound, AGCharacter* MyTarget)
-{
-	State = Cast<URangedWeapon>(WeaponCore);
-	Target = MyTarget;
-	Round = MyRound;
-	IsFiring = true;
-	FirstHit = true;
-}
 
 // Called every frame
 void ARangedWeaponActor::Tick(float DeltaTime)
@@ -25,48 +19,69 @@ void ARangedWeaponActor::Tick(float DeltaTime)
 	if (IsFiring)
 	{
 		ElapsedTimeBetweenBullets += DeltaTime;
-		if (BulletIndex < Round.Num() && ElapsedTimeBetweenBullets >= TimeBetweenBullets)
+		if (BulletIndex < Round.BulletsFired)
 		{
-			ElapsedTimeBetweenBullets = 0;
-
-			FBulletSim BulletSim = Round[BulletIndex];
-
-			AProjectile* Projectile = GetWorld()->SpawnActor<AProjectile>(State->ProjectileClass, MuzzleLocation, FRotator::ZeroRotator);
-
-			if (BulletSim.HasHit)
+			if (ElapsedTimeBetweenBullets >= TimeBetweenBullets)
 			{
-				// Spawn a projectile that will hit the target
-				if (Projectile)
-				{
-					Projectile->FireInDirection(Target->GetActorLocation() - Projectile->GetActorLocation());
-				}
+				ElapsedTimeBetweenBullets = 0;
+
+				FVector MuzzleLocation = MeshComp->GetSocketLocation(FName("FireSocket"));
+
+				AProjectile* Projectile = GetWorld()->SpawnActor<AProjectile>(State->ProjectileClass, MuzzleLocation, MuzzleLocation.ToOrientationRotator());
+
+				FVector Direction = Target->GetActorLocation() - Projectile->GetActorLocation();
+				Direction.Normalize();
 
 				if (FirstHit)
 				{
-					Projectile->EnableRegisterDamageEvent(Target, Round);
+					Projectile->EnableRegisterDamageEvent(Target, Round, State->CurrentAction);
+					FirstHit = false;
 				}
-			}
-			else
-			{
-				// Spawn a projectile that will not hit the target
-				if (Projectile)
-				{
-					Projectile->FireInDirection(Target->GetActorLocation() - Projectile->GetActorLocation());
-				}
-			}
 
-			// Add Cooldown
-			BulletIndex += 1;
+				if (Round.HasHit)
+				{
+					// Spawn a projectile that will hit the target
+					if (Projectile)
+					{
+						Projectile->FireInDirection(Direction);
+					}
+
+				}
+				else
+				{
+					// Spawn a projectile that will not hit the target
+					if (Projectile)
+					{
+						Projectile->FireInDirection(Direction);
+					}
+				}
+
+				// Add Cooldown
+				BulletIndex += 1;
+			}
 
 		}
 		else
 		{
 			IsFiring = false;
 			ElapsedTimeBetweenBullets = 0;
-			State->CurrentAction->RoundFinished();
+
+			// All bullets in round missed
+			if (!FirstHit)
+			{
+				// With a timer
+			}
 		}
 	}
 
+}
+
+void ARangedWeaponActor::ExecuteAttack()
+{
+	IsFiring = true;
+	FirstHit = true;
+	BulletIndex = 0;
+	State->CurrentAmmo -= Round.BulletsFired;
 }
 
 void ARangedWeaponActor::Init(URangedWeapon* MyState)

@@ -11,6 +11,7 @@
 #include "Items/Equipment/Shield.h"
 #include "Equipment.generated.h"
 
+class UCharacterState;
 /**
  * 
  */
@@ -21,7 +22,9 @@ class TACTICALGAME_API UEquipment : public UObject
 
 public:
 	UEquipment();
-	
+
+	UCharacterState* State;
+
 	// DEFAULTS
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<class UWeaponCore> PrimaryWeaponClass;
@@ -54,17 +57,29 @@ public:
 	UPROPERTY(BlueprintReadWrite)
 	UShield* Shield;
 
+	UPROPERTY(BlueprintReadWrite)
+	UWeaponCore* CurrentWeapon;
+
+private:
+	bool FirstWeaponEquipped = true;
+
 public:
 
 	// This method spawn all the default equipment
 	UFUNCTION(BlueprintCallable)
-	void LoadDefaultEquipment(AGCharacter* Owner);
+	void LoadDefaultEquipment(UCharacterState* State);
 
 	UFUNCTION(BlueprintCallable)
 	TArray<UObject*> GetOffensiveItems();
 
 	UFUNCTION(BlueprintCallable)
 	TArray<UObject*> GetSupportItems();
+
+	UFUNCTION(BlueprintCallable)
+	void SwapWeapon();
+
+	UFUNCTION(BlueprintCallable)
+	void SpawnWeaponActor();
 
 private:
 	UObject* TryGetObjectByType(UItem* Item, ActionType Type);

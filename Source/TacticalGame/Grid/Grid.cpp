@@ -154,5 +154,5 @@ void AGrid::TransferCharacterToTile(FTileIndex From, FTileIndex To)
 
 FTile AGrid::GetTile(FTileIndex TileIndex)
 {
-	return TilesMap[TileIndex];
+	return TilesMap.Contains(TileIndex) ? TilesMap[TileIndex] : FTile();
 }

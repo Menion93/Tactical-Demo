@@ -27,7 +27,7 @@ AProjectile::AProjectile()
 	ProjectileMovementComponent->bShouldBounce = true;
 	ProjectileMovementComponent->Bounciness = 0.3f;
 
-	//OnActorHit.AddDynamic(this, &AProjectile::OnHit);
+	OnActorHit.AddDynamic(this, &AProjectile::OnHit);
 }
 
 // Called when the game starts or when spawned
@@ -50,10 +50,11 @@ void AProjectile::FireInDirection(const FVector& ShootDirection)
 	ProjectileMovementComponent->Velocity = ShootDirection * ProjectileMovementComponent->InitialSpeed;
 }
 
-void AProjectile::EnableRegisterDamageEvent(AGCharacter* MyTarget, TArray<FBulletSim> MyBulletSim)
+void AProjectile::EnableRegisterDamageEvent(AGCharacter* MyTarget, FRoundSim MyRoundSim, URangedAttackAction* MyAction)
 {
 	Target = MyTarget;
-	BulletSim = MyBulletSim;
+	RoundSim = MyRoundSim;
+	Action = MyAction;
 }
 
 
@@ -61,9 +62,16 @@ void AProjectile::OnHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImp
 {
 	AGCharacter* CharacterHit = Cast<AGCharacter>(OtherActor);
 
+	if (!CharacterHit)
+	{
+		return;
+	}
+
 	if (CharacterHit == Target)
 	{
 		// Notify Character Was Hit and Took Damage
-		CharacterHit->TakeRangedWeaponDamage(BulletSim);
+		CharacterHit->MyTakeDamage(RoundSim, Action);
 	}
+
+	Destroy();
 }

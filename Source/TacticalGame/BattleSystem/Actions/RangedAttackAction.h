@@ -20,6 +20,7 @@ public:
 	UPROPERTY(BlueprintReadWrite)
 	URangedWeapon* Weapon;
 
+	UPROPERTY(BlueprintReadWrite)
 	bool FireWeaponDone = false;
 
 public:
@@ -32,11 +33,5 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void SortNearestTiles(UPARAM(ref) TArray<FTileIndex>& Array);
-
-	UFUNCTION(BlueprintCallable)
-	float GetRoundDamage(int RoundIndex);
-
-	UFUNCTION(BlueprintCallable)
-	void RoundFinished();
 	
 };

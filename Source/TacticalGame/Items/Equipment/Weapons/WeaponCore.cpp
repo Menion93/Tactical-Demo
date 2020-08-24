@@ -20,6 +20,11 @@ bool UWeaponCore::IsInRangeFromTile_Implementation(FTile Tile, AGCharacter* MyCh
 	return false;
 }
 
+int UWeaponCore::GetActionPoints_Implementation()
+{
+	return 1;
+}
+
 void UWeaponCore::SimulateAction_Implementation(AGCharacter* Character, AGCharacter* Target)
 {
 
@@ -55,7 +60,21 @@ float UWeaponCore::GetCriticalChance()
 	return BaseCriticalChance + CriticalChance + CriticalChanceRoll;
 }
 
-void UWeaponCore::InitWeapon(AGCharacter* Character)
+void UWeaponCore::InitWeapon()
 {
 
 }
+
+void UWeaponCore::DestoryWeaponActor()
+{
+	if (WeaponActor)
+	{
+		WeaponActor->Destroy();
+	}
+}
+
+void UWeaponCore::SpawnWeaponActor(AGCharacter* Character)
+{
+
+}
+

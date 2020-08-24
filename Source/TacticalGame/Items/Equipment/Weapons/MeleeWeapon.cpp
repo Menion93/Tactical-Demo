@@ -7,6 +7,8 @@
 #include "Globals/TacticalGameMode.h"
 #include "Utils/BattleRangeUtils.h"
 #include "Utils/GridUtils.h"
+#include "MeleeWeaponActor.h"
+
 
 UMeleeWeapon::UMeleeWeapon()
 {
@@ -25,10 +27,10 @@ bool UMeleeWeapon::IsInRangeFromTile_Implementation(FTile Tile, AGCharacter* MyC
 
 UAction* UMeleeWeapon::GetAction_Implementation(AGCharacter* Subject, AGCharacter* Target, FTileIndex FromTile)
 {
-	UMeleeAttackAction* Action = NewObject<UMeleeAttackAction>(this, ActionClass);
+	CurrentAction = NewObject<UMeleeAttackAction>(this, ActionClass);
 	ATacticalGameMode* GameMode = Cast<ATacticalGameMode>(GetWorld()->GetAuthGameMode());
-	Action->Init(GameMode->BattleManager, this, Subject, Target, FromTile);
-	return Action;
+	CurrentAction->Init(GameMode->BattleManager, this, Subject, Target, FromTile);
+	return CurrentAction;
 }
 
 void UMeleeWeapon::SimulateAction_Implementation(AGCharacter* Character, AGCharacter* Target)
@@ -41,11 +43,11 @@ void UMeleeWeapon::SimulateAction_Implementation(AGCharacter* Character, AGChara
 	float MyCriticalChance = GetCriticalChance();
 	float MyCriticalDamage = GetCriticalDamage();
 
-	AttackSimulation = TArray<FMeleeHitSim>();
+	AttackSimulation = TArray<FRoundSim>();
 
 	for (int i = 0; i < AttacksPerTurn; i++)
 	{
-		FMeleeHitSim Attack;
+		FRoundSim Attack;
 
 		int HitProb = FMath::FRand();
 
@@ -79,8 +81,16 @@ float UMeleeWeapon::GetDamage()
 	return BaseDamage + Damage + DamageRoll;
 }
 
-void UMeleeWeapon::InitWeapon(AGCharacter* Character)
+void UMeleeWeapon::InitWeapon()
 {
-	//MeleeWeaponActor = NewObject<AMeleeWeaponActor>(this, WeaponActorClass);
-	//MeleeWeaponActor->SnapToActor(Character);
+
+}
+
+
+void UMeleeWeapon::SpawnWeaponActor(AGCharacter* Character)
+{
+	MeleeWeaponActor = GetWorld()->SpawnActor<AMeleeWeaponActor>(WeaponActorClass);
+	MeleeWeaponActor->Init(this);
+	MeleeWeaponActor->SnapToActor(Character);
+	WeaponActor = MeleeWeaponActor;
 }

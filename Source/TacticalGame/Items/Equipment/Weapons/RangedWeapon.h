@@ -34,13 +34,13 @@ public:
 	URangedAttackAction* CurrentAction;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
-		int ReloadCost;
+	int ReloadCost;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
-		int MagazineSize;
+	int MagazineSize;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
-		int Magazine;
+	int Magazine;
 
 
 	// BULLET DAMAGE PROPERTIES
@@ -71,6 +71,7 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rounds Stats")
 		int BulletsPerRound;
+
 
 	// ACCURACY AND RANGE PROPERTIES
 	UPROPERTY(EditAnywhere, Category = "Accuracy")
@@ -116,7 +117,7 @@ public:
 	float GetAccuracyByRange(float Distance);
 
 	UPROPERTY(BlueprintReadWrite)
-	FRangedWeaponSim AttackSimulation;
+	TArray<FRoundSim> AttackSimulation;
 
 // Actionable Interface
 public:
@@ -130,6 +131,9 @@ public:
 
 // Ranged Wepon methods
 public:
-	virtual void InitWeapon(AGCharacter* Character) override;
+	virtual void InitWeapon() override;
+	virtual void SpawnWeaponActor(AGCharacter* Character) override;
 
+	UFUNCTION(BlueprintCallable)
+	void Reload();
 };

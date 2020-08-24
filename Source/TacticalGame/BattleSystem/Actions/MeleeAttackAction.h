@@ -20,6 +20,9 @@ public:
 	UPROPERTY(BlueprintReadWrite)
 	UMeleeWeapon* Weapon;
 
+	UPROPERTY(BlueprintReadWrite)
+	bool AttackDone = false;
+
 public:
 	void Init(
 		ABattleManager* BM,

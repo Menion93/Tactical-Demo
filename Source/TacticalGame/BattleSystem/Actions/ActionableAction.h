@@ -19,14 +19,18 @@ public:
 	UPROPERTY(BlueprintReadWrite)
 	bool MoveFirst;
 
+	UPROPERTY(BlueprintReadWrite)
+	bool mActionDone = false;
+
 private:
 	bool HasMoved;
 	bool HasSimulated;
-	
+
 	UObject* Actionable;
 
 public:
-	void Init(
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	void MyInit(
 		ABattleManager* BM,
 		UObject* MyActionable,
 		AGCharacter* MyCharacter,
@@ -43,5 +47,7 @@ public:
 
 	virtual bool PlayAction_Implementation(float DeltaTime) override;
 
-	
+	UFUNCTION(BlueprintCallable)
+	void ActionDone();
+
 };

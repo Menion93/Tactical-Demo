@@ -6,6 +6,7 @@
 #include "UObject/NoExportTypes.h"
 #include "GCharacter.h"
 #include "Items/Equipment/Equipment.h"
+#include "Engine/Texture2D.h"
 #include "CharacterState.generated.h"
 
 /**
@@ -55,6 +56,9 @@ public:
 
 	UPROPERTY(BlueprintReadWrite)
 	AGCharacter* ActorCharacter;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UTexture2D* CharacterIcon;
 
 public:
 	void ResetActionPoints();

@@ -45,6 +45,9 @@ public:
 	bool IsInRangeFromTile(FTile Tile, AGCharacter* MyCharacter, AGCharacter* Target);
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Actionable")
+	int GetActionPoints();
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Actionable")
 	void SimulateAction(AGCharacter* Character, AGCharacter* Target);
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Actionable")

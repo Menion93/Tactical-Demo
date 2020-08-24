@@ -21,6 +21,7 @@ public:
 
 	virtual bool IsInRange_Implementation(AGCharacter* MyCharacter, AGCharacter* Target);
 	virtual bool IsInRangeFromTile_Implementation(FTile Tile, AGCharacter* MyCharacter, AGCharacter* Target);
+	virtual int GetActionPoints_Implementation();
 
 	virtual void SimulateAction_Implementation(AGCharacter* Character, AGCharacter* Target);
 	virtual void ApplyAction_Implementation(AGCharacter* Target);

@@ -25,9 +25,13 @@ bool UBSMCharacterSelectedState::InputEventX(float DeltaTime)
 	return true;
 }
 
+// Swap Weapon
 bool UBSMCharacterSelectedState::InputEventY(float DeltaTime)
 {
-	return false;
+	AGCharacter* Character = BattleManager->GetCurrentCharacter();
+	Character->State->Equipment->SwapWeapon();
+
+	return true;
 }
 
 bool UBSMCharacterSelectedState::InputEventA(float DeltaTime)

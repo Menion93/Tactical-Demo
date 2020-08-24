@@ -3,37 +3,6 @@
 #include "CoreMinimal.h"
 #include "SimStructs.generated.h"
 
-USTRUCT(BlueprintType)
-struct FMeleeHitSim
-{
-	GENERATED_BODY()
-
-	UPROPERTY(BlueprintReadWrite)
-	bool HasHit;
-
-	UPROPERTY(BlueprintReadWrite)
-	bool HasCritted;
-
-	UPROPERTY(BlueprintReadWrite)
-	float Damage;
-
-};
-
-USTRUCT(BlueprintType)
-struct FBulletSim
-{
-	GENERATED_BODY()
-
-	UPROPERTY(BlueprintReadWrite)
-	bool HasHit;
-
-	UPROPERTY(BlueprintReadWrite)
-	bool HasCritted;
-
-	UPROPERTY(BlueprintReadWrite)
-	float Damage;
-
-};
 
 USTRUCT(BlueprintType)
 struct FRoundSim
@@ -41,15 +10,16 @@ struct FRoundSim
 	GENERATED_BODY()
 
 	UPROPERTY(BlueprintReadWrite)
-	TArray<FBulletSim> Round;
-};
-
-
-USTRUCT(BlueprintType)
-struct FRangedWeaponSim
-{
-	GENERATED_BODY()
+		bool HasHit;
 
 	UPROPERTY(BlueprintReadWrite)
-	TArray<FRoundSim> Rounds;
+		bool HasCritted;
+
+	UPROPERTY(BlueprintReadWrite)
+		float Damage;
+
+	UPROPERTY(BlueprintReadWrite)
+		int BulletsFired;
+
 };
+

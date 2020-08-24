@@ -22,5 +22,5 @@ void UCharacterState::LoadState()
 void UCharacterState::LoadDefaultState()
 {
 	Equipment = NewObject<UEquipment>(this, EquipmentClass);
-	Equipment->LoadDefaultEquipment(ActorCharacter);
+	Equipment->LoadDefaultEquipment(this);
 }

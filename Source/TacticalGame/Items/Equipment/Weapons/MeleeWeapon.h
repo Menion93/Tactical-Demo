@@ -12,6 +12,8 @@
  * 
  */
 
+class AMeleeWeaponActor;
+
 UCLASS()
 class TACTICALGAME_API UMeleeWeapon : public UWeaponCore
 {
@@ -69,7 +71,13 @@ public:
 
 public:
 	UPROPERTY(BlueprintReadWrite)
-	TArray<FMeleeHitSim> AttackSimulation;
+	TArray<FRoundSim> AttackSimulation;
+
+	UPROPERTY(BlueprintReadWrite)
+	UMeleeAttackAction* CurrentAction;
+
+	UPROPERTY(BlueprintReadWrite)
+	AMeleeWeaponActor* MeleeWeaponActor;
 
 
 public:
@@ -85,6 +93,8 @@ public:
 	float GetAccuracy();
 	float GetDamage();
 
-	virtual void InitWeapon(AGCharacter* Character) override;
+	virtual void InitWeapon() override;
+	void SpawnWeaponActor(AGCharacter* Character) override;
+
 
 };

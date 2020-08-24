@@ -56,20 +56,25 @@ void AGCharacter::BeginPlay()
 	SpawnDefaultController();
 }
 
-void AGCharacter::Init(AFireTeam* FT)
+void AGCharacter::Init(AFireTeam* FT, UCharacterState* MyState)
 {
 	GameMode = Cast<ATacticalGameMode>(GetWorld()->GetAuthGameMode());
 	Grid = GameMode->Grid;
 	Input = Cast<AGPlayerController>(GetWorld()->GetFirstPlayerController());
 	FireTeam = FT;
+	State = MyState;
 
 	PathfindingComponent->Init(this);
 	PerimeterComponent->Init(Grid);
+
+	State->Equipment->SpawnWeaponActor();
 }
 
 void AGCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	IsMoving = !GetVelocity().IsZero();
 }
 
 void AGCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -141,8 +146,22 @@ void AGCharacter::Selected()
 
 }
 
-void AGCharacter::TakeRangedWeaponDamage(TArray<FBulletSim> BulletsFired)
+void AGCharacter::MyTakeDamage(FRoundSim RoundSim, UActionableAction* Action)
 {
+	ShowFloatingDamage(RoundSim.Damage, RoundSim.HasCritted, Action);
+
+	int OldHealth = State->CurrentHealth;
+	State->CurrentHealth = FMath::Max(0,int(State->CurrentHealth - RoundSim.Damage));
+
+	if (State->CurrentHealth <= 0)
+	{
+		// Play Dead Animation
+	}
+
+	if (OldHealth > State->CurrentHealth)
+	{
+		// Play Get Damaged Animation
+	}
 
 }
 

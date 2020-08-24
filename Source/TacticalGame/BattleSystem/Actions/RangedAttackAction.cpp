@@ -14,8 +14,14 @@ void URangedAttackAction::Init(
 	AGCharacter* MyTarget,
 	FTileIndex MyTile)
 {
-	Super::Init(MyBM, MyWeapon, MyCharacter, MyTarget, MyTile);
 	Weapon = MyWeapon;
+
+	Super::MyInit(MyBM, MyWeapon, MyCharacter, MyTarget, MyTile);
+
+	if (Weapon != MyCharacter->State->Equipment->CurrentWeapon)
+	{
+		MyCharacter->State->Equipment->SwapWeapon();
+	}
 }
 
 void URangedAttackAction::SortNearestTiles(TArray<FTileIndex>& Array)
@@ -35,28 +41,4 @@ void URangedAttackAction::SortNearestTiles(TArray<FTileIndex>& Array)
 
 		return NodeA.Distance < NodeB.Distance;
 	});
-}
-
-float URangedAttackAction::GetRoundDamage(int RoundIndex)
-{
-	if (RoundIndex < 0) return 0;
-
-	float TotalDamage = 0;
-
-	if (RoundIndex < Weapon->AttackSimulation.Rounds.Num())
-	{
-		FRoundSim RoundSim = Weapon->AttackSimulation.Rounds[RoundIndex];
-
-		for (auto& BulletSim : RoundSim.Round)
-		{
-			TotalDamage += BulletSim.Damage;
-		}
-	}
-
-	return TotalDamage;
-}
-
-void URangedAttackAction::RoundFinished()
-{
-	FireWeaponDone = true;
 }

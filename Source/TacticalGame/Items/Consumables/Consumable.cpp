@@ -38,3 +38,8 @@ ActionType UConsumable::GetActionType_Implementation()
 {
 	return ActionType::SUPPORT;
 }
+
+int UConsumable::GetActionPoints_Implementation()
+{
+	return 1;
+}

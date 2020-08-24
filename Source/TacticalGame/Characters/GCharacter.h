@@ -8,6 +8,7 @@
 #include "Grid/Perimeter.h"
 #include "Grid/Path.h"
 #include "BattleSystem/Actions/Actionable.h"
+#include "BattleSystem/Actions/ActionableAction.h"
 #include "Utils/Structs.h"
 #include "Globals/GPlayerController.h"
 #include "PerimeterComponent.h"
@@ -31,7 +32,7 @@ public:
 	// Sets default values for this character's properties
 	AGCharacter();
 
-	UPROPERTY(BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UCharacterState* State;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -53,6 +54,13 @@ public:
 	UPROPERTY(BlueprintReadWrite)
 	AFireTeam* FireTeam;
 
+	// Animation Variables
+public:
+	UPROPERTY(BlueprintReadWrite)
+	bool IsMoving;
+
+	UPROPERTY(BlueprintReadWrite)
+	bool Shooting;
 
 public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
@@ -107,7 +115,7 @@ public:
 	void Selected();
 
 	UFUNCTION(BlueprintCallable)
-	void Init(AFireTeam* FT);
+	void Init(AFireTeam* FT, UCharacterState* MyState);
 
 	UFUNCTION(BlueprintCallable)
 	bool RevertAction();
@@ -119,10 +127,11 @@ public:
 	TArray<UObject*> GetSupportOptions();
 
 	UFUNCTION(BlueprintCallable)
-	void TakeRangedWeaponDamage(TArray<FBulletSim> BulletsFired);
+	void MyTakeDamage(FRoundSim RoundSim, UActionableAction* Action);
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void ShowFloatingDamage(int Damage, bool HasCritted, UActionableAction* Action);
 
 	UFUNCTION(BlueprintCallable)
 	bool TileInRange(FTile Tile);
-
-
 };

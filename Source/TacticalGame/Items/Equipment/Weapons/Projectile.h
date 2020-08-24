@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "GameFramework/ProjectileMovementComponent.h"
+#include "BattleSystem/Actions/RangedAttackAction.h"
 #include "Components/SphereComponent.h"
 #include "Utils/SimStructs.h"
 #include "Projectile.generated.h"
@@ -26,10 +27,13 @@ public:
 	UPROPERTY(VisibleAnywhere, Category = Movement)
 	UProjectileMovementComponent* ProjectileMovementComponent;
 
-	TArray<FBulletSim> BulletSim;
+	FRoundSim RoundSim;
 
 	UPROPERTY(BlueprintReadWrite)
 	AGCharacter* Target;
+
+	UPROPERTY(BlueprintReadWrite)
+	URangedAttackAction* Action;
 
 protected:
 	// Called when the game starts or when spawned
@@ -41,7 +45,9 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	void FireInDirection(const FVector& ShootDirection);
-	void EnableRegisterDamageEvent(AGCharacter* MyTarget, TArray<FBulletSim> MyBulletSim);
+	void EnableRegisterDamageEvent(AGCharacter* MyTarget, FRoundSim MyRoundSim, URangedAttackAction* Action);
+
+	UFUNCTION()
 	void OnHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit);
 
 };

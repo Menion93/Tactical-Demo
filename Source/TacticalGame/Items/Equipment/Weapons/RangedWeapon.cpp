@@ -52,31 +52,42 @@ void URangedWeapon::SimulateAction_Implementation(AGCharacter* Character, AGChar
 	float MyCriticalChance = GetCriticalChance();
 	float MyCriticalDamage = GetCriticalDamage();
 
-	AttackSimulation = FRangedWeaponSim();
+	int CurrentAmmoTemp = CurrentAmmo;
+
+	AttackSimulation = TArray<FRoundSim>();
 
 	for (int i = 0; i < Rounds; i++)
 	{
+		if (CurrentAmmoTemp < 1) break;
+
 		FRoundSim RoundSim;
+		RoundSim.Damage = 0;
 
-		for (int j = 0; j < BulletsPerRound; j++)
+		bool RoundHit = false;
+
+		RoundSim.BulletsFired = FMath::Min(CurrentAmmoTemp, BulletsPerRound);
+
+		for (int j = 0; j < RoundSim.BulletsFired; j++)
 		{
-			FBulletSim BulletSim;
-
 			int HitProb = FMath::FRand();
 
-			BulletSim.HasHit = HitProb < MyAccuracy;
+			bool BulletHasHit = HitProb < MyAccuracy;
+			RoundHit |= BulletHasHit;
 
 			// Has It
-			if (BulletSim.HasHit)
+			if (BulletHasHit)
 			{
-				int CritProb = FMath::FRand();
-
-				BulletSim.HasCritted = CritProb < MyCriticalChance;
-				BulletSim.Damage = MyBulletDamage * (1 + MyCriticalDamage * int(BulletSim.HasCritted));
+				RoundSim.Damage += MyBulletDamage;
 			}
-			RoundSim.Round.Add(BulletSim);
+
+			CurrentAmmoTemp--;
 		}
-		AttackSimulation.Rounds.Add(RoundSim);
+
+		int CritProb = FMath::FRand();
+		RoundSim.HasCritted = CritProb < MyCriticalChance;
+		RoundSim.Damage = RoundSim.Damage * (1 + MyCriticalDamage * int(RoundSim.HasCritted));
+
+		AttackSimulation.Add(RoundSim);
 	}
 }
 
@@ -107,17 +118,25 @@ float URangedWeapon::GetAccuracyByRange(float Distance)
 {
 	float MyMaxRange = GetRange();
 
-	if (Distance > Range) return 0;
+	if (Distance > MyMaxRange) return 0;
 
 	return AccuracyByRange.GetRichCurve()->Eval(Distance / MyMaxRange, 0);
 }
 
-void URangedWeapon::InitWeapon(AGCharacter* Character)
+void URangedWeapon::InitWeapon()
 {
 	CurrentAmmo = MagazineSize;
+}
 
-	//RangedWeaponActor = NewObject<ARangedWeaponActor>(this, WeaponActorClass);
-	RangedWeaponActor = NewObject<ARangedWeaponActor>(this, WeaponActorClass->GetFName(), RF_NoFlags, WeaponActorClass.GetDefaultObject());
+void URangedWeapon::SpawnWeaponActor(AGCharacter* Character)
+{
+	RangedWeaponActor = GetWorld()->SpawnActor<ARangedWeaponActor>(WeaponActorClass);
 	RangedWeaponActor->Init(this);
 	RangedWeaponActor->SnapToActor(Character);
+	WeaponActor = RangedWeaponActor;
+}
+
+void URangedWeapon::Reload()
+{
+	CurrentAmmo = MagazineSize;
 }

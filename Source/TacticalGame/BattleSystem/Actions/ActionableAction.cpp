@@ -7,7 +7,7 @@
 #include "TopViewCamera.h"
 
 
-void UActionableAction::Init(
+void UActionableAction::MyInit_Implementation(
 	ABattleManager* MyBM,
 	UObject* MyActionable,
 	AGCharacter* MyCharacter,
@@ -19,21 +19,25 @@ void UActionableAction::Init(
 	Target = MyTarget;
 	FromTileIndex = MyTile;
 	Actionable = MyActionable;
+	Input = Cast<AGPlayerController>(MyCharacter->GetWorld()->GetFirstPlayerController());
 
 	HasMoved = false;
 
-	MoveFirst = !(Character->CurrentTileIndex == FromTileIndex);
+	AGCharacter* CharInSelectedTile = Character->Grid->GetTile(FromTileIndex).Character;
 
-	if (!MoveFirst && Character->CurrentTileIndex == FromTileIndex)
+	MoveFirst = !(Character->CurrentTileIndex == FromTileIndex) && MyTarget != CharInSelectedTile;
+
+	if (!MoveFirst)
 	{
 		FTileIndex NearestTileIndex = GetNearestTileInRange();
 
-		if (!(NearestTileIndex == FromTileIndex))
+		if (!(NearestTileIndex == FromTileIndex) && !(NearestTileIndex == Character->CurrentTileIndex))
 		{
 			FromTileIndex = NearestTileIndex;
 			MoveFirst = true;
 		}
 	}
+
 };
 
 bool UActionableAction::PlayAction_Implementation(float DeltaTime)
@@ -52,7 +56,11 @@ bool UActionableAction::PlayAction_Implementation(float DeltaTime)
 		if (!HasSimulated)
 		{
 			IActionable* ActionableObj = Cast<IActionable>(Actionable);
-			ActionableObj->Execute_SimulateAction(Actionable, Character, Target);
+
+			if (ActionableObj)
+			{
+				ActionableObj->Execute_SimulateAction(Actionable, Character, Target);
+			}
 			HasSimulated = true;
 		}
 		return ExecuteAction();
@@ -82,3 +90,8 @@ bool UActionableAction::MoveTo()
 	return false;
 }
 
+
+void UActionableAction::ActionDone()
+{
+	mActionDone = true;
+}

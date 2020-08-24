@@ -3,7 +3,10 @@
 
 #include "MeleeAttackAction.h"
 #include "Items/Equipment/Weapons/MeleeWeapon.h"
+#include "Items/Equipment/Weapons/WeaponCore.h"
 #include "Characters/GCharacter.h"
+#include "Characters/CharacterState.h"
+#include "Items/Equipment/Equipment.h"
 
 void UMeleeAttackAction::Init(
 	ABattleManager* MyBM,
@@ -12,8 +15,14 @@ void UMeleeAttackAction::Init(
 	AGCharacter* MyTarget,
 	FTileIndex MyTile)
 {
-	Super::Init(MyBM, MyWeapon, MyCharacter, MyTarget, MyTile);
 	Weapon = MyWeapon;
+
+	Super::MyInit(MyBM, MyWeapon, MyCharacter, MyTarget, MyTile);
+
+	if (Weapon != MyCharacter->State->Equipment->CurrentWeapon)
+	{
+		MyCharacter->State->Equipment->SwapWeapon();
+	}
 };
 
 

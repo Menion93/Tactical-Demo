@@ -2,6 +2,7 @@
 
 
 #include "Equipment.h"
+#include "Characters/CharacterState.h"
 
 
 UEquipment::UEquipment()
@@ -9,18 +10,21 @@ UEquipment::UEquipment()
 
 }
 
-void UEquipment::LoadDefaultEquipment(AGCharacter* Owner)
+void UEquipment::LoadDefaultEquipment(UCharacterState* MyState)
 {
+	State = MyState;
+
 	if (PrimaryWeaponClass)
 	{
 		PrimaryWeapon = NewObject<UWeaponCore>(this, PrimaryWeaponClass);
-		PrimaryWeapon->InitWeapon(Owner);
+		PrimaryWeapon->InitWeapon();
+		CurrentWeapon = PrimaryWeapon;
 	}
 
 	if (SecondaryWeaponClass)
 	{
 		SecondaryWeapon = NewObject<UWeaponCore>(this, SecondaryWeaponClass);
-		SecondaryWeapon->InitWeapon(Owner);
+		SecondaryWeapon->InitWeapon();
 	}
 
 	if (BagClass)
@@ -96,4 +100,34 @@ UObject* UEquipment::TryGetObjectByType(UItem* Item, ActionType Type)
 	}
 
 	return nullptr;
+}
+
+void UEquipment::SwapWeapon()
+{
+	if (FirstWeaponEquipped)
+	{
+		if (SecondaryWeapon)
+		{
+			PrimaryWeapon->DestoryWeaponActor();
+			CurrentWeapon = SecondaryWeapon;
+			CurrentWeapon->SpawnWeaponActor(State->ActorCharacter);
+			FirstWeaponEquipped = false;
+		}
+	}
+	else
+	{
+		SecondaryWeapon->DestoryWeaponActor();
+		CurrentWeapon = PrimaryWeapon;
+		CurrentWeapon->SpawnWeaponActor(State->ActorCharacter);
+		FirstWeaponEquipped = true;
+	}
+}
+
+void UEquipment::SpawnWeaponActor()
+{
+	if (PrimaryWeapon)
+	{
+		CurrentWeapon = PrimaryWeapon;
+		CurrentWeapon->SpawnWeaponActor(State->ActorCharacter);
+	}
 }
