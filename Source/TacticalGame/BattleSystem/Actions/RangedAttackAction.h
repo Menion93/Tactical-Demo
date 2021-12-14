@@ -24,12 +24,13 @@ public:
 	bool FireWeaponDone = false;
 
 public:
-	void Init(
+
+	void MyInit_Implementation(
 		ABattleManager* BM,
-		URangedWeapon* MyWeapon,
+		UObject* MyActionable,
 		AGCharacter* MyCharacter,
 		AGCharacter* MyTarget,
-		FTileIndex MyTile);
+		FTileIndex MyTile) override;
 
 	UFUNCTION(BlueprintCallable)
 	void SortNearestTiles(UPARAM(ref) TArray<FTileIndex>& Array);

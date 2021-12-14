@@ -67,6 +67,10 @@ public:
 	virtual void OnTurnStart_Implementation();
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	void OnTurnEnd();
+	virtual void OnTurnEnd_Implementation();
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	bool IsTurnEnded();
 	virtual bool IsTurnEnded_Implementation();
 
@@ -89,5 +93,11 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void RecomputeAllCharactersMetadata();
+
+	UFUNCTION(BlueprintCallable)
+	virtual void EndCharacterTurn();
+
+	UFUNCTION(BlueprintCallable)
+	virtual void RegisterDeath(AGCharacter* DeadCharacter);
 	
 };

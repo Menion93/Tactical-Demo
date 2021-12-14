@@ -93,13 +93,15 @@ void ULoSComponent::AddLoS(
 	FTile& Tile,
 	CoverTypeE Cover,
 	float Distance)
-{
-	if (!LoS.Contains(Character->State->Name))
+{	
+	FName CharacterName(Character->GetName());
+
+	if (!LoS.Contains(CharacterName))
 	{
-		LoS.Add(Character->State->Name, FLineOfSights());
+		LoS.Add(CharacterName, FLineOfSights());
 	}
 
-	FLineOfSights* LinesOfSights = LoS.Find(Character->State->Name);
+	FLineOfSights* LinesOfSights = LoS.Find(CharacterName);
 
 	LinesOfSights->Tiles.Add(Tile.Index, FLineOfSight(Cover, Distance));
 }

@@ -30,6 +30,8 @@ void UPathfindingComponent::ShowShortestPath(bool Show)
 	}
 }
 
+
+
 void UPathfindingComponent::DrawShortestPath(FTileIndex TileIndex)
 {
 	TArray<FVector> Points;
@@ -80,6 +82,10 @@ bool UPathfindingComponent::MoveTo(FTileIndex TileIndex)
 		if (PathIndex == MovePoints.Num() - 1)
 		{
 			PathIndex = -1;
+			if (PathActor)
+			{
+				PathActor->DrawPath(TArray<FVector>());
+			}
 			return true;
 		}
 

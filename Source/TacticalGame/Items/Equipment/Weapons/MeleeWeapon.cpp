@@ -15,22 +15,24 @@ UMeleeWeapon::UMeleeWeapon()
 
 }
 
-bool UMeleeWeapon::IsInRange_Implementation(AGCharacter* MyCharacter, AGCharacter* Target)
+bool UMeleeWeapon::IsInRange_Implementation(FTileIndex& FromIndex, AGCharacter* MyCharacter, AGCharacter* Target)
 {
-	return UBattleRangeUtils::IsInMeleeRange(MyCharacter, Target);
+	ATacticalGameMode* GameMode = Cast<ATacticalGameMode>(GetWorld()->GetAuthGameMode());
+
+	return UBattleRangeUtils::IsInMeleeRange(GameMode->Grid, FromIndex, MyCharacter, Target, Execute_GetActionPoints(this));
 }
 
 bool UMeleeWeapon::IsInRangeFromTile_Implementation(FTile Tile, AGCharacter* MyCharacter, AGCharacter* Target)
 {
-	return UBattleRangeUtils::IsInMeleeRangeFromTile(Tile, MyCharacter, Target);
+	return UBattleRangeUtils::IsInMeleeRangeFromTile( Tile, MyCharacter, Target, Execute_GetActionPoints(this));
 }
 
 UAction* UMeleeWeapon::GetAction_Implementation(AGCharacter* Subject, AGCharacter* Target, FTileIndex FromTile)
 {
-	CurrentAction = NewObject<UMeleeAttackAction>(this, ActionClass);
+	UMeleeAttackAction* MyCurrentAction = NewObject<UMeleeAttackAction>(this, ActionClass);
 	ATacticalGameMode* GameMode = Cast<ATacticalGameMode>(GetWorld()->GetAuthGameMode());
-	CurrentAction->Init(GameMode->BattleManager, this, Subject, Target, FromTile);
-	return CurrentAction;
+	MyCurrentAction->MyInit(GameMode->BattleManager, this, Subject, Target, FromTile);
+	return MyCurrentAction;
 }
 
 void UMeleeWeapon::SimulateAction_Implementation(AGCharacter* Character, AGCharacter* Target)
@@ -94,3 +96,10 @@ void UMeleeWeapon::SpawnWeaponActor(AGCharacter* Character)
 	MeleeWeaponActor->SnapToActor(Character);
 	WeaponActor = MeleeWeaponActor;
 }
+
+bool UMeleeWeapon::IsRanged()
+{
+	return false;
+}
+
+

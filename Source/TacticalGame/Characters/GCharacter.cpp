@@ -9,7 +9,9 @@
 #include "Grid/Cover.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "Animations/GCharacterAnimInstance.h"
 #include "Utils/Structs.h"
+#include "AI/TacticalAIComponent.h"
 
 
 // Sets default values
@@ -68,6 +70,7 @@ void AGCharacter::Init(AFireTeam* FT, UCharacterState* MyState)
 	PerimeterComponent->Init(Grid);
 
 	State->Equipment->SpawnWeaponActor();
+	State->Init();
 }
 
 void AGCharacter::Tick(float DeltaTime)
@@ -148,21 +151,63 @@ void AGCharacter::Selected()
 
 void AGCharacter::MyTakeDamage(FRoundSim RoundSim, UActionableAction* Action)
 {
+	UTacticalAIComponent* AIComponent = FindComponentByClass<UTacticalAIComponent>();
+
+	if (AIComponent)
+	{
+		AIComponent->SendHitMessage(Action->Character);
+	}
+
 	ShowFloatingDamage(RoundSim.Damage, RoundSim.HasCritted, Action);
 
-	int OldHealth = State->CurrentHealth;
-	State->CurrentHealth = FMath::Max(0,int(State->CurrentHealth - RoundSim.Damage));
+	int OldShield = State->Equipment->Shield->ShieldCurrentHealth;
+	State->Equipment->Shield->ShieldCurrentHealth = FMath::Max(State->Equipment->Shield->ShieldCurrentHealth - RoundSim.Damage, 0.0f);
 
-	if (State->CurrentHealth <= 0)
+	int OldHealth = State->CurrentHealth;
+
+	if (RoundSim.Damage > OldShield)
 	{
-		// Play Dead Animation
+		State->CurrentHealth = FMath::Max(0, int(State->CurrentHealth - RoundSim.Damage + OldShield));
 	}
 
-	if (OldHealth > State->CurrentHealth)
+	if (OldHealth > State->CurrentHealth || OldShield > State->Equipment->Shield->ShieldCurrentHealth)
 	{
 		// Play Get Damaged Animation
+		HealthBar->PlayDamageAnimation();
+
+		if (State->CurrentHealth > 0)
+		{
+			// Play hit animation
+			UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+
+			if (AnimInstance != nullptr)
+			{
+				UGCharacterAnimInstance* GCharAnimInstance = Cast<UGCharacterAnimInstance>(AnimInstance);
+				GCharAnimInstance->PlayOnHit();
+			}
+		}
+
 	}
 
+}
+
+void AGCharacter::CanBeHittedByProjectiles(bool CanBeHit)
+{
+	if (CanBeHit)
+	{
+		GetCapsuleComponent()->SetCollisionResponseToChannel(ECollisionChannel::ECC_GameTraceChannel4, ECollisionResponse::ECR_Block);
+	}
+	else
+	{
+		GetCapsuleComponent()->SetCollisionResponseToChannel(ECollisionChannel::ECC_GameTraceChannel4, ECollisionResponse::ECR_Ignore);
+	}
+}
+
+void AGCharacter::Die()
+{
+	FireTeam->RegisterDeath(this);
+	State->Equipment->CurrentWeapon->DestoryWeaponActor();
+	Destroy();
 }
 
 bool AGCharacter::TileInRange(FTile Tile)

@@ -39,7 +39,7 @@ public:
 	FString GetMenuDisplayName();
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Actionable")
-	bool IsInRange(AGCharacter* MyCharacter, AGCharacter* Target);
+	bool IsInRange(FTileIndex& FromIndex, AGCharacter* MyCharacter, AGCharacter* Target);
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Actionable")
 	bool IsInRangeFromTile(FTile Tile, AGCharacter* MyCharacter, AGCharacter* Target);

@@ -81,13 +81,15 @@ public:
 
 
 public:
-	virtual bool IsInRange_Implementation(AGCharacter* MyCharacter, AGCharacter* Target) override;
+	virtual bool IsInRange_Implementation(FTileIndex& FromIndex, AGCharacter* MyCharacter, AGCharacter* Target) override;
 	virtual bool IsInRangeFromTile_Implementation(FTile Tile, AGCharacter* MyCharacter, AGCharacter* Target) override;
 
 	virtual void SimulateAction_Implementation(AGCharacter* Character, AGCharacter* Target) override;
 	virtual void ApplyAction_Implementation(AGCharacter* Target) override;
 
 	virtual UAction* GetAction_Implementation(AGCharacter* Subject, AGCharacter* Target, FTileIndex FromTile) override;
+	virtual bool IsRanged() override;
+
 
 public:
 	float GetAccuracy();

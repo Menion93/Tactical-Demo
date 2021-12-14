@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
 #include "Grid/FTile.h"
+#include "Grid/Grid.h"
 #include "BattleRangeUtils.generated.h"
 
 class AGCharacter;
@@ -18,7 +19,7 @@ class TACTICALGAME_API UBattleRangeUtils : public UObject
 
 public:
 
-	static bool IsInMeleeRange(AGCharacter* MyCharacter, AGCharacter* Target);
-	static bool IsInMeleeRangeFromTile(FTile Tile, AGCharacter* MyCharacter, AGCharacter* Target);
+	static bool IsInMeleeRange(AGrid* Grid, FTileIndex& FromTileIndex, AGCharacter* MyCharacter, AGCharacter* Target, int ActionPoints);
+	static bool IsInMeleeRangeFromTile(FTile Tile, AGCharacter* MyCharacter, AGCharacter* Target, int ActionPoints);
 	
 };

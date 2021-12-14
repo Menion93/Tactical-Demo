@@ -58,26 +58,13 @@ void UGridUtils::GetShortestPaths(
 
 TArray<FVectorArray> UGridUtils::GetPerimeterPoints(
 	AGrid* Grid,
+	TArray<FTileIndex> CharacterPositions,
+	DijkstraOutput &outputIgnoreChar,
 	DijkstraOutput &output,
 	int Distance,
 	float CellSize,
 	float ZOffset)
 {
-	TArray<FDijkstraNode*> Nodes;
-
-	for (auto& pair : output)
-	{
-		Nodes.Add(&pair.Value);
-	}
-
-	// Points of the perimeter 2 adjacent points. FVector2D instead of FVector are used becuse
-	// we need the vector to be integer and thus indexable
-	TMap<FTileIndex, TArray<FTileIndex>> Segments;
-
-	// Used to retrieve floating precision vectors from the integer representation, along with the Z axis
-	TMap<FTileIndex, FVector> Index2Vec;
-	TArray<FVectorArray> Result;
-
 	FTileIndex OffSetU(1, 0);
 	FTileIndex OffSetR(0, 1);
 	FTileIndex OffSetD(-1, 0);
@@ -88,6 +75,36 @@ TArray<FVectorArray> UGridUtils::GetPerimeterPoints(
 	Directions.Add(OffSetD);
 	Directions.Add(OffSetR);
 	Directions.Add(OffSetL);
+
+	TArray<FDijkstraNode*> Nodes;
+
+	for (auto& CharIndex : CharacterPositions)
+	{
+		for (auto& Dir : Directions)
+		{
+			if (output.Contains(CharIndex + Dir) && FMath::FloorToInt(output[CharIndex + Dir].Distance) <= Distance)
+			{
+				outputIgnoreChar[CharIndex].Distance += 1;
+				output.Add(CharIndex, outputIgnoreChar[CharIndex]);
+				break;
+			}
+		}
+	}
+
+	for (auto& pair : output)
+	{
+		Nodes.Add(&pair.Value);
+	}
+
+
+	// Points of the perimeter 2 adjacent points. FVector2D instead of FVector are used becuse
+	// we need the vector to be integer and thus indexable
+	TMap<FTileIndex, TArray<FTileIndex>> Segments;
+
+	// Used to retrieve floating precision vectors from the integer representation, along with the Z axis
+	TMap<FTileIndex, FVector> Index2Vec;
+	TArray<FVectorArray> Result;
+
 
 	float HalfCellSize = CellSize * 0.5;
 	FVector ZVector = FVector::UpVector * ZOffset;
@@ -103,10 +120,9 @@ TArray<FVectorArray> UGridUtils::GetPerimeterPoints(
 				FTile Tile = Grid->GetTile(Node->TileIndex);
 				auto Neighbours = Tile.Direction2Neighbours;
 
-
-				if (!Neighbours.Contains(Direction) || 
+				if (!Neighbours.Contains(Direction) ||
 					Neighbours[Direction].Key->IsObstacle || 
-					FMath::FloorToInt(output[Node->TileIndex + Direction].Distance) > Distance)
+					(output.Contains(Node->TileIndex + Direction) && FMath::FloorToInt(output[Node->TileIndex + Direction].Distance) > Distance))
 				{
 					//FVector WallMidPoint = Tile.TileCenter + Direction.ToVector() * HalfCellSize;
 					FVector WallMidPoint = Tile.TileCenter + Direction.ToVector() * HalfCellSize;

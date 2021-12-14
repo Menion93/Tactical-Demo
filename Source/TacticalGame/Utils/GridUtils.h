@@ -16,10 +16,13 @@ struct FDijkstraNode
 {
 	GENERATED_BODY()
 
+	UPROPERTY(BlueprintReadOnly)
 	FTileIndex TileIndex;
+
+	UPROPERTY(BlueprintReadOnly)
 	FTileIndex Prev;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadOnly)
 	float Distance;
 
 	FDijkstraNode() {}
@@ -50,6 +53,8 @@ public:
 			bool IgnoreCharacter);
 
 		static TArray<FVectorArray> GetPerimeterPoints(AGrid* Grid,
+			TArray<FTileIndex> CharacterPositions,
+			DijkstraOutput& outputIgnoreChar,
 			DijkstraOutput &output,
 			int Distance,
 			float CellSize,

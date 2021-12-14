@@ -15,7 +15,7 @@
 #include "./BattleStateMachineStates/BSMSelectAllyFromTileState.h"
 #include "./BattleStateMachineStates/BSMSelectSupportActionState.h"
 #include "./BattleStateMachineStates/BSMSelectEnemyFromTileState.h"
-#include "./BattleStateMachineStates/BSMBagState.h"
+#include "./BattleStateMachineStates/BSMUnitInfoState.h"
 #include "PlayerFireTeam.generated.h"
 
 
@@ -25,6 +25,7 @@ enum class CombatStateE : uint8
 	DESELECTED_STATE UMETA(DisplayName = "Deselected State"),
 	CHARACTER_SELECTED UMETA(DisplayName = "Character Selected"),
 	CHARACTER_INFO UMETA(DisplayName = "Character Info"),
+	UNIT_INFO UMETA(DisplayName = "Unit Info"),
 	OPEN_BAG UMETA(DisplayName = "Open Bag"),
 	SELECT_ATTACK UMETA(DisplayName = "Select Attack"),
 	SELECT_ENEMY UMETA(DisplayName = "Select Enemy"),
@@ -52,8 +53,6 @@ public:
 	UPROPERTY()
 	UBSMCharacterInfoState* CharacterInfoState;
 	UPROPERTY()
-	UBSMBagState* BagState;
-	UPROPERTY()
 	UBSMSelectEnemyState* SelectEnemyState;
 	UPROPERTY()
 	UBSMSelectEnemyFromTileState* SelectEnemyFromTileState;
@@ -64,7 +63,9 @@ public:
 	UPROPERTY()
 	UBSMSelectAllyState* SelectAllyState;
 	UPROPERTY()
-	UBSMSelectAllyFromTileState* SelectAllyFromTileState;
+	UBSMSelectAllyFromTileState* SelectAllyFromTileState;	
+	UPROPERTY()
+	UBSMUnitInfoState* UnitInfoState;
 
 	int SelectionIndex;
 
@@ -89,9 +90,10 @@ public:
 	void Init_Implementation(ABattleManager* BM) override;
 	void OnActionEnd_Implementation() override;
 	void OnTurnStart_Implementation() override;
-	bool IsTurnEnded_Implementation() override;
+	void OnTurnEnd_Implementation() override;
 	bool IsWinConditionSatisfied_Implementation() override;
 	void PlayTurn_Implementation(float DeltaTime) override;
+	virtual void EndCharacterTurn() override;
 
 	UFUNCTION(BlueprintCallable)
 	void TransitionToState(CombatStateE State);

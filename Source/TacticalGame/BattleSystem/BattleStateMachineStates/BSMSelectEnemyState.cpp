@@ -31,6 +31,7 @@ void UBSMSelectEnemyState::OnEnter()
 	FTile EnemyTile = Grid->GetTile(StateMachine->Targets[EnemyIndex]->CurrentTileIndex);
 	BattleManager->GameMode->Camera->LerpToPosition(EnemyTile.TileCenter);
 	StateMachine->TargetCharacter = StateMachine->Targets[EnemyIndex];
+	BattleManager->GameMode->BattleUI->SetCharacterBar2(StateMachine->TargetCharacter->State);
 }
 
 
@@ -46,6 +47,8 @@ bool UBSMSelectEnemyState::InputEventLAxis(float DeltaTime)
 		BattleManager->GameMode->Camera->LerpToPosition(Tile.TileCenter);
 
 		StateMachine->TargetCharacter = StateMachine->Targets[EnemyIndex];
+		BattleManager->GameMode->BattleUI->SetCharacterBar2(StateMachine->TargetCharacter->State);
+
 		return true;
 	}
 
@@ -59,7 +62,11 @@ bool UBSMSelectEnemyState::InputEventA(float DeltaTime)
 	StateMachine->Actionables = OffensiveOptions
 		.FilterByPredicate([this](auto& Object) {
 			IActionable* OffensiveOption = Cast<IActionable>(Object);
-			return OffensiveOption->Execute_IsInRange(Object, this->StateMachine->CurrentCharacter, this->StateMachine->TargetCharacter);
+			FTileIndex Tile;
+			bool InRange = OffensiveOption->Execute_IsInRange(Object, Tile, this->StateMachine->CurrentCharacter, this->StateMachine->TargetCharacter);
+			int CurrentActionPoints = this->StateMachine->CurrentCharacter->State->CurrentActionPoints;
+			bool SameTile = this->StateMachine->CurrentCharacter->CurrentTileIndex == Tile;
+			return InRange && ((SameTile && CurrentActionPoints > 0) || (CurrentActionPoints > 1));
 		}
 	);
 
@@ -73,6 +80,7 @@ bool UBSMSelectEnemyState::InputEventB(float DeltaTime)
 	StateMachine->TransitionToPrevState();
 	StateMachine->TargetCharacter = PrevTargetChar;
 	BattleManager->GameMode->Camera->LerpToPosition(BattleManager->GetSelectedTile().TileCenter);
+	BattleManager->GameMode->BattleUI->HideCharacterBar2();
 
 	return true;
 }

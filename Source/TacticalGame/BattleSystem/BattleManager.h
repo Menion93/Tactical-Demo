@@ -18,6 +18,11 @@ class AFireTeam;
 /**
  * 
  */
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnTurnEnded);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnWinConditionSatisfied);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnCharacterTurnEnded);
+
+
 UCLASS()
 class TACTICALGAME_API ABattleManager : public AActor
 {
@@ -41,15 +46,33 @@ public:
 	UPROPERTY()
 	AGPlayerController* Input;
 
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<AFireTeam*> Teams;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<FFTAlliances> Alliances;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<UAction> GlobalEndTurnActionClass;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<UAction> GlobalGameEndedClass;
+
 	int TeamIndex;
 	int PrevTeamIndex = -1;
+
+private:
+	int Turn;
+
+public:
+	UPROPERTY(BlueprintAssignable)
+	FOnTurnEnded OnTurnEnded;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnWinConditionSatisfied OnWinConditionSatisfied;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnCharacterTurnEnded OnCharacterTurnEnded;
 
 public:
 	void PlayTurn(float DeltaTime);
@@ -57,9 +80,19 @@ public:
 	void InitBattleState();
 	void EndTurn();
 	void EndBattle();
+	void EndCharacterTurn();
+
+	UFUNCTION(BlueprintCallable)
+	int GetTurnNumber();
 
 	UFUNCTION(BlueprintCallable)
 	void SetAction(UAction* Action);
+
+	UFUNCTION(BlueprintCallable)
+	void SetGlobalAction(UAction* Action);
+
+	UFUNCTION(BlueprintCallable)
+	UAction* GetAction();
 
 	UFUNCTION(BlueprintCallable)
 	FTile GetSelectedTile();
@@ -81,5 +114,8 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	bool IsAlly(AFireTeam* FireTeam, AGCharacter* Character);
+
+	UFUNCTION(BlueprintCallable)
+	void RecomputeAllCharactersMetadata();
 
 };

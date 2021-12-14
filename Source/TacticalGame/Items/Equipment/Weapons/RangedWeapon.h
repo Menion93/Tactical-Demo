@@ -15,6 +15,7 @@
 
 class ARangedWeaponActor;
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnProjectileShoot);
 
 UCLASS()
 class TACTICALGAME_API URangedWeapon : public UWeaponCore
@@ -42,6 +43,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
 	int Magazine;
 
+	UPROPERTY(BlueprintAssignable)
+	FOnProjectileShoot OnProjectileShoot;
 
 	// BULLET DAMAGE PROPERTIES
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Bullet Damage")
@@ -112,16 +115,19 @@ public:
 
 public:
 	float GetRange();
-
 	float GetBulletDamage();
 	float GetAccuracyByRange(float Distance);
+
+	UFUNCTION(BlueprintCallable)
+	bool CanReload();
+
 
 	UPROPERTY(BlueprintReadWrite)
 	TArray<FRoundSim> AttackSimulation;
 
 // Actionable Interface
 public:
-	virtual bool IsInRange_Implementation(AGCharacter* MyCharacter, AGCharacter* Target) override;
+	virtual bool IsInRange_Implementation(FTileIndex& FromIndex, AGCharacter* MyCharacter, AGCharacter* Target) override;
 	virtual bool IsInRangeFromTile_Implementation(FTile Tile, AGCharacter* MyCharacter, AGCharacter* Target) override;
 
 	virtual void SimulateAction_Implementation(AGCharacter* Character, AGCharacter* Target) override;
@@ -129,10 +135,13 @@ public:
 
 	virtual UAction* GetAction_Implementation(AGCharacter* Subject, AGCharacter* Target, FTileIndex FromTile) override;
 
+
 // Ranged Wepon methods
 public:
 	virtual void InitWeapon() override;
 	virtual void SpawnWeaponActor(AGCharacter* Character) override;
+	virtual bool IsRanged() override;
+
 
 	UFUNCTION(BlueprintCallable)
 	void Reload();

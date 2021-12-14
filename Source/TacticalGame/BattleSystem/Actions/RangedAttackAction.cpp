@@ -7,16 +7,17 @@
 #include "Characters/CharacterState.h"
 #include "Characters/GCharacter.h"
 
-void URangedAttackAction::Init(
+void URangedAttackAction::MyInit_Implementation(
 	ABattleManager* MyBM,
-	URangedWeapon* MyWeapon,
+	UObject* MyActionable,
 	AGCharacter* MyCharacter,
 	AGCharacter* MyTarget,
 	FTileIndex MyTile)
 {
-	Weapon = MyWeapon;
+	Weapon = Cast<URangedWeapon>(MyActionable);
+	Weapon->CurrentAction = this;
 
-	Super::MyInit(MyBM, MyWeapon, MyCharacter, MyTarget, MyTile);
+	Super::MyInit_Implementation(MyBM, Weapon, MyCharacter, MyTarget, MyTile);
 
 	if (Weapon != MyCharacter->State->Equipment->CurrentWeapon)
 	{
@@ -35,7 +36,8 @@ void URangedAttackAction::SortNearestTiles(TArray<FTileIndex>& Array)
 
 		if (int(NodeA.Distance) == int(NodeB.Distance))
 		{
-			FLineOfSight LoSInfoA = MyChar->LoSComponent->GetLoS()[MyTarget->State->Name].Tiles[A];
+			FName CharacterName(MyTarget->GetName());
+			FLineOfSight LoSInfoA = MyChar->LoSComponent->GetLoS()[CharacterName].Tiles[A];
 			return LoSInfoA.CoverType == CoverTypeE::NONE;
 		}
 

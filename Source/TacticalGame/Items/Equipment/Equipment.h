@@ -6,7 +6,6 @@
 #include "UObject/NoExportTypes.h"
 #include "Items/Equipment/Weapons/WeaponCore.h"
 #include "BattleSystem/Actions/Actionable.h"
-#include "Items/Equipment/Bag.h"
 #include "Items/Equipment/Armor.h"
 #include "Items/Equipment/Shield.h"
 #include "Equipment.generated.h"
@@ -15,6 +14,8 @@ class UCharacterState;
 /**
  * 
  */
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnSwapWeapon);
+
 UCLASS(Blueprintable)
 class TACTICALGAME_API UEquipment : public UObject
 {
@@ -33,9 +34,6 @@ public:
 	TSubclassOf<class UWeaponCore> SecondaryWeaponClass;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TSubclassOf<class UBag> BagClass;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<class UArmor> ArmorClass;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -49,9 +47,6 @@ public:
 	UWeaponCore* SecondaryWeapon;
 
 	UPROPERTY(BlueprintReadWrite)
-	UBag* Bag;
-
-	UPROPERTY(BlueprintReadWrite)
 	UArmor* Armor;
 
 	UPROPERTY(BlueprintReadWrite)
@@ -59,6 +54,9 @@ public:
 
 	UPROPERTY(BlueprintReadWrite)
 	UWeaponCore* CurrentWeapon;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnSwapWeapon OnSwapWeapon;
 
 private:
 	bool FirstWeaponEquipped = true;

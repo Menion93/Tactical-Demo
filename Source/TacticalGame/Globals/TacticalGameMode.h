@@ -4,10 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
-#include "Items/Inventory.h"
 #include "BattleSystem/BattleManager.h"
 #include "Characters/CharacterState.h"
-#include "Party/Party.h"
 #include "TopViewCamera.h"
 #include "Blueprint/UserWidget.h"
 #include "UI/BattleUI.h"
@@ -39,15 +37,6 @@ public:
 	ATopViewCamera* Camera;
 
 	UPROPERTY(BlueprintReadWrite)
-	UParty* Party;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TSubclassOf<class UParty> PartyClass;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UInventory* Inventory;
-
-	UPROPERTY(BlueprintReadWrite)
 	ABattleManager* BattleManager;
 
 	UPROPERTY(BlueprintReadWrite)
@@ -73,8 +62,6 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SwitchToBattleMode(bool IsPlayerTurn, bool ForceEngage);
 
-	UFUNCTION(BlueprintCallable)
-	void SwitchToFreeMode();
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void InitializeUI();

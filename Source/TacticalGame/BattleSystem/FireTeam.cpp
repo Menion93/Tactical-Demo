@@ -17,12 +17,40 @@ void AFireTeam::Init_Implementation(ABattleManager* BM)
 
 bool AFireTeam::IsTurnEnded_Implementation()
 {
-	return true;
+	bool AllFinished = true;
+
+	for (auto& Character : Characters)
+	{
+		AllFinished = AllFinished && Character->State->CurrentActionPoints < 1;
+	}
+
+	return AllFinished;
 }
+
+void AFireTeam::OnTurnEnd_Implementation()
+{
+
+}
+
 
 bool AFireTeam::IsWinConditionSatisfied_Implementation()
 {
-	return false;
+	TArray<AFireTeam*> FTs = BattleManager->GetHostileFireTeams(this);
+	bool EnemyAlive = false;
+
+	for (auto& FT : FTs)
+	{
+		for (auto& Char : FT->Characters)
+		{
+			if (Char != nullptr && Char->State->CurrentHealth > 0)
+			{
+				EnemyAlive = true;
+				break;
+			}
+		}
+	}
+
+	return !EnemyAlive;
 }
 
 void AFireTeam::PlayTurn_Implementation(float DeltaTime)
@@ -54,43 +82,25 @@ void AFireTeam::SetFireTeam(TArray<AGCharacter*> FireTeam)
 
 void AFireTeam::SpawnTeam()
 {
+	int i = 0;
 	for(auto& Character : Characters)
 	{
 		BattleManager->Grid->SnapToGrid(Character);
 
+		FString className;
+		Character->StateClass->GetName(className);
+		className = className + FString::FromInt(i);
+
 		UCharacterState* CharacterState = NewObject<UCharacterState>(
-			this, Character->StateClass->GetFName(), RF_NoFlags, Character->StateClass.GetDefaultObject());
+			this, FName(*className), RF_NoFlags, Character->StateClass.GetDefaultObject());
 
 		CharacterState->ActorCharacter = Character;
 		CharacterState->LoadDefaultState();
 
 		Character->Init(this, CharacterState);
+		i++;
 	}
 
-	int PointIndex = 0;
-	for (auto& SpawnPoint : SpawnPoints)
-	{
-		UWorld* World = GetWorld();
-
-		if (World)
-		{
-			UCharacterState* CharacterState = NewObject<UCharacterState>(
-				this, CharacterClasses[PointIndex]->GetFName(), RF_NoFlags, CharacterClasses[PointIndex].GetDefaultObject());
-
-			AGCharacter* Character = World->SpawnActor<AGCharacter>(
-				CharacterState->ActorCharacterClass,
-				SpawnPoint->GetActorLocation(),
-				FRotator::ZeroRotator);
-
-			CharacterState->ActorCharacter = Character;
-			CharacterState->LoadDefaultState();
-
-			Character->Init(this, CharacterState);
-
-			FTile* Tile = BattleManager->Grid->SnapToGrid(Character);
-			Characters.Add(Character);
-		}
-	}
 }
 
 void AFireTeam::RecomputeAllCharactersMetadata()
@@ -102,5 +112,17 @@ void AFireTeam::RecomputeAllCharactersMetadata()
 		Character->ComputeLoS();
 	}
 }
+
+void AFireTeam::RegisterDeath(AGCharacter* DeadCharacter)
+{
+	Characters.Remove(DeadCharacter);
+	BattleManager->Grid->RemoveCharFromTile(DeadCharacter->CurrentTileIndex);
+	BattleManager->RecomputeAllCharactersMetadata();
+}
+
+
+void AFireTeam::EndCharacterTurn() {}
+
+
 
 

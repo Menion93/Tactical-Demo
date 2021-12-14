@@ -16,12 +16,17 @@ public:
 	UShield();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ShieldStat")
-		int Batteries;
+	int ShieldHealth;
+
+	UPROPERTY(BlueprintReadWrite, Category = "ShieldStat")
+	int ShieldCurrentHealth;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ShieldStat")
-		int HealthPerBattery;
+	uint8 ShieldType;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ShieldStat")
-		uint8 ShieldType;
+public:
+
+	UFUNCTION(BlueprintCallable)
+	void InitShield();
 
 };

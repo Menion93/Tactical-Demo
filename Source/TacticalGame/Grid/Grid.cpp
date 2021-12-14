@@ -152,6 +152,19 @@ void AGrid::TransferCharacterToTile(FTileIndex From, FTileIndex To)
 	TilesMap[ToTile.Index] = ToTile;
 }
 
+void AGrid::RemoveCharFromTile(FTileIndex TileIndex)
+{
+	if (!TilesMap.Contains(TileIndex))
+	{
+		return;
+	}
+
+	FTile Tile = TilesMap[TileIndex];
+	Tile.Character = nullptr;
+
+	TilesMap[TileIndex] = Tile;
+}
+
 FTile AGrid::GetTile(FTileIndex TileIndex)
 {
 	return TilesMap.Contains(TileIndex) ? TilesMap[TileIndex] : FTile();

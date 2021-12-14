@@ -21,6 +21,7 @@ void UBSMCharacterInfoState::OnEnter()
 bool UBSMCharacterInfoState::InputEventB(float DeltaTime)
 {
 	BattleManager->GameMode->BattleUI->CloseActionMenu();
+	BattleManager->GameMode->BattleUI->HideCharacterBar2();
 	StateMachine->TargetCharacter = nullptr;
 	StateMachine->TransitionToPrevState();
 	return true;
@@ -29,6 +30,12 @@ bool UBSMCharacterInfoState::InputEventB(float DeltaTime)
 void UBSMCharacterInfoState::OnRestore()
 {
 	StateMachine->TargetCharacter = Target;
+
+	if (Target)
+	{
+		BattleManager->GameMode->BattleUI->SetCharacterBar2(Target->State);
+	}
+
 	BattleManager->GameMode->Camera->LerpToPosition(Tile.TileCenter);
 	TArray<UBattleMenuItem*> MenuItemList = GetMenuItemsEntryList();
 	BattleManager->GameMode->BattleUI->OpenActionMenu(MenuItemList);

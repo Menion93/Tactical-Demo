@@ -50,4 +50,9 @@ public:
 	UFUNCTION()
 	void OnHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit);
 
+	//UFUNCTION()
+	//void OnOverlap(AActor* OverlappedActor, AActor* OtherActor);
+
+
+
 };

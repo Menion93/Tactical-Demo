@@ -18,35 +18,35 @@ void APlayerFireTeam::Init_Implementation(ABattleManager* BM)
 	DeselectedState = NewObject<UBSMDeselectedState>(this, TEXT("DeselectedState"));
 	CharacterSelectedState = NewObject<UBSMCharacterSelectedState>(this, TEXT("CharacterSelectedState"));
 	CharacterInfoState = NewObject<UBSMCharacterInfoState>(this, TEXT("CharacterInfoState"));
-	BagState = NewObject<UBSMBagState>(this, TEXT("BagState"));
 	SelectEnemyState = NewObject<UBSMSelectEnemyState>(this, TEXT("SelectEnemyState"));
 	SelectEnemyFromTileState = NewObject<UBSMSelectEnemyFromTileState>(this, TEXT("SelectEnemyFromTileState"));
 	SelectAttackState = NewObject<UBSMSelectAttackState>(this, TEXT("SelectAttackState"));
 	SelectSupportActionState = NewObject<UBSMSelectSupportActionState>(this, TEXT("SelectSupportAction"));
 	SelectAllyState = NewObject<UBSMSelectAllyState>(this, TEXT("SelectAllyState"));
 	SelectAllyFromTileState = NewObject<UBSMSelectAllyFromTileState>(this, TEXT("SelectAllyFromTileState"));
+	UnitInfoState = NewObject<UBSMUnitInfoState>(this, TEXT("UnitInfoState"));
 
 	DeselectedState->InitState(this, MoveGridSpeed, DelayToSpeed);
 	CharacterSelectedState->InitState(this, MoveGridSpeed, DelayToSpeed);
 	CharacterInfoState->Init(this);
-	BagState->Init(this);
 	SelectEnemyState->Init(this);
 	SelectEnemyFromTileState->Init(this);
 	SelectAttackState->Init(this);
 	SelectSupportActionState->Init(this);
 	SelectAllyState->Init(this);
 	SelectAllyFromTileState->Init(this);
+	UnitInfoState->Init(this);
 
 	StateMachine.Emplace(CombatStateE::DESELECTED_STATE, DeselectedState);
 	StateMachine.Emplace(CombatStateE::CHARACTER_SELECTED, CharacterSelectedState);
 	StateMachine.Emplace(CombatStateE::CHARACTER_INFO, CharacterInfoState);
-	StateMachine.Emplace(CombatStateE::OPEN_BAG, BagState);
 	StateMachine.Emplace(CombatStateE::SELECT_ATTACK, SelectAttackState);
 	StateMachine.Emplace(CombatStateE::SELECT_ENEMY, SelectEnemyState);
 	StateMachine.Emplace(CombatStateE::SELECT_ENEMY_FROM_TILE, SelectEnemyFromTileState);
 	StateMachine.Emplace(CombatStateE::SELECT_SUPPORT_ACTION, SelectSupportActionState);
 	StateMachine.Emplace(CombatStateE::SELECT_ALLY, SelectAllyState);
 	StateMachine.Emplace(CombatStateE::SELECT_ALLY_FROM_TILE, SelectAllyFromTileState);
+	StateMachine.Emplace(CombatStateE::UNIT_INFO, UnitInfoState);
 }
 
 void APlayerFireTeam::PlayTurn_Implementation(float DeltaTime)
@@ -81,6 +81,7 @@ void APlayerFireTeam::OnTurnStart_Implementation()
 	SelectedTile = Characters[0]->CurrentTileIndex;
 	BattleManager->GameMode->Grid->SetCursorToTile(SelectedTile);
 	BattleManager->GameMode->Camera->LookAtPosition(BattleManager->GetSelectedTile().TileCenter);
+	BattleManager->GameMode->Grid->ShowCursor(true);
 
 	CurrentState = CombatStateE::DESELECTED_STATE;
 
@@ -94,15 +95,29 @@ void APlayerFireTeam::OnTurnStart_Implementation()
 	}
 }
 
+void APlayerFireTeam::OnTurnEnd_Implementation()
+{
+	BattleManager->GameMode->Grid->ShowCursor(false);
+	for (auto& Character : Characters)
+	{
+		Character->PerimeterComponent->ShowPerimeter(false);
+	}
+}
+
 bool APlayerFireTeam::IsWinConditionSatisfied_Implementation()
 {
 	return false;
 }
 
-bool APlayerFireTeam::IsTurnEnded_Implementation()
+
+void APlayerFireTeam::EndCharacterTurn()
 {
-	return false;
+	StatesHistory.Empty();
+	TransitionToState(CombatStateE::DESELECTED_STATE);
+	CurrentCharacter->PerimeterComponent->ShowPerimeter(false);
+	CurrentCharacter->PathfindingComponent->ShowShortestPath(false);
 }
+
 
 void APlayerFireTeam::TransitionToState(CombatStateE State)
 {
@@ -137,28 +152,4 @@ void APlayerFireTeam::SpawnTeam()
 		Character->Init(this, CharacterState);
 	}
 
-	int PointIndex = 0;
-	TArray<UCharacterState*> Team = BattleManager->GameMode->Party->GetTeam();
-
-	for (auto& SpawnPoint : SpawnPoints)
-	{
-		UWorld* World = GetWorld();
-
-		if (World)
-		{
-
-			AGCharacter* Character = World->SpawnActor<AGCharacter>(
-				Team[PointIndex]->ActorCharacterClass,
-				SpawnPoint->GetActorLocation(),
-				FRotator::ZeroRotator);
-
-			Team[PointIndex]->ActorCharacter = Character;
-			Team[PointIndex]->LoadState();
-
-			Character->Init(this, Team[PointIndex]);
-			FTile* Tile = BattleManager->Grid->SnapToGrid(Character);
-
-			Characters.Add(Character);
-		}
-	}
 }

@@ -32,7 +32,7 @@ public:
 
 	UPROPERTY(BlueprintReadWrite)
 	AGCharacter* Character;
-
+	
 	UPROPERTY(BlueprintReadWrite)
 	AGCharacter* Target;
 
@@ -42,10 +42,13 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool ReversibleAction;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int ActionPoints;
+
 public:
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
-	void Init(ABattleManager* BM);
+	void Init(ABattleManager* BM, AGCharacter* MyCharacter);
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	bool PlayAction(float DeltaTime);

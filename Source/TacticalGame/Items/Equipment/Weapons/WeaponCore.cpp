@@ -10,7 +10,7 @@ UWeaponCore::UWeaponCore()
 
 }
 
-bool UWeaponCore::IsInRange_Implementation(AGCharacter* MyCharacter, AGCharacter* Target)
+bool UWeaponCore::IsInRange_Implementation(FTileIndex& FromTileIndex, AGCharacter* MyCharacter, AGCharacter* Target)
 {
 	return false;
 }
@@ -77,4 +77,10 @@ void UWeaponCore::SpawnWeaponActor(AGCharacter* Character)
 {
 
 }
+
+bool UWeaponCore::IsRanged()
+{
+	return false;
+}
+
 

@@ -12,34 +12,63 @@ URangedWeapon::URangedWeapon()
 }
 
 
-bool URangedWeapon::IsInRange_Implementation(AGCharacter* MyCharacter, AGCharacter* Target)
+bool URangedWeapon::IsInRange_Implementation(FTileIndex& FromIndex, AGCharacter* MyCharacter, AGCharacter* Target)
 {
 	if (CurrentAmmo == 0) return false;
 
 	auto LoSData = MyCharacter->LoSComponent->GetLoS();
 
-	if (!LoSData.Contains(Target->State->Name)) return false;
+	FName CharacterName(Target->GetName());
+	if (!LoSData.Contains(CharacterName)) return false;
 
-	for (auto& Pair : LoSData[Target->State->Name].Tiles)
+	ATacticalGameMode* GameMode = Cast<ATacticalGameMode>(GetWorld()->GetAuthGameMode());
+	float DistanceFromCharacterTile = 9999999;
+	bool Found = false;
+
+	int ActionPoints = Execute_GetActionPoints(this);
+
+	for (auto& Pair : LoSData[CharacterName].Tiles)
 	{
-		if (Pair.Value.Distance <= GetRange())
+		bool NeedsToMove = !(MyCharacter->CurrentTileIndex == Pair.Key);
+		bool EnoughActionPoints = MyCharacter->State->CurrentActionPoints >= ActionPoints + int(NeedsToMove);
+
+		// Check if tile is occupied or not
+		if (EnoughActionPoints && 
+			Pair.Value.Distance <= GetRange() &&
+			(GameMode->Grid->GetTile(Pair.Key).Character == nullptr || Pair.Key == MyCharacter->CurrentTileIndex))
 		{
-			return true;
+			Found = true;
+
+			int NewDistance = MyCharacter->PathfindingComponent->ShortestPaths[Pair.Key].Distance;
+
+			if (DistanceFromCharacterTile > NewDistance)
+			{
+				FromIndex = Pair.Key;
+				DistanceFromCharacterTile = NewDistance;
+				auto cover = Pair.Value.CoverType;
+			}
+
 		}
 	}
 
-	return false;
+	return Found;
 }
 
 bool URangedWeapon::IsInRangeFromTile_Implementation(FTile Tile, AGCharacter* MyCharacter, AGCharacter* Target)
 {
+	FName CharacterName(Target->GetName());
+
 	if (CurrentAmmo == 0) return false;
 
-	if (!MyCharacter->LoSComponent->GetLoS().Contains(Target->State->Name)) return false;
+	if (!MyCharacter->LoSComponent->GetLoS().Contains(CharacterName)) return false;
 
-	if (!MyCharacter->LoSComponent->GetLoS()[Target->State->Name].Tiles.Contains(Tile.Index)) return false;
+	if (!MyCharacter->LoSComponent->GetLoS()[CharacterName].Tiles.Contains(Tile.Index)) return false;
 
-	return MyCharacter->LoSComponent->GetLoS()[Target->State->Name].Tiles[Tile.Index].Distance <= GetRange();
+	// Check if we have enough action point
+	bool NeedsToMove = !(MyCharacter->CurrentTileIndex == Tile.Index);
+	bool EnoughActionPoints = MyCharacter->State->CurrentActionPoints >= (Execute_GetActionPoints(this) + int(NeedsToMove));
+
+	return EnoughActionPoints && MyCharacter->LoSComponent->GetLoS()[CharacterName].Tiles[Tile.Index].Distance <= GetRange();
 }
 
 void URangedWeapon::SimulateAction_Implementation(AGCharacter* Character, AGCharacter* Target)
@@ -98,9 +127,9 @@ void URangedWeapon::ApplyAction_Implementation(AGCharacter* Character)
 
 UAction* URangedWeapon::GetAction_Implementation(AGCharacter* Subject, AGCharacter* Target, FTileIndex FromTile)
 {
-	CurrentAction = NewObject<URangedAttackAction>(this, ActionClass);
+	URangedAttackAction* CurrentAction = NewObject<URangedAttackAction>(this, ActionClass);
 	ATacticalGameMode* GameMode = Cast<ATacticalGameMode>(GetWorld()->GetAuthGameMode());
-	CurrentAction->Init(GameMode->BattleManager, this, Subject, Target, FromTile);
+	CurrentAction->MyInit(GameMode->BattleManager, this, Subject, Target, FromTile);
 	return CurrentAction;
 }
 
@@ -118,7 +147,7 @@ float URangedWeapon::GetAccuracyByRange(float Distance)
 {
 	float MyMaxRange = GetRange();
 
-	if (Distance > MyMaxRange) return 0;
+	if (Distance > MyMaxRange) return 0.1f;
 
 	return AccuracyByRange.GetRichCurve()->Eval(Distance / MyMaxRange, 0);
 }
@@ -126,6 +155,7 @@ float URangedWeapon::GetAccuracyByRange(float Distance)
 void URangedWeapon::InitWeapon()
 {
 	CurrentAmmo = MagazineSize;
+	CurrentMagazine = Magazine;
 }
 
 void URangedWeapon::SpawnWeaponActor(AGCharacter* Character)
@@ -138,5 +168,19 @@ void URangedWeapon::SpawnWeaponActor(AGCharacter* Character)
 
 void URangedWeapon::Reload()
 {
-	CurrentAmmo = MagazineSize;
+	if (CurrentMagazine > 0)
+	{
+		CurrentAmmo = MagazineSize;
+		CurrentMagazine--;
+	}
+}
+
+bool URangedWeapon::CanReload()
+{
+	return CurrentMagazine > 0 && CurrentAmmo != MagazineSize;
+}
+
+bool URangedWeapon::IsRanged()
+{
+	return true;
 }

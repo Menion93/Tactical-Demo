@@ -8,3 +8,8 @@ UShield::UShield()
 {
 
 }
+
+void UShield::InitShield()
+{
+	ShieldCurrentHealth = ShieldHealth;
+}

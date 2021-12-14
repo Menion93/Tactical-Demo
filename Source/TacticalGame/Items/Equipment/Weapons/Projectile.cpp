@@ -2,6 +2,7 @@
 
 
 #include "Projectile.h"
+#include "Components/CapsuleComponent.h"
 #include "Characters/GCharacter.h"
 
 // Sets default values
@@ -17,17 +18,17 @@ AProjectile::AProjectile()
 	// Set the root component to be the collision component.
 	RootComponent = CollisionComponent;
 
-
 	// Use this component to drive this projectile's movement.
 	ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovementComponent"));
 	ProjectileMovementComponent->SetUpdatedComponent(CollisionComponent);
 	ProjectileMovementComponent->InitialSpeed = 3000.0f;
 	ProjectileMovementComponent->MaxSpeed = 3000.0f;
 	ProjectileMovementComponent->bRotationFollowsVelocity = true;
-	ProjectileMovementComponent->bShouldBounce = true;
-	ProjectileMovementComponent->Bounciness = 0.3f;
+	ProjectileMovementComponent->bShouldBounce = false;
+	//ProjectileMovementComponent->Bounciness = 0.0f;
 
 	OnActorHit.AddDynamic(this, &AProjectile::OnHit);
+	//OnActorBeginOverlap.AddDynamic(this, &AProjectile::OnOverlap);
 }
 
 // Called when the game starts or when spawned
@@ -55,6 +56,9 @@ void AProjectile::EnableRegisterDamageEvent(AGCharacter* MyTarget, FRoundSim MyR
 	Target = MyTarget;
 	RoundSim = MyRoundSim;
 	Action = MyAction;
+
+	// Set Target in the hit channel
+	MyTarget->CanBeHittedByProjectiles(true);
 }
 
 
@@ -74,4 +78,5 @@ void AProjectile::OnHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImp
 	}
 
 	Destroy();
+
 }

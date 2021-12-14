@@ -30,6 +30,8 @@ void UBSMSelectAllyState::OnEnter()
 	FTile AllyTile = Grid->GetTile(StateMachine->Targets[AllyIndex]->CurrentTileIndex);
 	BattleManager->GameMode->Camera->LerpToPosition(AllyTile.TileCenter);
 	StateMachine->TargetCharacter = StateMachine->Targets[AllyIndex];
+	BattleManager->GameMode->BattleUI->SetCharacterBar2(StateMachine->TargetCharacter->State);
+
 }
 
 
@@ -45,6 +47,8 @@ bool UBSMSelectAllyState::InputEventLAxis(float DeltaTime)
 		BattleManager->GameMode->Camera->LerpToPosition(Tile.TileCenter);
 
 		StateMachine->TargetCharacter = StateMachine->Targets[AllyIndex];
+		BattleManager->GameMode->BattleUI->SetCharacterBar2(StateMachine->TargetCharacter->State);
+
 		return true;
 	}
 
@@ -58,7 +62,8 @@ bool UBSMSelectAllyState::InputEventA(float DeltaTime)
 	StateMachine->Actionables = SupportOptions
 		.FilterByPredicate([this](auto& Object) {
 		IActionable* SupportOption = Cast<IActionable>(Object);
-		return SupportOption->Execute_IsInRange(Object, this->StateMachine->CurrentCharacter, this->StateMachine->TargetCharacter);
+		FTileIndex TileIndex;
+		return SupportOption->Execute_IsInRange(Object, TileIndex, this->StateMachine->CurrentCharacter, this->StateMachine->TargetCharacter);
 	}
 	);
 
@@ -72,6 +77,6 @@ bool UBSMSelectAllyState::InputEventB(float DeltaTime)
 	StateMachine->TransitionToPrevState();
 	StateMachine->TargetCharacter = PrevTargetChar;
 	BattleManager->GameMode->Camera->LerpToPosition(BattleManager->GetSelectedTile().TileCenter);
-
+	BattleManager->GameMode->BattleUI->HideCharacterBar2();
 	return true;
 }

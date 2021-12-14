@@ -99,7 +99,7 @@ public:
 public:
 	virtual FString GetMenuDisplayName_Implementation() override;
 
-	virtual bool IsInRange_Implementation(AGCharacter* MyCharacter, AGCharacter* Target);
+	virtual bool IsInRange_Implementation(FTileIndex& FromTileIndex, AGCharacter* MyCharacter, AGCharacter* Target);
 	virtual bool IsInRangeFromTile_Implementation(FTile Tile, AGCharacter* MyCharacter, AGCharacter* Target);
 	virtual int GetActionPoints_Implementation();
 
@@ -110,6 +110,7 @@ public:
 	virtual UAction* GetAction_Implementation(AGCharacter* Subject, AGCharacter* Target, FTileIndex FromTile);
 
 	virtual ActionType GetActionType_Implementation();
+	virtual bool IsRanged();
 
 public:
 	virtual void InitWeapon();

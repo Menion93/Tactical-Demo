@@ -5,6 +5,7 @@
 #include "Characters/GCharacter.h"
 #include "Globals/TacticalGameMode.h"
 #include "TopViewCamera.h"
+#include "Actionable.h"
 
 
 void UActionableAction::MyInit_Implementation(
@@ -19,23 +20,38 @@ void UActionableAction::MyInit_Implementation(
 	Target = MyTarget;
 	FromTileIndex = MyTile;
 	Actionable = MyActionable;
+	IActionable* ActionableObj = Cast<IActionable>(Actionable);
 	Input = Cast<AGPlayerController>(MyCharacter->GetWorld()->GetFirstPlayerController());
 
 	HasMoved = false;
 
 	AGCharacter* CharInSelectedTile = Character->Grid->GetTile(FromTileIndex).Character;
 
+	// empty tile selected
 	MoveFirst = !(Character->CurrentTileIndex == FromTileIndex) && MyTarget != CharInSelectedTile;
 
+	// if an empty tile was not selected
 	if (!MoveFirst)
 	{
 		FTileIndex NearestTileIndex = GetNearestTileInRange();
 
+		// If the nearest tile is different from the target, move toward the nearest tile first
 		if (!(NearestTileIndex == FromTileIndex) && !(NearestTileIndex == Character->CurrentTileIndex))
 		{
 			FromTileIndex = NearestTileIndex;
 			MoveFirst = true;
+			Character->State->DecreaseActionPoints(1 + ActionableObj->Execute_GetActionPoints(Actionable));
+		} 
+		// otherwise take the action without moving
+		else
+		{
+			Character->State->DecreaseActionPoints(ActionableObj->Execute_GetActionPoints(Actionable));
 		}
+	}
+	// Move and shoot
+	else 
+	{
+		Character->State->DecreaseActionPoints(1 + ActionableObj->Execute_GetActionPoints(Actionable));
 	}
 
 };

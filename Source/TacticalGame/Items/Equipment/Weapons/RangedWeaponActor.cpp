@@ -55,6 +55,7 @@ void ARangedWeaponActor::Tick(float DeltaTime)
 						Projectile->FireInDirection(Direction);
 					}
 				}
+				State->OnProjectileShoot.Broadcast();
 
 				// Add Cooldown
 				BulletIndex += 1;

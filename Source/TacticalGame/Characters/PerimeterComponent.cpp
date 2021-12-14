@@ -2,6 +2,7 @@
 
 
 #include "PerimeterComponent.h"
+#include "Globals/TacticalGamemode.h"
 #include "Grid/Grid.h"
 
 // Sets default values for this component's properties
@@ -27,7 +28,22 @@ void UPerimeterComponent::ShowPerimeter(bool Show)
 void UPerimeterComponent::ComputePerimeterPoints(FTileIndex TileIndex, int DistanceInTilesUnit)
 {
 	PerimeterBoundaries = TMap<FTileIndex, FDijkstraNode>();
-	UGridUtils::GetShortestPaths(Grid, PerimeterBoundaries, TileIndex, 9999, true);
+	TMap<FTileIndex, FDijkstraNode> PerimeterBoundariesIgnoreChar = TMap<FTileIndex, FDijkstraNode>();
+
+	UGridUtils::GetShortestPaths(Grid, PerimeterBoundaries, TileIndex, 9999, false);
+	UGridUtils::GetShortestPaths(Grid, PerimeterBoundariesIgnoreChar, TileIndex, 9999, true);
+
+	TArray<FTileIndex> CharacterPositions;
+
+	ATacticalGameMode* GameMode = Cast<ATacticalGameMode>(GetWorld()->GetAuthGameMode());
+	
+	for (auto& FireTeam : GameMode->BattleManager->Teams)
+	{
+		for (auto& Char : FireTeam->Characters)
+		{
+			CharacterPositions.Add(Char->CurrentTileIndex);
+		}
+	}
 
 	for (auto& Perimeter : Perimeters)
 	{
@@ -38,6 +54,8 @@ void UPerimeterComponent::ComputePerimeterPoints(FTileIndex TileIndex, int Dista
 
 	TArray<FVectorArray> PerimeterBlocks = UGridUtils::GetPerimeterPoints(
 		Grid,
+		CharacterPositions,
+		PerimeterBoundariesIgnoreChar,
 		PerimeterBoundaries,
 		DistanceInTilesUnit,
 		Grid->CellSize,

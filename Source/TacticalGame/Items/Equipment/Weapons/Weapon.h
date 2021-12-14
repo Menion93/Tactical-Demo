@@ -29,6 +29,7 @@ public:
 	UAnimMontage* WeaponAnimation;
 
 	FRoundSim Round;
+
 	AGCharacter* Target;
 
 protected:

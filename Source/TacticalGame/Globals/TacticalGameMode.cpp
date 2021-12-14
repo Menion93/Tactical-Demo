@@ -26,22 +26,9 @@ void ATacticalGameMode::StartPlay()
 	SetGrid();
 	SetBattleManager();
 
-	if (PartyClass)
-	{
-		Party = NewObject<UParty>(this, PartyClass->GetFName(), RF_NoFlags, PartyClass.GetDefaultObject());
-		Party->Init();
-	}
-
 	BattleManager->Init();
 
-	if (BattleModeOnLoad)
-	{
-		SwitchToBattleMode(true, false);
-	} 
-	else
-	{
-		SwitchToFreeMode();
-	}
+	SwitchToBattleMode(true, false);
 
 	UWorld* World = GetWorld();
 
@@ -71,27 +58,12 @@ void ATacticalGameMode::Tick(float DeltaSeconds)
 	{
 		BattleManager->PlayTurn(DeltaSeconds);
 	}
-	else if (CurrentMode == GameModeE::GSE_None)
-	{
-		Party->HandlePlayerInput();
-	}
 
 	if (Camera)
 	{
 		Camera->Tick(DeltaSeconds);
 	}
 
-	if (Input->L2_DOWN)
-	{
-		if (CurrentMode == GameModeE::GSE_Battle)
-		{
-			SwitchToFreeMode();
-		}
-		else
-		{
-			SwitchToBattleMode(true, false);
-		}
-	}
 }
 
 void ATacticalGameMode::SwitchToBattleMode(bool IsPlayerTurn, bool ForceEngage)
@@ -102,12 +74,7 @@ void ATacticalGameMode::SwitchToBattleMode(bool IsPlayerTurn, bool ForceEngage)
 	BattleManager->InitBattleState();
 }
 
-void ATacticalGameMode::SwitchToFreeMode()
-{
-	// Here put Dynamic Grid Creation
-	CurrentMode = GameModeE::GSE_None;
-	Grid->GridCursor->SetVisibility(false);
-}
+
 
 void ATacticalGameMode::SetGrid()
 {

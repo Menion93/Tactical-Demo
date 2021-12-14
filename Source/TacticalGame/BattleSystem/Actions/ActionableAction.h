@@ -37,6 +37,13 @@ public:
 		AGCharacter* MyTarget,
 		FTileIndex MyTile);
 
+	virtual void MyInit_Implementation(
+		ABattleManager* BM,
+		UObject* MyActionable,
+		AGCharacter* MyCharacter,
+		AGCharacter* MyTarget,
+		FTileIndex MyTile);
+
 	bool MoveTo();
 
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)

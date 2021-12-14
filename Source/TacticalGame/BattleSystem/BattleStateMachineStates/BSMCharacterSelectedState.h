@@ -32,7 +32,6 @@ public:
 	bool CoolDownYawRotation;
 
 public:
-	bool InputEventX(float DeltaTime) override;
 	bool InputEventY(float DeltaTime) override;
 	bool InputEventA(float DeltaTime) override;
 	bool InputEventB(float DeltaTime) override;

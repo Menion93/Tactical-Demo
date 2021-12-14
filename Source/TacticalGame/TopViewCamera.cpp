@@ -1,12 +1,11 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "TopViewCamera.h"
 #include "Engine/World.h"
 #include "GameFramework/PlayerController.h"
 #include "Math/UnrealMathVectorCommon.h"
 
-	
+
 
 ATopViewCamera::ATopViewCamera()
 {
@@ -22,7 +21,6 @@ void ATopViewCamera::BeginPlay()
 
 	Input = Cast<AGPlayerController>(GetWorld()->GetFirstPlayerController());
 
-	//SetActorRelativeRotation(FRotator(CameraAngle, 0, 0));
 	PitchInterp = (PitchStartAngle - PitchMaxAngle) / (PitchMinAngle - PitchMaxAngle);
 }
 

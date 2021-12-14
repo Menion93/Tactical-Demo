@@ -9,10 +9,11 @@ UAction::UAction()
 
 }
 
-void UAction::Init_Implementation(ABattleManager* BM)
+void UAction::Init_Implementation(ABattleManager* BM, AGCharacter* MyCharacter)
 {
 	Input = BM->Input;
 	BattleManager = BM;
+	Character = MyCharacter;
 }
 
 
@@ -26,7 +27,7 @@ bool UAction::PlayAction_Implementation(float DeltaTime)
 		(Input->B_DOWN && InputEventB(DeltaTime)) ||
 		(Input->Start_DOWN && InputEventStart(DeltaTime)) ||
 		(Input->Pause_DOWN && InputEventPause(DeltaTime)) ||
-		(Input->R1_DOWN & InputEventR1(DeltaTime)) ||
+		(Input->R1_DOWN && InputEventR1(DeltaTime)) ||
 		(Input->R2_DOWN && InputEventR2(DeltaTime)) ||
 		(Input->L1_DOWN && InputEventL1(DeltaTime)) ||
 		(Input->L2_DOWN && InputEventL2(DeltaTime));
@@ -45,6 +46,7 @@ void UAction::OnEnd_Implementation()
 
 bool UAction::RevertAction_Implementation()
 {
+	Character->State->ActionPoints += ActionPoints;
 	return false;
 }
 

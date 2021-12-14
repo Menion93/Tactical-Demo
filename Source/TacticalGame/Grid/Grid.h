@@ -86,6 +86,9 @@ public:
 	void TransferCharacterToTile(FTileIndex From, FTileIndex To);
 
 	UFUNCTION(BlueprintCallable)
+	void RemoveCharFromTile(FTileIndex TileIndex);
+
+	UFUNCTION(BlueprintCallable)
 	void SetCursorToTile(FTileIndex TileIndex);
 
 	UFUNCTION(BlueprintCallable)
@@ -93,4 +96,7 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	FTile GetTile(FTileIndex TileIndex);
+
+
+
 };

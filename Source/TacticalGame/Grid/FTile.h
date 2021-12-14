@@ -1,7 +1,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Items/APickable.h"
 #include "FTile.generated.h"
 
 class AGCharacter;
@@ -74,9 +73,6 @@ struct FTile
 
 	UPROPERTY(BlueprintReadWrite)
 	AGCharacter* Character = nullptr;
-
-	UPROPERTY(BlueprintReadWrite)
-	AAPickable* Pickable = nullptr;
 	
 	TMap<FTileIndex, TPair<FTile*, float>> Direction2Neighbours;
 

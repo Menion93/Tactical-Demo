@@ -46,7 +46,7 @@ bool UBSMDeselectedState::InputEventA(float DeltaTime)
 				return false;
 			}
 
-			BattleManager->GameMode->BattleUI->SetCharacterBar(Character->State);
+			BattleManager->GameMode->BattleUI->SetCharacterBar1(Character->State);
 			Character->Selected();
 			Character->PerimeterComponent->ShowPerimeter(true);
 			StateMachine->CurrentCharacter = Character;
@@ -56,8 +56,9 @@ bool UBSMDeselectedState::InputEventA(float DeltaTime)
 		// Otherwise show character info
 		else
 		{
+			BattleManager->GameMode->BattleUI->SetCharacterBar1(Character->State);
 			StateMachine->TargetCharacter = Character;
-			StateMachine->TransitionToState(CombatStateE::CHARACTER_INFO);
+			StateMachine->TransitionToState(CombatStateE::UNIT_INFO);
 			return true;
 		}
 	}

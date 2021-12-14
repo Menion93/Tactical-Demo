@@ -12,6 +12,8 @@
 /**
  * 
  */
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnChangeActionPoint);
+
 UCLASS(Blueprintable, BlueprintType)
 class TACTICALGAME_API UCharacterState : public UObject
 {
@@ -60,10 +62,26 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UTexture2D* CharacterIcon;
 
+	UPROPERTY(BlueprintAssignable)
+	FOnChangeActionPoint OnChangeActionPoint;
+
 public:
 	void ResetActionPoints();
 	void LoadState();
+	void Init();
+
+	UFUNCTION(BlueprintCallable)
+	void DecreaseActionPoints(int Points);
+
+	UFUNCTION(BlueprintCallable)
+	void IncreaseActionPoints(int Points);
 
 	void LoadDefaultState();
+
+protected:
+	void BroadcastChangedAP()
+	{
+		OnChangeActionPoint.Broadcast();
+	}
 
 };

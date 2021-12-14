@@ -23,7 +23,13 @@ void ABattleManager::PlayTurn(float DeltaTime)
 	// if we already chose an action
 	if (GlobalAction)
 	{
-		GlobalAction = CurrentAction->PlayAction(DeltaTime) ? CurrentAction : nullptr;
+		bool HasEnded = GlobalAction->PlayAction(DeltaTime);
+
+		if (HasEnded)
+		{
+			GlobalAction->OnEnd();
+			GlobalAction = nullptr;
+		}
 	}
 	else if (CurrentAction)
 	{
@@ -43,6 +49,10 @@ void ABattleManager::PlayTurn(float DeltaTime)
 			{
 				EndTurn();
 			}
+			else if (CurrentAction->Character->State->CurrentActionPoints == 0)
+			{
+				EndCharacterTurn();
+			}
 
 			CurrentAction = nullptr;
 		}
@@ -54,6 +64,15 @@ void ABattleManager::PlayTurn(float DeltaTime)
 		{
 			PrevTeamIndex = TeamIndex;
 			Teams[TeamIndex]->OnTurnStart();
+
+			if (Turn > 0)
+			{
+				UAction* EndOfTurnAction = NewObject<UAction>(this, GlobalEndTurnActionClass,
+					TEXT("EndOfTurn"), RF_NoFlags, GlobalEndTurnActionClass.GetDefaultObject(), true);
+				EndOfTurnAction->Init(this, nullptr);
+
+				SetGlobalAction(EndOfTurnAction);
+			}
 		}
 
 		Teams[TeamIndex]->PlayTurn(DeltaTime);
@@ -73,27 +92,56 @@ void ABattleManager::InitBattleState()
 	{
 		Team->RecomputeAllCharactersMetadata();
 	}
+
+	Turn = 0;
 }
 
+int ABattleManager::GetTurnNumber()
+{
+	return Turn;
+}
 
 void ABattleManager::EndTurn()
 {
+	Teams[TeamIndex]->OnTurnEnd();
 	TeamIndex = (TeamIndex + 1) % Teams.Num();
+	OnTurnEnded.Broadcast();
+	Turn++;
+}
 
-	// Play Cool Animations & Sounds
+void ABattleManager::EndCharacterTurn()
+{
+	Teams[TeamIndex]->EndCharacterTurn();
+	OnCharacterTurnEnded.Broadcast();
 }
 
 
 void ABattleManager::EndBattle()
 {
+	OnWinConditionSatisfied.Broadcast();
+	UAction* EndOfBattleAction = NewObject<UAction>(this, GlobalGameEndedClass,
+		TEXT("EndOfBattle"), RF_NoFlags, GlobalGameEndedClass.GetDefaultObject(), true);
+	EndOfBattleAction->Init(this, nullptr);
 
+	SetGlobalAction(EndOfBattleAction);
 }
 
 
 void ABattleManager::SetAction(UAction* Action)
 {
 	CurrentAction = Action;
-	Action->OnEnter();
+	CurrentAction->OnEnter();
+}
+
+void ABattleManager::SetGlobalAction(UAction* Action)
+{
+	GlobalAction = Action;
+	GlobalAction->OnEnter();
+}
+
+UAction* ABattleManager::GetAction()
+{
+	return CurrentAction;
 }
 
 
@@ -200,4 +248,12 @@ bool ABattleManager::IsAlly(AFireTeam* FireTeam, AGCharacter* Character)
 	}
 
 	return false;
+}
+
+void ABattleManager::RecomputeAllCharactersMetadata()
+{
+	for (auto& FT : Teams)
+	{
+		FT->RecomputeAllCharactersMetadata();
+	}
 }

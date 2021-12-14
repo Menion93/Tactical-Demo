@@ -27,12 +27,6 @@ void UEquipment::LoadDefaultEquipment(UCharacterState* MyState)
 		SecondaryWeapon->InitWeapon();
 	}
 
-	if (BagClass)
-	{
-		Bag = NewObject<UBag>(this, BagClass);
-		Bag->LoadDefaultItems();
-	}
-
 	if (ArmorClass)
 	{
 		Armor = NewObject<UArmor>(this, ArmorClass);
@@ -41,13 +35,14 @@ void UEquipment::LoadDefaultEquipment(UCharacterState* MyState)
 	if (ShieldClass)
 	{
 		Shield = NewObject<UShield>(this, ShieldClass);
+		Shield->InitShield();
 	}
 
 }
 
 TArray<UObject*> UEquipment::GetSupportItems()
 {
-	TArray<UObject*> SupportItems = Bag->GetSupportItems();
+	TArray<UObject*> SupportItems = TArray<UObject*>();
 
 	UObject* SupportWeapon = TryGetObjectByType(Cast<UItem>(PrimaryWeapon), ActionType::SUPPORT);
 
@@ -68,7 +63,7 @@ TArray<UObject*> UEquipment::GetSupportItems()
 
 TArray<UObject*> UEquipment::GetOffensiveItems()
 {
-	TArray<UObject*> OffensiveItems = Bag->GetOffensiveItems();
+	TArray<UObject*> OffensiveItems = TArray<UObject*>();
 
 	UObject* OffensiveWeapon = TryGetObjectByType(Cast<UItem>(PrimaryWeapon), ActionType::OFFENSIVE);
 
@@ -121,6 +116,8 @@ void UEquipment::SwapWeapon()
 		CurrentWeapon->SpawnWeaponActor(State->ActorCharacter);
 		FirstWeaponEquipped = true;
 	}
+
+	OnSwapWeapon.Broadcast();
 }
 
 void UEquipment::SpawnWeaponActor()

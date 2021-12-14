@@ -24,12 +24,13 @@ public:
 	bool AttackDone = false;
 
 public:
-	void Init(
+	void MyInit_Implementation(
 		ABattleManager* BM,
-		UMeleeWeapon* MyWeapon,
+		UObject* MyActionable,
 		AGCharacter* MyCharacter,
 		AGCharacter* MyTarget,
-		FTileIndex MyTile);
+		FTileIndex MyTile) override;
+
 
 	UFUNCTION(BlueprintCallable)
 	TArray<FTileIndex> GetAdjacentTiles(FTileIndex TileIndex);

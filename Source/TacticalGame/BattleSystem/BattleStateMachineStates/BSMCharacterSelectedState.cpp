@@ -18,12 +18,6 @@ void UBSMCharacterSelectedState::InitState(APlayerFireTeam* SM, float MoveGridSp
 	DelayToSpeed = Delay;
 }
 
-bool UBSMCharacterSelectedState::InputEventX(float DeltaTime)
-{
-	//DisableInput(true);
-	StateMachine->TransitionToState(CombatStateE::OPEN_BAG);
-	return true;
-}
 
 // Swap Weapon
 bool UBSMCharacterSelectedState::InputEventY(float DeltaTime)
@@ -41,7 +35,6 @@ bool UBSMCharacterSelectedState::InputEventA(float DeltaTime)
 	if (SelectedTile.IsObstacle || 
 		!(
 			SelectedTile.Character || 
-		    SelectedTile.Pickable ||
 		    StateMachine->CurrentCharacter->TileInRange(SelectedTile)
 		 )
 		)
@@ -50,13 +43,17 @@ bool UBSMCharacterSelectedState::InputEventA(float DeltaTime)
 	}
 
 	StateMachine->TargetCharacter = SelectedTile.Character;
+	if (StateMachine->TargetCharacter && StateMachine->TargetCharacter != StateMachine->CurrentCharacter)
+	{
+		BattleManager->GameMode->BattleUI->SetCharacterBar2(SelectedTile.Character->State);
+	}
 	StateMachine->TransitionToState(CombatStateE::CHARACTER_INFO);
 	return true;
 }
 
 bool UBSMCharacterSelectedState::InputEventB(float DeltaTime)
 {
-	BattleManager->GameMode->BattleUI->HideCharacterBar();
+	BattleManager->GameMode->BattleUI->HideCharacterBar1();
 	StateMachine->CurrentCharacter->PerimeterComponent->ShowPerimeter(false);
 	StateMachine->CurrentCharacter->PathfindingComponent->ShowShortestPath(false);
 

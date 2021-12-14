@@ -8,16 +8,17 @@
 #include "Characters/CharacterState.h"
 #include "Items/Equipment/Equipment.h"
 
-void UMeleeAttackAction::Init(
+void UMeleeAttackAction::MyInit_Implementation(
 	ABattleManager* MyBM,
-	UMeleeWeapon* MyWeapon,
+	UObject* MyActionable,
 	AGCharacter* MyCharacter,
 	AGCharacter* MyTarget,
 	FTileIndex MyTile)
 {
-	Weapon = MyWeapon;
+	Weapon = Cast<UMeleeWeapon>(MyActionable);
+	Weapon->CurrentAction = this;
 
-	Super::MyInit(MyBM, MyWeapon, MyCharacter, MyTarget, MyTile);
+	Super::MyInit_Implementation(MyBM, Weapon, MyCharacter, MyTarget, MyTile);
 
 	if (Weapon != MyCharacter->State->Equipment->CurrentWeapon)
 	{
@@ -33,12 +34,23 @@ TArray<FTileIndex> UMeleeAttackAction::GetAdjacentTiles(FTileIndex TileIndex)
 	FTileIndex Left(0, -1);
 	FTileIndex Right(0, 1);
 
+	TArray<FTileIndex> ResultTemp;
+
+	ResultTemp.Add(Up + TileIndex);
+	ResultTemp.Add(Down + TileIndex);
+	ResultTemp.Add(Left + TileIndex);
+	ResultTemp.Add(Right + TileIndex);
+
 	TArray<FTileIndex> Result;
 
-	Result.Add(Up + TileIndex);
-	Result.Add(Down + TileIndex);
-	Result.Add(Left + TileIndex);
-	Result.Add(Right + TileIndex);
+
+	for (auto& mTileIndex : ResultTemp)
+	{
+		if (this->Character->PathfindingComponent->ShortestPaths.Contains(mTileIndex))
+		{
+			Result.Add(mTileIndex);
+		}
+	}
 
 	return Result;
 }

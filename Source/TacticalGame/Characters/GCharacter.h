@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Fill out your copyright notice in the Description page of Project Settings.CanBeHittedByProjectiles
 
 #pragma once
 
@@ -13,6 +13,7 @@
 #include "Globals/GPlayerController.h"
 #include "PerimeterComponent.h"
 #include "PathfindingComponent.h"
+#include "UI/CharacterHealthBar.h"
 #include "LoSComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
@@ -83,6 +84,9 @@ public:
 	UPROPERTY(BlueprintReadWrite)
 	TArray<UAction*> ActionsBuffer;
 
+	UPROPERTY(BlueprintReadWrite)
+	UCharacterHealthBar* HealthBar;
+
 
 protected:
 	// Called when the game starts or when spawned
@@ -121,6 +125,9 @@ public:
 	bool RevertAction();
 
 	UFUNCTION(BlueprintCallable)
+	void CanBeHittedByProjectiles(bool CanBeHit);
+
+	UFUNCTION(BlueprintCallable)
 	TArray<UObject*> GetOffensiveOptions();
 
 	UFUNCTION(BlueprintCallable)
@@ -134,4 +141,7 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	bool TileInRange(FTile Tile);
+
+	UFUNCTION(BlueprintCallable)
+	void Die();
 };

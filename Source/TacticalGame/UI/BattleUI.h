@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
-#include "Party/Party.h"
+#include "CharacterHealthBar.h"
 #include "ActionMenuUI.h"
 #include "BattleUI.generated.h"
 
@@ -20,25 +20,28 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UActionMenuUI* ActionMenu;
 
-public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UCharacterHealthBar* CharBar1;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UParty* Party;
+	UCharacterHealthBar* CharBar2;
+
+public:
 
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 	void OpenActionMenu(const TArray<UBattleMenuItem*>& MenuItems);
 
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
-	void OpenBag();
-	
-	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
-	void SetCharacterBar(UPARAM(DisplayName = "CharacterState") UCharacterState* State);
+	void SetCharacterBar1(UPARAM(DisplayName = "CharacterState") UCharacterState* State);
 
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
-	void HideCharacterBar();
+	void SetCharacterBar2(UPARAM(DisplayName = "CharacterState") UCharacterState* State);
 
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
-	void CloseBag();
+	void HideCharacterBar1();
+
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
+	void HideCharacterBar2();
 
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 	void CloseActionMenu();
@@ -54,5 +57,11 @@ public:
 
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 	void CloseSupportOptionMenu();
+
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
+	void ShowOnTurnEnd(bool Show);
+
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
+	void ShowOnBattleEnd(bool Show, bool Victory);
 		
 };
